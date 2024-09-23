@@ -339,6 +339,7 @@ struct HomeView: View {
     @State var filterType: String = "Name"
     @State private var avatarItem: PhotosPickerItem?
     @State private var avatarImage: Image?
+    @State var backToLogIn = false
     
     
     
@@ -727,7 +728,43 @@ struct HomeView: View {
                 Image(systemName:"plus.circle.fill")
             }
             NavigationStack(){
-                Text("View5")
+                VStack(spacing: 0) {
+                            
+                    Text("Custom Title")
+                                .font(.custom("Cochin", size: 34))
+                                .fontWeight(.bold)
+                                .padding(.top, 16)
+                                .padding(.bottom, 8)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal)
+                                .foregroundColor(Color.accentColor)
+                            
+                    List {
+                        NavigationLink{
+                            Button("Log Out") {
+                                backToLogIn = true
+                            }
+                            .font(.custom("Cochin",size:20))
+                            .buttonStyle(AccountButton())
+                            .navigationDestination(isPresented: $backToLogIn) {
+                                ContentView()
+                                    .toolbar(.hidden,for: .tabBar)
+                                    .navigationBarBackButtonHidden()
+                            }
+                        } label: {
+                            Text("Log out of account")
+                                .font(.custom("Cochin",size:20))
+                        }
+                    }
+                        }
+                        .background(Color(UIColor.systemBackground))
+                
+                
+                
+                
+                
+                                
+                
                 
                 
                 
