@@ -2,7 +2,7 @@
 //  Person+CoreDataProperties.swift
 //  coretests
 //
-//  Created by Victor Mauger on 16.07.2024.
+//  Created by Victor Mauger on 15.07.2024.
 //
 //
 
@@ -22,6 +22,72 @@ extension Person {
     @NSManaged public var password: String?
     @NSManaged public var username: String?
     @NSManaged public var items: NSSet?
+    
+    public var wrappedUsername: String {
+        username ?? "_username_"
+    }
+    public var wrappedPassword: String {
+        password ?? "_password_"
+    }
+    public var wrappedFirstName: String {
+        firstName ?? "_firstName_"
+    }
+    public var wrappedLastName: String {
+        lastName ?? "_lastName_"
+    }
+    public var wrappedEmail: String {
+        email ?? "_email_"
+    }
+    public var itemsArray: [Item] {
+        let set = items as? Set<Item> ?? []
+        return set.sorted {
+            $0.wrappedName < $1.wrappedName
+        }
+    }
+    public func getArray(FilterType:String,FilterString:String,SortType:String)->[Item] {
+        var Arr: [Item] = []
+        let collection = itemsArray
+        if FilterString == "" {
+            Arr = collection
+        }
+        else if (FilterType == "Name") {
+            for i in 0...collection.count-1 {
+                if (collection[i].wrappedName == FilterString) {
+                    Arr.append(collection[i])
+                }
+            }
+        }
+        else if (FilterType == "Domain") {
+            for i in 0...collection.count-1 {
+                if (collection[i].wrappedDomain == FilterString) {
+                    Arr.append(collection[i])
+                }
+            }
+
+        }
+        else if (FilterType == "Creator") {
+            for i in 0...collection.count-1 {
+                if (collection[i].wrappedCreator == FilterString) {
+                    Arr.append(collection[i])
+                }
+            }
+
+        }
+        if (SortType == "NameD") {
+            return Arr.sorted {
+                $0.wrappedName < $1.wrappedName
+            }
+        }
+        else if (SortType == "NameA") {
+            return Arr.sorted {
+                $0.wrappedName > $1.wrappedName
+            }
+        }
+        return Arr
+    }
+
+
+
 
 }
 
