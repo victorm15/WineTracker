@@ -331,8 +331,8 @@ struct HomeView: View {
     @State var wineDomain: String = ""
     @State var wineCreator: String = ""
     @State var wineType: String = "Red Wine"
-    @State var wineQuantity: String = "" // default 1 (make slider or smth)
-    @State var wineDrank: String = "" // default 0
+    @State var wineQuantity: String = ""
+    @State var wineDrank: String = ""
     @State var editionType: String = "Vintage"
     @State var sortType: String = "NameD"
     @State var currentCollection: [Item] = []
@@ -341,17 +341,71 @@ struct HomeView: View {
     @State private var avatarItem: PhotosPickerItem?
     @State private var avatarImage: Image?
     @State var backToLogIn = false
+    @State var wineTypeFilter = "Any"
+    @State var newUsername = ""
+    @State var newEmail = ""
+    @State var newFirst = ""
+    @State var newLast = ""
+    @State var newPassword = ""
     
     
     
     var body: some View {
 
         TabView(){
-            NavigationStack() {
-                Button(action: addPerson) {
-                    Label("Add Item", systemImage: "plus")
-                        .font(.custom("Cochin", size:20))
+            
+            
+            
+            NavigationStack(){
+                
+                Text("Account Statistics")
+                    .font(.custom("Cochin", size: 34))
+                    .fontWeight(.bold)
+                    .padding(.top, 16)
+                    .padding(.bottom, 8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                    .foregroundColor(Color.accentColor)
+                
+                List {
+                    HStack{
+                        Text("Total recorded bottles:")
+                            .font(.custom("Cochin",size:20))
+                        Text("\(currentPerson.getTotalWineCount()+currentPerson.getTotalDrank())")
+                            .font(.custom("Cochin",size:50))
+                            .foregroundColor(Color.accentColor)
+
+
+                    }
+                    HStack{
+                        Text("Total unopened bottles:")
+                            .font(.custom("Cochin",size:20))
+                        Text("\(currentPerson.getTotalWineCount())")
+                            .font(.custom("Cochin",size:50))
+                            .foregroundColor(Color.accentColor)
+
+
+                    }
+                    HStack{
+                        Text("Total drank bottles:")
+                            .font(.custom("Cochin",size:20))
+                        Text("\(currentPerson.getTotalDrank())")
+                            .font(.custom("Cochin",size:50))
+                            .foregroundColor(Color.accentColor)
+
+
+                    }
                 }
+                
+                
+            }
+            .background(Color(UIColor.systemBackground))
+            .tabItem {
+                Text("Account")
+                Image(systemName:"person.fill")
+            }
+
+            NavigationStack() {
                 List {
                     ForEach(persons) { person in
                         NavigationLink {
@@ -382,11 +436,6 @@ struct HomeView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         EditButton()
                     }
-                    ToolbarItem {
-                        Button(action: addPerson) {
-                            Label("Add Item", systemImage: "plus")
-                        }
-                    }
                 }
                 
                 
@@ -396,14 +445,8 @@ struct HomeView: View {
                 Text("Collection")
                 Image(systemName:"list.bullet")
             }
-            NavigationStack(){
-                Text("view2\(currentPerson.wrappedUsername)")
-                    .font(.custom("Cochin", size:20))
-            }
-            .tabItem {
-                Text("View2")
-                Image(systemName:"gear")
-            }
+            
+            
             NavigationStack(){
                 ZStack {
                     LinearGradient(colors: [.white,Color.veryLightGray,.white], startPoint: .topLeading, endPoint: .topTrailing)
@@ -451,7 +494,41 @@ struct HomeView: View {
                                 .autocapitalization(.none)
                                 .disableAutocorrection(true)
                                 .font(.custom("Cochin", size:20))
-                                .frame(width:250)
+                                .frame(width:200)
+                            Menu {
+                                Button {
+                                    wineTypeFilter = "Any"
+                                } label: {
+                                    Text("Any")
+                                        .font(.custom("Cochin", size:20))
+                                }
+                                Button {
+                                    wineTypeFilter = "Red Wine"
+                                } label: {
+                                    Text("Red Wine")
+                                        .font(.custom("Cochin", size:20))
+                                }
+                                Button {
+                                    wineTypeFilter = "White Wine"
+                                } label: {
+                                    Text("White Wine")
+                                        .font(.custom("Cochin", size:20))
+                                }
+                                Button {
+                                    wineTypeFilter = "Champagne"
+                                } label: {
+                                    Text("Champagne")
+                                        .font(.custom("Cochin", size:20))
+                                }
+
+
+
+                            }label : {
+                                Image(systemName:"cone.fill")
+                                    .resizable()
+                                    .frame(width:30,height:30)
+                                    .rotationEffect(.degrees(180))
+                            }
 
                             Menu {
                                 
@@ -497,20 +574,6 @@ struct HomeView: View {
                                         .font(.custom("Cochin", size:20))
                                     
                                 }
-                                Button {
-                                    sortType = "TypeD"
-                                } label: {
-                                    Text("Sort by Type Descending")
-                                        .font(.custom("Cochin", size:20))
-                                    
-                                }
-                                Button {
-                                    sortType = "TypeA"
-                                } label: {
-                                    Text("Sort by Type Ascending")
-                                        .font(.custom("Cochin", size:20))
-                                    
-                                }
                             } label : {
                                 Image(systemName:"arrow.up.and.down.circle.fill")
                                     .resizable()
@@ -526,10 +589,17 @@ struct HomeView: View {
                         
                         
                         List {
-                            ForEach(currentPerson.getArray(FilterType: filterType, FilterString: searchRequest, SortType: sortType)) { item in
+                            ForEach(currentPerson.getArray(FilterType: filterType, FilterString: searchRequest, SortType: sortType,WineType: wineTypeFilter)) { item in
                                 ZStack{
-                                    Text("\(item.wrappedName)\nBy:\(item.wrappedCreator)\nFrom:\(item.wrappedDomain)\nType:")
-                                        .font(.custom("Cochin",size:20))
+                                        Text("\(item.wrappedName)")
+                                            .font(.custom("Cochin-Bold",size:20))
+                                            .offset(y:-20)
+                                        Text("\(item.wrappedCreator),\(item.wrappedDomain)")
+                                            .font(.custom("Cochin", size: 20))
+                                            .offset(y:0)
+                                    
+                                    
+                                    
                                     item.wrappedImage
                                         .resizable()
                                         .frame(width:80,height:80)
@@ -550,6 +620,9 @@ struct HomeView: View {
                 Text("View3")
                 Image(systemName:"house.fill")
             }
+            
+            
+            
             NavigationStack(){
                 ZStack{
                     LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -576,7 +649,7 @@ struct HomeView: View {
                         
                         
                         HStack {
-                            TextField("Wine Quantity", text:$wineQuantity)
+                            TextField("Unopened Bottles", text:$wineQuantity)
                                 .textFieldStyle(.roundedBorder)
                                 .autocapitalization(.none)
                                 .keyboardType(.numberPad)
@@ -588,7 +661,7 @@ struct HomeView: View {
                                                     self.wineQuantity = filtered
                                                 }
                                             }
-                            TextField("Quantity Drank", text:$wineDrank)
+                            TextField("Bottles Drank", text:$wineDrank)
                                 .textFieldStyle(.roundedBorder)
                                 .autocapitalization(.none)
                                 .keyboardType(.numberPad)
@@ -657,7 +730,7 @@ struct HomeView: View {
                                 Rectangle()
                                     .fill(.white)
                                     .frame(height:30)
-                                Text("^ Select Wine Type ^ (\(wineType))")
+                                Text("^ \(wineType) ^")
                                     .foregroundColor(Color.lighterGray)
                                     .font(.custom("Cochin", size:20))
                             }
@@ -728,10 +801,13 @@ struct HomeView: View {
                 Text("View4")
                 Image(systemName:"plus.circle.fill")
             }
+            
+            
+            
             NavigationStack(){
                 VStack(spacing: 0) {
                             
-                    Text("Custom Title")
+                    Text("Settings")
                                 .font(.custom("Cochin", size: 34))
                                 .fontWeight(.bold)
                                 .padding(.top, 16)
@@ -741,21 +817,258 @@ struct HomeView: View {
                                 .foregroundColor(Color.accentColor)
                             
                     List {
+                        
                         NavigationLink{
-                            Button("Log Out") {
-                                backToLogIn = true
+                            ZStack{
+                                LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                    .ignoresSafeArea()
+
+                                VStack{
+                                Text("Account Details")
+                                    .font(.custom("Cochin", size: 34))
+                                    .fontWeight(.bold)
+                                    .padding(.top, 16)
+                                    .padding(.bottom, 8)
+                                    .padding(.horizontal)
+                                    .foregroundColor(Color.accentColor)
+                                    .offset(y:-200)
+                                
+                                HStack{
+                                    Text("Username:")
+                                        .font(.custom("Cochin-Bold",size:20))
+                                    Text(currentPerson.wrappedUsername)
+                                        .font(.custom("Cochin",size:20))
+                                    
+                                    
+                                }
+                                .padding(.top,5)
+                                HStack{
+                                    Text("Name:")
+                                        .font(.custom("Cochin-Bold",size:20))
+                                    Text("\(currentPerson.wrappedFirstName), \(currentPerson.wrappedLastName)")
+                                        .font(.custom("Cochin",size:20))
+                                    
+                                    
+                                }
+                                .padding(.top,5)
+                                HStack{
+                                    Text("Email:")
+                                        .font(.custom("Cochin-Bold",size:20))
+                                    Text(currentPerson.wrappedEmail)
+                                        .font(.custom("Cochin",size:20))
+                                    
+                                    
+                                }
+                                .padding(.top,5)
+                                HStack{
+                                    Text("Password:")
+                                        .font(.custom("Cochin-Bold",size:20))
+                                    Text(currentPerson.wrappedPassword)
+                                        .font(.custom("Cochin",size:20))
+                                    
+                                    
+                                }
+                                .padding(.top,5)
                             }
-                            .font(.custom("Cochin",size:20))
-                            .buttonStyle(AccountButton())
-                            .navigationDestination(isPresented: $backToLogIn) {
-                                ContentView()
-                                    .toolbar(.hidden,for: .tabBar)
-                                    .navigationBarBackButtonHidden()
                             }
+
+
+
+                        } label : {
+                            Text("View account details")
+                                .font(.custom("Cochin",size:20))
+                        }
+                        
+                        NavigationLink{
+                            
+
+                            ZStack{
+                                LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                    .ignoresSafeArea()
+
+                            VStack{
+                                Text("Change Username")
+                                            .font(.custom("Cochin", size: 34))
+                                            .fontWeight(.bold)
+                                            .padding(.top, 16)
+                                            .padding(.bottom, 8)
+                                            .padding(.horizontal)
+                                            .foregroundColor(Color.accentColor)
+                                            .offset(y:-250)
+                                TextField("New Username",text:$newUsername)
+                                    .textFieldStyle(.roundedBorder)
+                                    .autocapitalization(.none)
+                                    .disableAutocorrection(true)
+                                    .font(.custom("Cochin", size:20))
+                                    .offset(y:-50)
+                                Button("Change Username") {
+                                    if(newUsername != "") {
+                                        currentPerson.username = newUsername
+                                    }
+                                }
+                                .buttonStyle(AccountButton())
+                            }
+                        }
+                            
+                        } label: {
+                            Text("Edit account username")
+                                .font(.custom("Cochin",size:20))
+                        }
+                        
+                        NavigationLink{
+                            
+
+                            ZStack{
+                                LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                    .ignoresSafeArea()
+
+                            VStack{
+                                Text("Change Name")
+                                            .font(.custom("Cochin", size: 34))
+                                            .fontWeight(.bold)
+                                            .padding(.top, 16)
+                                            .padding(.bottom, 8)
+                                            .padding(.horizontal)
+                                            .foregroundColor(Color.accentColor)
+                                            .offset(y:-250)
+                                TextField("New First Name",text:$newFirst)
+                                    .textFieldStyle(.roundedBorder)
+                                    .autocapitalization(.none)
+                                    .disableAutocorrection(true)
+                                    .font(.custom("Cochin", size:20))
+                                    .offset(y:-50)
+                                TextField("New Last Name",text:$newLast)
+                                    .textFieldStyle(.roundedBorder)
+                                    .autocapitalization(.none)
+                                    .disableAutocorrection(true)
+                                    .font(.custom("Cochin", size:20))
+                                    .offset(y:-50)
+
+                                Button("Change Name") {
+                                    if(newFirst != "" && newLast != "") {
+                                        currentPerson.firstName = newFirst
+                                        currentPerson.lastName = newLast
+                                    }
+                                    else if(newFirst != ""){
+                                        currentPerson.firstName = newFirst
+                                    }
+                                    else if(newLast != "") {
+                                        currentPerson.lastName = newLast
+                                    }
+                                    
+                                    
+                                    
+                                    
+                                    
+                                }
+                                .buttonStyle(AccountButton())
+                            }
+                        }
+                            
+                        } label: {
+                            Text("Edit account name")
+                                .font(.custom("Cochin",size:20))
+                        }
+                        
+                        NavigationLink{
+                            
+
+                            ZStack{
+                                LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                    .ignoresSafeArea()
+
+                            VStack{
+                                Text("Change Password")
+                                            .font(.custom("Cochin", size: 34))
+                                            .fontWeight(.bold)
+                                            .padding(.top, 16)
+                                            .padding(.bottom, 8)
+                                            .padding(.horizontal)
+                                            .foregroundColor(Color.accentColor)
+                                            .offset(y:-250)
+                                TextField("New Password",text:$newPassword)
+                                    .textFieldStyle(.roundedBorder)
+                                    .autocapitalization(.none)
+                                    .disableAutocorrection(true)
+                                    .font(.custom("Cochin", size:20))
+                                    .offset(y:-50)
+                                Button("Change Password") {
+                                    if(newPassword != "") {
+                                        currentPerson.password = newPassword
+                                    }
+                                }
+                                .buttonStyle(AccountButton())
+                            }
+                        }
+                            
+                        } label: {
+                            Text("Change password")
+                                .font(.custom("Cochin",size:20))
+                        }
+                        
+                        NavigationLink{
+                            
+
+                            ZStack{
+                                LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                    .ignoresSafeArea()
+
+                            VStack{
+                                Text("Change Email")
+                                            .font(.custom("Cochin", size: 34))
+                                            .fontWeight(.bold)
+                                            .padding(.top, 16)
+                                            .padding(.bottom, 8)
+                                            .padding(.horizontal)
+                                            .foregroundColor(Color.accentColor)
+                                            .offset(y:-250)
+                                TextField("New Email",text:$newEmail)
+                                    .textFieldStyle(.roundedBorder)
+                                    .autocapitalization(.none)
+                                    .disableAutocorrection(true)
+                                    .font(.custom("Cochin", size:20))
+                                    .offset(y:-50)
+                                Button("Change Email") {
+                                    if(isValidEmail(email: newEmail)) {
+                                        currentPerson.email = newEmail
+                                    }
+                                }
+                                .buttonStyle(AccountButton())
+                            }
+                        }
+                            
+                        } label: {
+                            Text("Change email")
+                                .font(.custom("Cochin",size:20))
+                        }
+                        
+                        NavigationLink{
+                            ZStack{
+                                LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
+                                    .ignoresSafeArea()
+                                
+                                
+                                Button("Log Out") {
+                                    backToLogIn = true
+                                }
+                                .font(.custom("Cochin",size:20))
+                                .buttonStyle(AccountButton())
+                                .navigationDestination(isPresented: $backToLogIn) {
+                                    ContentView()
+                                        .toolbar(.hidden,for: .tabBar)
+                                        .navigationBarBackButtonHidden()
+                                }
+                                
+                            }
+                            
                         } label: {
                             Text("Log out of account")
                                 .font(.custom("Cochin",size:20))
                         }
+
+                                        
+                        
+                        
                     }
                         }
                         .background(Color(UIColor.systemBackground))
@@ -777,7 +1090,7 @@ struct HomeView: View {
             }
             .tabItem {
                 Text("View5")
-                Image(systemName:"person.fill")
+                Image(systemName:"gear")
             }
             
         }
@@ -831,28 +1144,6 @@ struct HomeView: View {
     
     
     
-    
-    private func addPerson() {
-        withAnimation {
-            let newPerson = Person(context: viewContext)
-            newPerson.username = "bitch + \(count)"
-            count += 1
-            newPerson.password = "password"
-            newPerson.firstName = "firstbitch"
-            newPerson.lastName = "secondBitch"
-            newPerson.email = "emailbitch"
-            
-            
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
     private func addWine(person: Person) {
         let newItem = Item(context:viewContext)
         newItem.name = "do"
@@ -865,12 +1156,10 @@ struct HomeView: View {
         newItem.setVintage(vintage:"Vintage2013")
         newItem.setImage(Simage: Image("Image"))
         try? viewContext.save()
-        
-        
-        
-        
-        
     }
+    
+    
+    
     private func deletePerson(offsets: IndexSet) {
         withAnimation {
             offsets.map { persons[$0] }.forEach(viewContext.delete)
@@ -890,7 +1179,7 @@ struct HomeView: View {
         newItem.owner = person
         newItem.creator = wineCreator
         newItem.domain = wineDomain
-        newItem.drank = 1
+        newItem.drank = Int16(wineDrank) ?? 0
         newItem.quantity = Int16(wineQuantity) ?? 0
         newItem.type = wineType
         newItem.setVintage(vintage: "Vintage2013")

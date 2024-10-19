@@ -37,7 +37,7 @@ extension Item {
     public var wrappedCreator: String {
         creator ?? "_creator_"
     }
-
+    
     public var wrappedType: String {
         type ?? "_type_"
     }
