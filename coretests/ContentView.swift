@@ -333,7 +333,6 @@ struct HomeView: View {
     @State var wineType: String = "Red Wine"
     @State var wineQuantity: String = ""
     @State var wineDrank: String = ""
-    @State var editionType: String = "Vintage"
     @State var sortType: String = "NameD"
     @State var currentCollection: [Item] = []
     @State var searchRequest: String = ""
@@ -347,6 +346,10 @@ struct HomeView: View {
     @State var newFirst = ""
     @State var newLast = ""
     @State var newPassword = ""
+    @State var isEdition = true
+    @State var editionNumber = ""
+    @State var linkGoBack = false
+    @State var newUsernameTaken = false
     
     
     
@@ -446,7 +449,7 @@ struct HomeView: View {
                 Image(systemName:"list.bullet")
             }
             
-            
+
             NavigationStack(){
                 ZStack {
                     LinearGradient(colors: [.white,Color.veryLightGray,.white], startPoint: .topLeading, endPoint: .topTrailing)
@@ -590,21 +593,128 @@ struct HomeView: View {
                         
                         List {
                             ForEach(currentPerson.getArray(FilterType: filterType, FilterString: searchRequest, SortType: sortType,WineType: wineTypeFilter)) { item in
-                                ZStack{
+                                
+                                NavigationLink(){
+                                        GeometryReader { geometry in
+                                            HStack{
+                                                Button {
+                                                    deleteWine(wine: item)
+                                                    linkGoBack = true
+                                                } label : {
+                                                    Image(systemName: "trash")
+                                                }
+                                                /*.navigationDestination(isPresented: $linkGoBack) {
+                                                    HomeView(currentPerson: currentPerson)
+                                                        .navigationBarBackButtonHidden()
+                                                        .toolbar(.hidden,for: .tabBar)
+                                                }
+                                                 */
+                                                NavigationLink {
+                                                    Text("editor")
+                                                } label : {
+                                                    Text("Edit")
+                                                        .font(.custom("Cochin",size:20))
+                                                }
+                                                
+                                            }
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            .position(x: geometry.size.width-80, y: 0)
+                                            
+                                        }
+                                        
+                                        
+                                        
+                                                                                
+                                        
+
+                                    
+                                    VStack{
+                                        if (linkGoBack) {
+                                            Text("t")
+                                        }
+                                        HStack {
+                                            Text("\(item.wrappedName)")
+                                                .font(.custom("Cochin-Bold",size:20))
+                                                
+
+                                            item.wrappedImage
+                                                .resizable()
+                                                .frame(width:150,height:150)
+                                        }
+                                        HStack{
+                                            Text("Creator:")
+                                                .font(.custom("Cochin-Bold",size:20))
+                                            Text(item.wrappedCreator)
+                                                .font(.custom("Cochin", size: 20))
+
+                                        }
+                                        HStack{
+                                            Text("Domain:")
+                                                .font(.custom("Cochin-Bold",size:20))
+                                            Text(item.wrappedDomain)
+                                                .font(.custom("Cochin", size: 20))
+
+                                        }
+                                        HStack{
+                                            if(item.wrappedEdition.isEdition) {
+                                                Text("Vintage:")
+                                                    .font(.custom("Cochin-Bold",size:20))
+                                            }
+                                            else {
+                                                Text("Edition:")
+                                                    .font(.custom("Cochin-Bold",size:20))
+
+                                            }
+                                            Text(String(item.wrappedEdition.number))
+                                                .font(.custom("Cochin", size: 20))
+
+                                        }
+                                        HStack{
+                                            Text("Type:")
+                                                .font(.custom("Cochin-Bold",size:20))
+                                            Text(item.wrappedType)
+                                                .font(.custom("Cochin", size: 20))
+                                            
+                                        }
+
+
+
+
+                                                                                
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                    }
+                                    .offset(y:-350)
+                                } label:{
+                                    
+                                    ZStack{
                                         Text("\(item.wrappedName)")
                                             .font(.custom("Cochin-Bold",size:20))
                                             .offset(y:-20)
                                         Text("\(item.wrappedCreator),\(item.wrappedDomain)")
                                             .font(.custom("Cochin", size: 20))
                                             .offset(y:0)
-                                    
-                                    
-                                    
-                                    item.wrappedImage
-                                        .resizable()
-                                        .frame(width:80,height:80)
-                                        .offset(x:200)
                                         
+                                        
+                                        
+                                        item.wrappedImage
+                                            .resizable()
+                                            .frame(width:80,height:80)
+                                            .offset(x:180)
+                                        
+                                    }
+                                    
                                 }
 
                                 
@@ -677,34 +787,7 @@ struct HomeView: View {
                             
                         }
 
-                        HStack{
-                            Menu {
-                                Button {
-                                    editionType = "Vintage"
-                                } label: {
-                                    Text("Vintage")
-                                        .font(.custom("Cochin", size:20))
-                                }
-                                Button {
-                                    editionType = "Edition"
-                                } label: {
-                                    Text("Edition")
-                                        .font(.custom("Cochin", size:20))
-                                }
-                            } label: {
-                                ZStack{
-                                    Rectangle()
-                                        .fill(.white)
-                                        .frame(height:30)
-                                    Text("^ \(editionType) ^")
-                                        .foregroundColor(Color.lighterGray)
-                                        .font(.custom("Cochin", size:20))
-                                }
-                                
-                            }
-                            
-                            
-                        }
+                        
                         
                         Menu {
                             Button {
@@ -737,6 +820,103 @@ struct HomeView: View {
                             
                         }
                         
+                        HStack{
+                                    
+                                VStack{
+                                    Text("Vintage")
+                                        .font(.custom("Cochin", size:20))
+                                        .foregroundColor(Color.accentColor)
+                                    Toggle(isOn: $isEdition) {}
+                                        .offset(x:-25)
+                                    
+                                }
+
+                                                        
+                            
+                            
+                            
+                            if (isEdition) {
+                                TextField("Vintage Year", text:$editionNumber)
+                                    .textFieldStyle(.roundedBorder)
+                                    .autocapitalization(.none)
+                                    .keyboardType(.numberPad)
+                                    .disableAutocorrection(true)
+                                    .font(.custom("Cochin", size:20))
+                                    .onReceive(Just(editionNumber)) { newValue in
+                                        let filtered = newValue.filter { "0123456789".contains($0) }
+                                        if filtered != newValue {
+                                            self.editionNumber = filtered
+                                        }
+                                    }
+                                    .frame(width: 280)
+                                    .offset(y:15)
+                            }
+                            else {
+                                TextField("Edition Number", text:$editionNumber)
+                                    .textFieldStyle(.roundedBorder)
+                                    .autocapitalization(.none)
+                                    .keyboardType(.numberPad)
+                                    .disableAutocorrection(true)
+                                    .font(.custom("Cochin", size:20))
+                                    .onReceive(Just(editionNumber)) { newValue in
+                                        let filtered = newValue.filter { "0123456789".contains($0) }
+                                        if filtered != newValue {
+                                            self.editionNumber = filtered
+                                        }
+                                    }
+                                    .frame(width:280)
+                                    .offset(y:15)
+
+                            }
+                            
+                        
+                                        
+                                        
+
+
+                            
+                            
+                            
+                        }
+                        VStack {
+                            Text("Image")
+                                .font(.custom("Cochin", size:20))
+                                .foregroundColor(Color.accentColor)
+                            
+                            VStack{
+                                PhotosPicker(selection: $avatarItem, matching: .images,label: {
+                                    if let image = avatarImage {
+                                        image
+                                            .resizable()
+                                            .frame(width:100,height:100)
+                                    }
+                                    else{
+                                        Image(systemName:"plus.square.dashed")
+                                            .resizable()
+                                            .frame(width:100,height:100)
+                                            .foregroundColor(Color.accentColor)
+
+                                    }
+                                })
+                            }
+                                .onChange(of: avatarItem) {
+                                            Task {
+                                                if let loaded = try? await avatarItem?.loadTransferable(type: Image.self) {
+                                                    avatarImage = loaded
+                                                } else {
+                                                    print("Failed")
+                                                }
+                                            }
+                                        }
+
+                            }
+                        
+                        
+                        
+                        
+                        
+                        
+                        
                         
                         Button("Add Wine") {
                             addWineCustom(person: currentPerson, name: wineName)
@@ -750,7 +930,8 @@ struct HomeView: View {
                             wineQuantity = ""
                             wineDrank = ""
                             wineCreator = ""
-                            editionType = "Vintage"
+                            isEdition = false
+                            editionNumber = ""
                         }
                         .offset(x:90,y:-45)
                         Button("Quick") {
@@ -760,25 +941,10 @@ struct HomeView: View {
                             wineQuantity = "12"
                             wineDrank = "2"
                             wineCreator = "Creator"
-                            editionType = "Vintage"
+                            isEdition = false
+                            editionNumber = "2024"
 
                         }
-                        VStack{
-                            PhotosPicker("Select avatar", selection: $avatarItem, matching: .images)
-                            avatarImage?
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 300, height: 300)
-                        }
-                            .onChange(of: avatarItem) {
-                                        Task {
-                                            if let loaded = try? await avatarItem?.loadTransferable(type: Image.self) {
-                                                avatarImage = loaded
-                                            } else {
-                                                print("Failed")
-                                            }
-                                        }
-                                    }
                         
                         
                         
@@ -822,58 +988,58 @@ struct HomeView: View {
                             ZStack{
                                 LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
                                     .ignoresSafeArea()
-
-                                VStack{
-                                Text("Account Details")
-                                    .font(.custom("Cochin", size: 34))
-                                    .fontWeight(.bold)
-                                    .padding(.top, 16)
-                                    .padding(.bottom, 8)
-                                    .padding(.horizontal)
-                                    .foregroundColor(Color.accentColor)
-                                    .offset(y:-200)
                                 
-                                HStack{
-                                    Text("Username:")
-                                        .font(.custom("Cochin-Bold",size:20))
-                                    Text(currentPerson.wrappedUsername)
-                                        .font(.custom("Cochin",size:20))
+                                VStack{
+                                    Text("Account Details")
+                                        .font(.custom("Cochin", size: 34))
+                                        .fontWeight(.bold)
+                                        .padding(.top, 16)
+                                        .padding(.bottom, 8)
+                                        .padding(.horizontal)
+                                        .foregroundColor(Color.accentColor)
+                                        .offset(y:-200)
                                     
-                                    
+                                    HStack{
+                                        Text("Username:")
+                                            .font(.custom("Cochin-Bold",size:20))
+                                        Text(currentPerson.wrappedUsername)
+                                            .font(.custom("Cochin",size:20))
+                                        
+                                        
+                                    }
+                                    .padding(.top,5)
+                                    HStack{
+                                        Text("Name:")
+                                            .font(.custom("Cochin-Bold",size:20))
+                                        Text("\(currentPerson.wrappedFirstName), \(currentPerson.wrappedLastName)")
+                                            .font(.custom("Cochin",size:20))
+                                        
+                                        
+                                    }
+                                    .padding(.top,5)
+                                    HStack{
+                                        Text("Email:")
+                                            .font(.custom("Cochin-Bold",size:20))
+                                        Text(currentPerson.wrappedEmail)
+                                            .font(.custom("Cochin",size:20))
+                                        
+                                        
+                                    }
+                                    .padding(.top,5)
+                                    HStack{
+                                        Text("Password:")
+                                            .font(.custom("Cochin-Bold",size:20))
+                                        Text(currentPerson.wrappedPassword)
+                                            .font(.custom("Cochin",size:20))
+                                        
+                                        
+                                    }
+                                    .padding(.top,5)
                                 }
-                                .padding(.top,5)
-                                HStack{
-                                    Text("Name:")
-                                        .font(.custom("Cochin-Bold",size:20))
-                                    Text("\(currentPerson.wrappedFirstName), \(currentPerson.wrappedLastName)")
-                                        .font(.custom("Cochin",size:20))
-                                    
-                                    
-                                }
-                                .padding(.top,5)
-                                HStack{
-                                    Text("Email:")
-                                        .font(.custom("Cochin-Bold",size:20))
-                                    Text(currentPerson.wrappedEmail)
-                                        .font(.custom("Cochin",size:20))
-                                    
-                                    
-                                }
-                                .padding(.top,5)
-                                HStack{
-                                    Text("Password:")
-                                        .font(.custom("Cochin-Bold",size:20))
-                                    Text(currentPerson.wrappedPassword)
-                                        .font(.custom("Cochin",size:20))
-                                    
-                                    
-                                }
-                                .padding(.top,5)
                             }
-                            }
-
-
-
+                            
+                            
+                            
                         } label : {
                             Text("View account details")
                                 .font(.custom("Cochin",size:20))
@@ -881,34 +1047,36 @@ struct HomeView: View {
                         
                         NavigationLink{
                             
-
+                            
                             ZStack{
                                 LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
                                     .ignoresSafeArea()
-
-                            VStack{
-                                Text("Change Username")
-                                            .font(.custom("Cochin", size: 34))
-                                            .fontWeight(.bold)
-                                            .padding(.top, 16)
-                                            .padding(.bottom, 8)
-                                            .padding(.horizontal)
-                                            .foregroundColor(Color.accentColor)
-                                            .offset(y:-250)
-                                TextField("New Username",text:$newUsername)
-                                    .textFieldStyle(.roundedBorder)
-                                    .autocapitalization(.none)
-                                    .disableAutocorrection(true)
-                                    .font(.custom("Cochin", size:20))
-                                    .offset(y:-50)
-                                Button("Change Username") {
-                                    if(newUsername != "") {
-                                        currentPerson.username = newUsername
+                                
+                                VStack{
+                                    Text("Change Username")
+                                        .font(.custom("Cochin", size: 34))
+                                        .fontWeight(.bold)
+                                        .padding(.top, 16)
+                                        .padding(.bottom, 8)
+                                        .padding(.horizontal)
+                                        .foregroundColor(Color.accentColor)
+                                        .offset(y:-250)
+                                    TextField("New Username",text:$newUsername)
+                                        .textFieldStyle(.roundedBorder)
+                                        .autocapitalization(.none)
+                                        .disableAutocorrection(true)
+                                        .font(.custom("Cochin", size:20))
+                                        .offset(y:-50)
+                                    Button("Change Username") {
+                                        
+                                        
+                                        if(newUsername != "") {
+                                            currentPerson.username = newUsername
+                                        }
                                     }
+                                    .buttonStyle(AccountButton())
                                 }
-                                .buttonStyle(AccountButton())
                             }
-                        }
                             
                         } label: {
                             Text("Edit account username")
@@ -917,53 +1085,53 @@ struct HomeView: View {
                         
                         NavigationLink{
                             
-
+                            
                             ZStack{
                                 LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
                                     .ignoresSafeArea()
-
-                            VStack{
-                                Text("Change Name")
-                                            .font(.custom("Cochin", size: 34))
-                                            .fontWeight(.bold)
-                                            .padding(.top, 16)
-                                            .padding(.bottom, 8)
-                                            .padding(.horizontal)
-                                            .foregroundColor(Color.accentColor)
-                                            .offset(y:-250)
-                                TextField("New First Name",text:$newFirst)
-                                    .textFieldStyle(.roundedBorder)
-                                    .autocapitalization(.none)
-                                    .disableAutocorrection(true)
-                                    .font(.custom("Cochin", size:20))
-                                    .offset(y:-50)
-                                TextField("New Last Name",text:$newLast)
-                                    .textFieldStyle(.roundedBorder)
-                                    .autocapitalization(.none)
-                                    .disableAutocorrection(true)
-                                    .font(.custom("Cochin", size:20))
-                                    .offset(y:-50)
-
-                                Button("Change Name") {
-                                    if(newFirst != "" && newLast != "") {
-                                        currentPerson.firstName = newFirst
-                                        currentPerson.lastName = newLast
+                                
+                                VStack{
+                                    Text("Change Name")
+                                        .font(.custom("Cochin", size: 34))
+                                        .fontWeight(.bold)
+                                        .padding(.top, 16)
+                                        .padding(.bottom, 8)
+                                        .padding(.horizontal)
+                                        .foregroundColor(Color.accentColor)
+                                        .offset(y:-250)
+                                    TextField("New First Name",text:$newFirst)
+                                        .textFieldStyle(.roundedBorder)
+                                        .autocapitalization(.none)
+                                        .disableAutocorrection(true)
+                                        .font(.custom("Cochin", size:20))
+                                        .offset(y:-50)
+                                    TextField("New Last Name",text:$newLast)
+                                        .textFieldStyle(.roundedBorder)
+                                        .autocapitalization(.none)
+                                        .disableAutocorrection(true)
+                                        .font(.custom("Cochin", size:20))
+                                        .offset(y:-50)
+                                    
+                                    Button("Change Name") {
+                                        if(newFirst != "" && newLast != "") {
+                                            currentPerson.firstName = newFirst
+                                            currentPerson.lastName = newLast
+                                        }
+                                        else if(newFirst != ""){
+                                            currentPerson.firstName = newFirst
+                                        }
+                                        else if(newLast != "") {
+                                            currentPerson.lastName = newLast
+                                        }
+                                        
+                                        
+                                        
+                                        
+                                        
                                     }
-                                    else if(newFirst != ""){
-                                        currentPerson.firstName = newFirst
-                                    }
-                                    else if(newLast != "") {
-                                        currentPerson.lastName = newLast
-                                    }
-                                    
-                                    
-                                    
-                                    
-                                    
+                                    .buttonStyle(AccountButton())
                                 }
-                                .buttonStyle(AccountButton())
                             }
-                        }
                             
                         } label: {
                             Text("Edit account name")
@@ -972,34 +1140,34 @@ struct HomeView: View {
                         
                         NavigationLink{
                             
-
+                            
                             ZStack{
                                 LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
                                     .ignoresSafeArea()
-
-                            VStack{
-                                Text("Change Password")
-                                            .font(.custom("Cochin", size: 34))
-                                            .fontWeight(.bold)
-                                            .padding(.top, 16)
-                                            .padding(.bottom, 8)
-                                            .padding(.horizontal)
-                                            .foregroundColor(Color.accentColor)
-                                            .offset(y:-250)
-                                TextField("New Password",text:$newPassword)
-                                    .textFieldStyle(.roundedBorder)
-                                    .autocapitalization(.none)
-                                    .disableAutocorrection(true)
-                                    .font(.custom("Cochin", size:20))
-                                    .offset(y:-50)
-                                Button("Change Password") {
-                                    if(newPassword != "") {
-                                        currentPerson.password = newPassword
+                                
+                                VStack{
+                                    Text("Change Password")
+                                        .font(.custom("Cochin", size: 34))
+                                        .fontWeight(.bold)
+                                        .padding(.top, 16)
+                                        .padding(.bottom, 8)
+                                        .padding(.horizontal)
+                                        .foregroundColor(Color.accentColor)
+                                        .offset(y:-250)
+                                    TextField("New Password",text:$newPassword)
+                                        .textFieldStyle(.roundedBorder)
+                                        .autocapitalization(.none)
+                                        .disableAutocorrection(true)
+                                        .font(.custom("Cochin", size:20))
+                                        .offset(y:-50)
+                                    Button("Change Password") {
+                                        if(newPassword != "") {
+                                            currentPerson.password = newPassword
+                                        }
                                     }
+                                    .buttonStyle(AccountButton())
                                 }
-                                .buttonStyle(AccountButton())
                             }
-                        }
                             
                         } label: {
                             Text("Change password")
@@ -1008,34 +1176,34 @@ struct HomeView: View {
                         
                         NavigationLink{
                             
-
+                            
                             ZStack{
                                 LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
                                     .ignoresSafeArea()
-
-                            VStack{
-                                Text("Change Email")
-                                            .font(.custom("Cochin", size: 34))
-                                            .fontWeight(.bold)
-                                            .padding(.top, 16)
-                                            .padding(.bottom, 8)
-                                            .padding(.horizontal)
-                                            .foregroundColor(Color.accentColor)
-                                            .offset(y:-250)
-                                TextField("New Email",text:$newEmail)
-                                    .textFieldStyle(.roundedBorder)
-                                    .autocapitalization(.none)
-                                    .disableAutocorrection(true)
-                                    .font(.custom("Cochin", size:20))
-                                    .offset(y:-50)
-                                Button("Change Email") {
-                                    if(isValidEmail(email: newEmail)) {
-                                        currentPerson.email = newEmail
+                                
+                                VStack{
+                                    Text("Change Email")
+                                        .font(.custom("Cochin", size: 34))
+                                        .fontWeight(.bold)
+                                        .padding(.top, 16)
+                                        .padding(.bottom, 8)
+                                        .padding(.horizontal)
+                                        .foregroundColor(Color.accentColor)
+                                        .offset(y:-250)
+                                    TextField("New Email",text:$newEmail)
+                                        .textFieldStyle(.roundedBorder)
+                                        .autocapitalization(.none)
+                                        .disableAutocorrection(true)
+                                        .font(.custom("Cochin", size:20))
+                                        .offset(y:-50)
+                                    Button("Change Email") {
+                                        if(isValidEmail(email: newEmail)) {
+                                            currentPerson.email = newEmail
+                                        }
                                     }
+                                    .buttonStyle(AccountButton())
                                 }
-                                .buttonStyle(AccountButton())
                             }
-                        }
                             
                         } label: {
                             Text("Change email")
@@ -1065,8 +1233,31 @@ struct HomeView: View {
                             Text("Log out of account")
                                 .font(.custom("Cochin",size:20))
                         }
+                        
+                        NavigationLink {
+                            Button {
+                                backToLogIn = true
+                                deleteAccount(person: currentPerson)
+                            } label :{Text("Delete")}
+                                .navigationDestination(isPresented: $backToLogIn) {
+                                    ContentView()
+                                        .toolbar(.hidden,for: .tabBar)
+                                        .navigationBarBackButtonHidden()
+                                }
 
-                                        
+                        } label : {
+                            Text("Delete account")
+                                .font(.custom("Cochin",size:20))
+                        }
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
                         
                         
                     }
@@ -1142,8 +1333,14 @@ struct HomeView: View {
     
     
     
-    
-    
+    private func deleteAccount(person: Person) {
+        viewContext.delete(person)
+        try? viewContext.save()
+    }
+    private func deleteWine(wine: Item) {
+        viewContext.delete(wine)
+        try? viewContext.save()
+    }
     private func addWine(person: Person) {
         let newItem = Item(context:viewContext)
         newItem.name = "do"
@@ -1153,7 +1350,6 @@ struct HomeView: View {
         newItem.drank = 1
         newItem.quantity = 2
         newItem.type = "Red Wine"
-        newItem.setVintage(vintage:"Vintage2013")
         newItem.setImage(Simage: Image("Image"))
         try? viewContext.save()
     }
@@ -1182,19 +1378,41 @@ struct HomeView: View {
         newItem.drank = Int16(wineDrank) ?? 0
         newItem.quantity = Int16(wineQuantity) ?? 0
         newItem.type = wineType
-        newItem.setVintage(vintage: "Vintage2013")
         newItem.setImage(Simage: avatarImage ?? Image("Image"))
+        addEditon(wine: newItem)
         try? viewContext.save()
         
         
         
         
         
-    }    
+    }
+    private func addEditon(wine: Item) {
+        let newEdition = Edition(context:viewContext)
+        newEdition.isEdition = !isEdition
+        newEdition.number = Int16(editionNumber) ?? 2024
+        newEdition.wine = wine
+        try? viewContext.save()
+    
+        
+    }
     
     
 }
-
+struct WineView: View {
+    var currentPerson: Person
+    var wine: Item
+    @State var isList = false
+    
+    
+    
+    var body: some View {
+        Text(wine.wrappedName)
+        Button("back"){
+            isList = true
+        }
+    }
+}
 
 
 

@@ -19,6 +19,8 @@ extension Edition {
     @NSManaged public var isEdition: Bool
     @NSManaged public var number: Int16
     @NSManaged public var wine: Item?
+    
+
 
 }
 

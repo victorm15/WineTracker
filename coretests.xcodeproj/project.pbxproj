@@ -21,6 +21,8 @@
 		181A27682C3C66D5004FEB79 /* coretestsUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181A27672C3C66D5004FEB79 /* coretestsUITestsLaunchTests.swift */; };
 		182768D82C42A39700B5DD85 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182768D72C42A39700B5DD85 /* ContentView.swift */; };
 		18B361312C416BFE0078F7BC /* UsefulElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B361302C416BFE0078F7BC /* UsefulElements.swift */; };
+		7798D21F2CC3F25C00B27FF9 /* Edition+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7798D21D2CC3F25C00B27FF9 /* Edition+CoreDataClass.swift */; };
+		7798D2202CC3F25C00B27FF9 /* Edition+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7798D21E2CC3F25C00B27FF9 /* Edition+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +60,8 @@
 		181A27672C3C66D5004FEB79 /* coretestsUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = coretestsUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		182768D72C42A39700B5DD85 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		18B361302C416BFE0078F7BC /* UsefulElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsefulElements.swift; sourceTree = "<group>"; };
+		7798D21D2CC3F25C00B27FF9 /* Edition+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Edition+CoreDataClass.swift"; sourceTree = "<group>"; };
+		7798D21E2CC3F25C00B27FF9 /* Edition+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Edition+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +92,8 @@
 		181A27392C3C66D3004FEB79 = {
 			isa = PBXGroup;
 			children = (
+				7798D21D2CC3F25C00B27FF9 /* Edition+CoreDataClass.swift */,
+				7798D21E2CC3F25C00B27FF9 /* Edition+CoreDataProperties.swift */,
 				180909142C4141A200311385 /* Person+CoreDataClass.swift */,
 				180909152C4141A200311385 /* Person+CoreDataProperties.swift */,
 				180909162C4141A200311385 /* Item+CoreDataClass.swift */,
@@ -286,6 +292,8 @@
 				182768D82C42A39700B5DD85 /* ContentView.swift in Sources */,
 				181A27522C3C66D5004FEB79 /* coretests.xcdatamodeld in Sources */,
 				181A27462C3C66D3004FEB79 /* coretestsApp.swift in Sources */,
+				7798D21F2CC3F25C00B27FF9 /* Edition+CoreDataClass.swift in Sources */,
+				7798D2202CC3F25C00B27FF9 /* Edition+CoreDataProperties.swift in Sources */,
 				1809091A2C4141A200311385 /* Item+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23E214" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Edition" representedClassName="Edition" syncable="YES">
+        <attribute name="isEdition" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="number" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="wine" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="edition" inverseEntity="Item"/>
+    </entity>
     <entity name="Item" representedClassName="Item" syncable="YES">
         <attribute name="creator" optional="YES" attributeType="String"/>
         <attribute name="domain" optional="YES" attributeType="String"/>
         <attribute name="drank" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="edition" optional="YES" attributeType="Transformable"/>
         <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="quantity" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="type" optional="YES" attributeType="String"/>
+        <relationship name="edition" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Edition" inverseName="wine" inverseEntity="Edition"/>
         <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="items" inverseEntity="Person"/>
     </entity>
     <entity name="Person" representedClassName="Person" syncable="YES">
