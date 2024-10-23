@@ -2,7 +2,7 @@
 //  Edition+CoreDataProperties.swift
 //  coretests
 //
-//  Created by Victor on 19.10.2024.
+//  Created by Victor on 21.10.2024.
 //
 //
 
@@ -19,8 +19,6 @@ extension Edition {
     @NSManaged public var isEdition: Bool
     @NSManaged public var number: Int16
     @NSManaged public var wine: Item?
-    
-
 
 }
 
