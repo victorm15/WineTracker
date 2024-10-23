@@ -23,6 +23,28 @@ extension Query {
     @NSManaged public var filterType: String?
     @NSManaged public var collection: NSSet?
     @NSManaged public var owner: Person?
+    
+    public var wrappedSortType: String {
+        sortType ?? "_sortType_"
+    }
+    public var wrappedWineType: String {
+        wineType ?? "_wineType_"
+    }
+    public var wrappedSearchRequest: String {
+        searchRequest ?? "_searchRequest_"
+    }
+    public var wrappedFilterType: String {
+        filterType ?? "_filterType"
+    }
+    public var itemsArray: [Item] {
+        let set = collection as? Set<Item> ?? []
+        return Array(set)
+    }
+    
+    public func setCollection(newCollection: [Item]) {
+        collection = NSSet(array: newCollection)
+    }
+
 
 }
 

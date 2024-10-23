@@ -15,6 +15,7 @@
         <attribute name="type" optional="YES" attributeType="String"/>
         <relationship name="edition" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Edition" inverseName="wine" inverseEntity="Edition"/>
         <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="items" inverseEntity="Person"/>
+        <relationship name="storage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Query" inverseName="collection" inverseEntity="Query"/>
     </entity>
     <entity name="Person" representedClassName="Person" syncable="YES">
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -22,11 +23,21 @@
         <attribute name="lastName" optional="YES" attributeType="String"/>
         <attribute name="password" optional="YES" attributeType="String"/>
         <attribute name="username" attributeType="String"/>
+        <relationship name="cache" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Query" inverseName="owner" inverseEntity="Query"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="owner" inverseEntity="Item"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="username"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
+    </entity>
+    <entity name="Query" representedClassName="Query" syncable="YES">
+        <attribute name="filterType" optional="YES" attributeType="String"/>
+        <attribute name="searchRequest" optional="YES" attributeType="String"/>
+        <attribute name="sortType" optional="YES" attributeType="String"/>
+        <attribute name="weight" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="wineType" optional="YES" attributeType="String"/>
+        <relationship name="collection" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="storage" inverseEntity="Item"/>
+        <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="cache" inverseEntity="Person"/>
     </entity>
 </model>
