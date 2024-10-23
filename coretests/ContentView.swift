@@ -1834,9 +1834,7 @@ struct HomeView: View {
                         
                         NavigationLink{
                             ZStack{
-                                LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
-                                    .ignoresSafeArea()
-                                
+                                                                
                                 VStack{
                                     Text("Account Details")
                                         .font(.custom("Cochin", size: 34))
