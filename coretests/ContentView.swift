@@ -2243,7 +2243,7 @@ struct HomeView: View {
                                     .ignoresSafeArea()
 
                                 VStack{
-                                    Text("Change Email")
+                                    Text("Merge Accounts")
                                         .font(.custom("Cochin", size: 34))
                                         .fontWeight(.bold)
                                         .padding(.top, 16)
