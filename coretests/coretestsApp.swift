@@ -15,6 +15,7 @@ struct coretestsApp: App {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .statusBar(hidden: true)
         }
     }
 }
