@@ -18,13 +18,13 @@ extension Item {
         return NSFetchRequest<Item>(entityName: "Item")
     }
 
-    @NSManaged public var creator: String?
-    @NSManaged public var domain: String?
-    @NSManaged public var drank: Int16
-    @NSManaged public var image: Data?
-    @NSManaged public var name: String?
-    @NSManaged public var quantity: Int16
-    @NSManaged public var type: String?
+    @NSManaged private var creator: String?
+    @NSManaged private var domain: String?
+    @NSManaged private var drank: Int16
+    @NSManaged private var image: Data?
+    @NSManaged private var name: String?
+    @NSManaged private var quantity: Int16
+    @NSManaged private var type: String?
     @NSManaged public var edition: Edition?
     @NSManaged public var owner: Person?
     @NSManaged public var storage: Query?
@@ -34,9 +34,24 @@ extension Item {
             return edition
         }
         let fakeEdition = Edition()
-        fakeEdition.isEdition = true
-        fakeEdition.number = 2024
+        fakeEdition.setIsEdition(newIsEdition: true)
+        fakeEdition.setNumber(newNumber: 2024)
         return fakeEdition
+    }
+    public func setImageData(newImageData: Data) {
+        image = newImageData
+    }
+    public var wrappedImageData: Data {
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        image ?? (SimageToUIimage(Image("Image"))?.pngData())!
     }
     public var wrappedName: String {
         name ?? "_name_"
@@ -52,6 +67,44 @@ extension Item {
     public var wrappedType: String {
         type ?? "_type_"
     }
+    public var wrappedQuantity: Int16 {
+        quantity
+    }
+    public var wrappedDrank: Int16 {
+        drank
+    }
+    public func setName(newName: String) {
+        name = newName
+    }
+    public func setDomain(newDomain: String) {
+        domain = newDomain
+    }
+    public func setCreator(newCreator: String) {
+        creator = newCreator
+    }
+    public func setQuantity(newQuantity: Int16) {
+        quantity = newQuantity
+    }
+    public func setDrank(newDrank: Int16) {
+        drank = newDrank
+    }
+    public func setType(newType: String) {
+        type = newType
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     public func SimageToUIimage(_ image: Image) -> UIImage? {
         let controller = UIHostingController(rootView: image)

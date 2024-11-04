@@ -15,11 +15,11 @@ struct PersistenceController {
         let viewContext = result.container.viewContext
         for i in 0..<2 {
             let newPerson = Person(context: viewContext)
-            newPerson.username = "user\(i)"
-            newPerson.password = "password"
-            newPerson.firstName = "first"
-            newPerson.lastName = "last"
-            newPerson.email = "sample@gmail.com"
+            newPerson.setUsername(newUsername: "user\(i)")
+            newPerson.setPassword(newPassword: "password")
+            newPerson.setFirstName(newFirstName:"first")
+            newPerson.setLastName(newLastName: "last")
+            newPerson.setEmail(newEmail: "sample@gmail.com")
         }
         do {
             try viewContext.save()

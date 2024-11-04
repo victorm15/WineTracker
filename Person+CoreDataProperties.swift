@@ -16,13 +16,14 @@ extension Person {
         return NSFetchRequest<Person>(entityName: "Person")
     }
 
-    @NSManaged public var email: String?
-    @NSManaged public var firstName: String?
-    @NSManaged public var lastName: String?
-    @NSManaged public var password: String?
-    @NSManaged public var username: String?
+    @NSManaged private var email: String?
+    @NSManaged private var firstName: String?
+    @NSManaged private var lastName: String?
+    @NSManaged private var password: String?
+    @NSManaged private var username: String?
     @NSManaged public var cache: NSSet?
     @NSManaged public var items: NSSet?
+    
     
     public var wrappedUsername: String {
         username ?? "_username_"
@@ -45,6 +46,23 @@ extension Person {
             $0.wrappedName < $1.wrappedName
         }
     }
+    public func setUsername(newUsername: String) {
+        username = newUsername
+    }
+    public func setPassword(newPassword: String) {
+        password = newPassword
+    }
+    public func setEmail(newEmail: String) {
+        email = newEmail
+    }
+    public func setFirstName(newFirstName: String) {
+        firstName = newFirstName
+    }
+    public func setLastName(newLastName: String) {
+        lastName = newLastName
+    }
+    
+    
     public var cacheArray: [Query] {
         let set = cache as? Set<Query> ?? []
         return set.sorted {
@@ -58,7 +76,7 @@ extension Person {
             return 0
         }
         for i in 0...collection.count-1 {
-            sum = sum + (collection[i].quantity)
+            sum = sum + (collection[i].wrappedQuantity)
         }
         return sum;
     }
@@ -69,7 +87,7 @@ extension Person {
             return 0
         }
         for i in 0...collection.count-1 {
-            sum = sum + collection[i].drank
+            sum = sum + collection[i].wrappedDrank
         }
         return sum;
     }
@@ -77,8 +95,8 @@ extension Person {
         if (cacheArray.count >= 1) {
             var min = cacheArray[0]
             for query in cacheArray {
-                query.weight -= 1
-                if(query.weight < min.weight) {
+                query.setWeight(newWeight: query.wrappedWeight - 1)
+                if(query.wrappedWeight < min.wrappedWeight) {
                     min = query
                 }
                 
@@ -97,7 +115,7 @@ extension Person {
     public func getWines(FilterType:String,FilterString:String,SortType:String,WineType:String,viewContext:NSManagedObjectContext) -> [Item] {
         for query in cacheArray {
             if(query.wrappedSortType == SortType && query.wrappedWineType == WineType && query.wrappedFilterType == FilterType && query.wrappedSearchRequest == FilterString) {
-                query.weight += 3
+                query.setWeight(newWeight: query.wrappedWeight + 3)
                 reduceWeights(viewContext: viewContext)
                 if (query.itemsArray.count <= 0) {
                     return getArray(FilterType: FilterType, FilterString: FilterString, SortType: SortType, WineType: WineType)
@@ -106,12 +124,12 @@ extension Person {
             }
         }
         let newQuery = Query(context: viewContext)
-        newQuery.filterType = FilterType
-        newQuery.searchRequest = FilterString
-        newQuery.wineType = WineType
-        newQuery.sortType = SortType
+        newQuery.setFilterType(newFilterType: FilterType)
+        newQuery.setSearchRequest(newSearchRequest: FilterString)
+        newQuery.setWineType(newWineType: WineType)
+        newQuery.setSortType(newSortType: SortType)
         newQuery.collection = NSSet(array: getArray(FilterType: FilterType, FilterString: FilterString, SortType: SortType, WineType: WineType))
-        newQuery.weight = 3
+        newQuery.setWeight(newWeight: 3)
         newQuery.owner = self
         try? viewContext.save()
         reduceWeights(viewContext: viewContext)
@@ -177,42 +195,23 @@ extension Person {
         
         
         if (SortType == "NameD") {
-            //newQuery.setCollection(newCollection: sortNameDescending(arr: &Arr))
-            //addToCache(newQuery)
-            //return newQuery.itemsArray
             return sortNameDescending(arr: &Arr)
         }
         else if (SortType == "NameA") {
-            //newQuery.setCollection(newCollection: sortNameDescending(arr: &Arr).reversed())
-            //addToCache(newQuery)
-            //return newQuery.itemsArray
             return sortNameDescending(arr: &Arr).reversed()
         }
         else if (SortType == "CreatorD") {
-            //newQuery.setCollection(newCollection:  sortCreatorDescending(arr: &Arr))
-            //addToCache(newQuery)
-            //return newQuery.itemsArray
             return sortCreatorDescending(arr: &Arr)
         }
         else if (SortType == "CreatorA") {
-            //newQuery.setCollection(newCollection: sortCreatorDescending(arr: &Arr).reversed())
-            //addToCache(newQuery)
-            //return newQuery.itemsArray
             return sortCreatorDescending(arr: &Arr).reversed()
         }
     
         else if (SortType == "DomainD") {
-        
-            //newQuery.setCollection(newCollection: sortDomainDescending(arr: &Arr))
-            //addToCache(newQuery)
-            //return newQuery.itemsArray
             return sortDomainDescending(arr: &Arr)
         
         }
         else if (SortType == "DomainA") {
-            //newQuery.setCollection(newCollection: sortDomainDescending(arr: &Arr).reversed())
-            //addToCache(newQuery)
-            //return newQuery.itemsArray
             return sortDomainDescending(arr: &Arr).reversed()
         }
         
@@ -318,14 +317,14 @@ extension Person {
     func updateCache(viewContext:NSManagedObjectContext){
         for query in cacheArray {
             let newQuery = Query(context: viewContext)
-            newQuery.filterType = query.wrappedFilterType
-            newQuery.sortType = query.wrappedSortType
-            newQuery.wineType = query.wrappedWineType
-            newQuery.searchRequest = query.wrappedSearchRequest
+            newQuery.setFilterType(newFilterType: query.wrappedFilterType)
+            newQuery.setSortType(newSortType: query.wrappedSortType)
+            newQuery.setWineType(newWineType:  query.wrappedWineType)
+            newQuery.setSearchRequest(newSearchRequest: query.wrappedSearchRequest)
             if let owner = query.owner {
                 newQuery.owner = owner
             }
-            newQuery.weight = query.weight
+            newQuery.setWeight(newWeight:  query.wrappedWeight)
             query.collection = NSSet(array: getArray(FilterType: query.wrappedFilterType, FilterString: query.wrappedSearchRequest, SortType: query.wrappedSortType, WineType: query.wrappedWineType))
             viewContext.delete(query)
             try? viewContext.save()
@@ -340,7 +339,7 @@ extension Person {
     func getMostOwned()->Item{
         var max = itemsArray[0]
         for item in itemsArray {
-            if(item.quantity + item.drank > max.quantity + max.drank) {
+            if(item.wrappedQuantity + item.wrappedDrank > max.wrappedQuantity + max.wrappedDrank) {
                 max = item
             }
         }
@@ -352,7 +351,7 @@ extension Person {
     func getFavoriteOwned()->Item{
         var max = itemsArray[0]
         for item in itemsArray {
-            if(item.drank > max.drank) {
+            if(item.wrappedDrank > max.wrappedDrank) {
                 max = item
             }
         }
@@ -362,10 +361,10 @@ extension Person {
     func getBuyOwned()->Item{
         var max = itemsArray[0]
         for item in itemsArray {
-            if (item.quantity == 0) {
+            if (item.wrappedQuantity == 0) {
                 return item
             }
-            if(item.drank/item.quantity > max.drank/max.quantity) {
+            if(item.wrappedDrank/item.wrappedQuantity > max.wrappedDrank/max.wrappedQuantity) {
                 max = item
             }
         }
@@ -375,10 +374,10 @@ extension Person {
     func getTryOwned()->Item{
         var max = itemsArray[0]
         for item in itemsArray {
-            if (item.drank == 0) {
+            if (item.wrappedDrank == 0) {
                 return item
             }
-            if(item.quantity/item.drank > max.quantity/max.drank) {
+            if(item.wrappedQuantity/item.wrappedDrank > max.wrappedQuantity/max.wrappedDrank) {
                 max = item
             }
         }

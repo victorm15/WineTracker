@@ -14,25 +14,9 @@
             filePath = "coretests/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2596"
-            endingLineNumber = "2596"
+            startingLineNumber = "2581"
+            endingLineNumber = "2581"
             landmarkName = "deletePerson(offsets:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "AF58D6A2-A42B-4833-A7D9-E79B51147FA4"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "coretests/ContentView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2584"
-            endingLineNumber = "2584"
-            landmarkName = "addWine(person:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -46,8 +30,8 @@
             filePath = "coretests/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2555"
-            endingLineNumber = "2555"
+            startingLineNumber = "2552"
+            endingLineNumber = "2552"
             landmarkName = "wineExists(person:)"
             landmarkType = "7">
          </BreakpointContent>

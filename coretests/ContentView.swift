@@ -161,11 +161,11 @@ struct ContentView: View{
                                     
                                     
                                         let newAccount = Person(context: viewContext)
-                                        newAccount.username = username
-                                        newAccount.password = password
-                                        newAccount.firstName = firstName
-                                        newAccount.lastName = lastName
-                                        newAccount.email = email
+                                        newAccount.setUsername(newUsername: username)
+                                        newAccount.setPassword(newPassword: password)
+                                        newAccount.setFirstName(newFirstName: firstName)
+                                        newAccount.setLastName(newLastName: lastName)
+                                        newAccount.setEmail(newEmail: email)
                                         try? viewContext.save()
                                         makeSuccess = true
                                     
@@ -629,6 +629,7 @@ struct HomeView: View {
                                                                             .foregroundColor(Color.accentColor)
                                                                         Toggle(isOn: $isEdition) {}
                                                                             .offset(x:-25)
+                                                                            .foregroundColor(Color.accentColor)
                                                                         
                                                                     }
                                                                     
@@ -743,14 +744,14 @@ struct HomeView: View {
                                                                         wineType = newWineType
                                                                     }
                                                                     if(wineQuantity == "") {
-                                                                        wineQuantity = String(item.quantity)
+                                                                        wineQuantity = String(item.wrappedQuantity)
                                                                     }
                                                                     if(wineDrank == "") {
-                                                                        wineDrank = String(item.drank)
+                                                                        wineDrank = String(item.wrappedDrank)
                                                                     }
                                                                     if(editionNumber == "") {
-                                                                        isEdition = !item.wrappedEdition.isEdition
-                                                                        editionNumber = String(item.wrappedEdition.number)
+                                                                        isEdition = item.wrappedEdition.wrappedIsEdition
+                                                                        editionNumber = String(item.wrappedEdition.wrappedNumber)
                                                                     }
                                                                     
                                                                    
@@ -763,8 +764,8 @@ struct HomeView: View {
                                                                         if(item.wrappedName == wine.wrappedName &&
                                                                            item.wrappedDomain == wine.wrappedDomain &&
                                                                            item.wrappedCreator == wine.wrappedCreator &&
-                                                                           item.wrappedEdition.isEdition == wine.wrappedEdition.isEdition &&
-                                                                           item.wrappedEdition.number == wine.wrappedEdition.number &&
+                                                                           item.wrappedEdition.wrappedIsEdition == wine.wrappedEdition.wrappedIsEdition &&
+                                                                           item.wrappedEdition.wrappedNumber == wine.wrappedEdition.wrappedNumber &&
                                                                            item.wrappedType == wine.wrappedType){
                                                                             continue
                                                                         }
@@ -773,8 +774,8 @@ struct HomeView: View {
                                                                         if(wine.wrappedName == wineName &&
                                                                            wine.wrappedDomain == wineDomain &&
                                                                            wine.wrappedCreator == wineCreator &&
-                                                                           wine.wrappedEdition.isEdition == !isEdition &&
-                                                                           wine.wrappedEdition.number == Int16(editionNumber) ?? 0 &&
+                                                                           wine.wrappedEdition.wrappedIsEdition == isEdition &&
+                                                                           wine.wrappedEdition.wrappedNumber == Int16(editionNumber) ?? 0 &&
                                                                            wine.wrappedType == wineType) {
                                                                         
                                                                         
@@ -812,13 +813,13 @@ struct HomeView: View {
                                                                     
                                                                     if(!wineEditExists) {
                                                                         let newItem = Item(context: viewContext)
-                                                                        newItem.name = wineName
+                                                                        newItem.setName(newName: wineName)
                                                                         newItem.owner = currentPerson
-                                                                        newItem.creator = wineCreator
-                                                                        newItem.domain = wineDomain
-                                                                        newItem.drank = Int16(wineDrank) ?? 0
-                                                                        newItem.quantity = Int16(wineQuantity) ?? 0
-                                                                        newItem.type = wineType
+                                                                        newItem.setCreator(newCreator: wineCreator)
+                                                                        newItem.setDomain(newDomain: wineDomain)
+                                                                        newItem.setDrank(newDrank: Int16(wineDrank) ?? 0)
+                                                                        newItem.setQuantity(newQuantity: Int16(wineQuantity) ?? 0)
+                                                                        newItem.setType(newType: wineType)
                                                                         newItem.setImage(Simage: avatarImage ?? Image("Image"))
                                                                         addEditon(wine: newItem)
                                                                         
@@ -970,7 +971,7 @@ struct HomeView: View {
                                                     
                                                 }
                                                 HStack{
-                                                    if(item.wrappedEdition.isEdition) {
+                                                    if(item.wrappedEdition.wrappedIsEdition) {
                                                         Text("Vintage:")
                                                             .font(.custom("Cochin-Bold",size:20))
                                                     }
@@ -979,7 +980,7 @@ struct HomeView: View {
                                                             .font(.custom("Cochin-Bold",size:20))
                                                         
                                                     }
-                                                    Text(String(item.wrappedEdition.number))
+                                                    Text(String(item.wrappedEdition.wrappedNumber))
                                                         .font(.custom("Cochin", size: 20))
                                                     
                                                 }
@@ -993,14 +994,14 @@ struct HomeView: View {
                                                 HStack{
                                                     Text("Unopened Bottles:")
                                                         .font(.custom("Cochin-Bold",size:20))
-                                                    Text(String(item.quantity))
+                                                    Text(String(item.wrappedQuantity))
                                                         .font(.custom("Cochin", size: 20))
                                                     
                                                 }
                                                 HStack{
                                                     Text("Drank:")
                                                         .font(.custom("Cochin-Bold",size:20))
-                                                    Text(String(item.drank))
+                                                    Text(String(item.wrappedDrank))
                                                         .font(.custom("Cochin", size: 20))
                                                     
                                                 }
@@ -1154,7 +1155,7 @@ struct HomeView: View {
                                     
                                 }
                                 HStack{
-                                    if(currentPerson.getMostOwned().wrappedEdition.isEdition) {
+                                    if(currentPerson.getMostOwned().wrappedEdition.wrappedIsEdition) {
                                         Text("Vintage:")
                                             .font(.custom("Cochin-Bold",size:20))
                                     }
@@ -1163,7 +1164,7 @@ struct HomeView: View {
                                             .font(.custom("Cochin-Bold",size:20))
                                         
                                     }
-                                    Text(String(currentPerson.getMostOwned().wrappedEdition.number))
+                                    Text(String(currentPerson.getMostOwned().wrappedEdition.wrappedNumber))
                                         .font(.custom("Cochin", size: 20))
                                     
                                 }
@@ -1177,14 +1178,14 @@ struct HomeView: View {
                                 HStack{
                                     Text("Unopened Bottles:")
                                         .font(.custom("Cochin-Bold",size:20))
-                                    Text(String(currentPerson.getMostOwned().quantity))
+                                    Text(String(currentPerson.getMostOwned().wrappedQuantity))
                                         .font(.custom("Cochin", size: 20))
                                     
                                 }
                                 HStack{
                                     Text("Drank:")
                                         .font(.custom("Cochin-Bold",size:20))
-                                    Text(String(currentPerson.getMostOwned().drank))
+                                    Text(String(currentPerson.getMostOwned().wrappedDrank))
                                         .font(.custom("Cochin", size: 20))
                                     
                                 }
@@ -1241,7 +1242,7 @@ struct HomeView: View {
                                     
                                 }
                                 HStack{
-                                    if(currentPerson.getFavoriteOwned().wrappedEdition.isEdition) {
+                                    if(currentPerson.getFavoriteOwned().wrappedEdition.wrappedIsEdition) {
                                         Text("Vintage:")
                                             .font(.custom("Cochin-Bold",size:20))
                                     }
@@ -1250,7 +1251,7 @@ struct HomeView: View {
                                             .font(.custom("Cochin-Bold",size:20))
                                         
                                     }
-                                    Text(String(currentPerson.getFavoriteOwned().wrappedEdition.number))
+                                    Text(String(currentPerson.getFavoriteOwned().wrappedEdition.wrappedNumber))
                                         .font(.custom("Cochin", size: 20))
                                     
                                 }
@@ -1264,14 +1265,14 @@ struct HomeView: View {
                                 HStack{
                                     Text("Unopened Bottles:")
                                         .font(.custom("Cochin-Bold",size:20))
-                                    Text(String(currentPerson.getFavoriteOwned().quantity))
+                                    Text(String(currentPerson.getFavoriteOwned().wrappedQuantity))
                                         .font(.custom("Cochin", size: 20))
                                     
                                 }
                                 HStack{
                                     Text("Drank:")
                                         .font(.custom("Cochin-Bold",size:20))
-                                    Text(String(currentPerson.getFavoriteOwned().drank))
+                                    Text(String(currentPerson.getFavoriteOwned().wrappedDrank))
                                         .font(.custom("Cochin", size: 20))
                                     
                                 }
@@ -1328,7 +1329,7 @@ struct HomeView: View {
                                     
                                 }
                                 HStack{
-                                    if(currentPerson.getBuyOwned().wrappedEdition.isEdition) {
+                                    if(currentPerson.getBuyOwned().wrappedEdition.wrappedIsEdition) {
                                         Text("Vintage:")
                                             .font(.custom("Cochin-Bold",size:20))
                                     }
@@ -1337,7 +1338,7 @@ struct HomeView: View {
                                             .font(.custom("Cochin-Bold",size:20))
                                         
                                     }
-                                    Text(String(currentPerson.getBuyOwned().wrappedEdition.number))
+                                    Text(String(currentPerson.getBuyOwned().wrappedEdition.wrappedNumber))
                                         .font(.custom("Cochin", size: 20))
                                     
                                 }
@@ -1351,14 +1352,14 @@ struct HomeView: View {
                                 HStack{
                                     Text("Unopened Bottles:")
                                         .font(.custom("Cochin-Bold",size:20))
-                                    Text(String(currentPerson.getBuyOwned().quantity))
+                                    Text(String(currentPerson.getBuyOwned().wrappedQuantity))
                                         .font(.custom("Cochin", size: 20))
                                     
                                 }
                                 HStack{
                                     Text("Drank:")
                                         .font(.custom("Cochin-Bold",size:20))
-                                    Text(String(currentPerson.getBuyOwned().drank))
+                                    Text(String(currentPerson.getBuyOwned().wrappedDrank))
                                         .font(.custom("Cochin", size: 20))
                                     
                                 }
@@ -1405,7 +1406,7 @@ struct HomeView: View {
                                     
                                 }
                                 HStack{
-                                    if(currentPerson.getTryOwned().wrappedEdition.isEdition) {
+                                    if(currentPerson.getTryOwned().wrappedEdition.wrappedIsEdition) {
                                         Text("Vintage:")
                                             .font(.custom("Cochin-Bold",size:20))
                                     }
@@ -1414,7 +1415,7 @@ struct HomeView: View {
                                             .font(.custom("Cochin-Bold",size:20))
                                         
                                     }
-                                    Text(String(currentPerson.getTryOwned().wrappedEdition.number))
+                                    Text(String(currentPerson.getTryOwned().wrappedEdition.wrappedNumber))
                                         .font(.custom("Cochin", size: 20))
                                     
                                 }
@@ -1428,14 +1429,14 @@ struct HomeView: View {
                                 HStack{
                                     Text("Unopened Bottles:")
                                         .font(.custom("Cochin-Bold",size:20))
-                                    Text(String(currentPerson.getTryOwned().quantity))
+                                    Text(String(currentPerson.getTryOwned().wrappedQuantity))
                                         .font(.custom("Cochin", size: 20))
                                     
                                 }
                                 HStack{
                                     Text("Drank:")
                                         .font(.custom("Cochin-Bold",size:20))
-                                    Text(String(currentPerson.getTryOwned().drank))
+                                    Text(String(currentPerson.getTryOwned().wrappedDrank))
                                         .font(.custom("Cochin", size: 20))
                                     
                                 }
@@ -1675,13 +1676,13 @@ struct HomeView: View {
                             wineExists = wineExists(person: currentPerson)
                             if(!wineExists && !invalidEntries) {
                                 let newItem = Item(context: viewContext)
-                                newItem.name = wineName
+                                newItem.setName(newName: wineName)
                                 newItem.owner = currentPerson
-                                newItem.creator = wineCreator
-                                newItem.domain = wineDomain
-                                newItem.drank = Int16(wineDrank) ?? 0
-                                newItem.quantity = Int16(wineQuantity) ?? 0
-                                newItem.type = wineType
+                                newItem.setCreator(newCreator: wineCreator)
+                                newItem.setDomain(newDomain: wineDomain)
+                                newItem.setDrank(newDrank: Int16(wineDrank) ?? 0)
+                                newItem.setQuantity(newQuantity: Int16(wineQuantity) ?? 0)
+                                newItem.setType(newType: wineType)
                                 newItem.setImage(Simage: avatarImage ?? Image("Image"))
                                 addEditon(wine: newItem)
 
@@ -1696,6 +1697,8 @@ struct HomeView: View {
                                 wineDrank = ""
                                 isEdition = true
                                 editionNumber = ""
+                                avatarImage = nil
+                                avatarItem = nil
 
                             }
                             currentPerson.updateCache(viewContext: viewContext)
@@ -1792,6 +1795,8 @@ struct HomeView: View {
                             wineCreator = ""
                             isEdition = false
                             editionNumber = ""
+                            avatarImage = nil
+                            avatarItem = nil
                         }
                         .offset(x:90,y:-45)
                         
@@ -1971,7 +1976,7 @@ struct HomeView: View {
                                         }
                                         
                                         if(!invalidChange && !newUsernameTaken) {
-                                            currentPerson.username = newUsername
+                                            currentPerson.setUsername(newUsername: newUsername)
                                             try? viewContext.save()
                                         }
                                     }
@@ -2040,16 +2045,17 @@ struct HomeView: View {
                                         invalidChange = (newFirst == "" && newLast == "")
                                         if(!invalidChange) {
                                             if(newFirst != "" && newLast != "") {
-                                                currentPerson.firstName = newFirst
-                                                currentPerson.lastName = newLast
+                                                currentPerson.setFirstName(newFirstName: newFirst)
+                                                
+                                                currentPerson.setLastName(newLastName: newLast)
                                                 try? viewContext.save()
                                             }
                                             else if(newFirst != ""){
-                                                currentPerson.firstName = newFirst
+                                                currentPerson.setFirstName(newFirstName: newFirst)
                                                 try? viewContext.save()
                                             }
                                             else if(newLast != "") {
-                                                currentPerson.lastName = newLast
+                                                currentPerson.setLastName(newLastName: newLast)
                                                 try? viewContext.save()
                                             }
 
@@ -2117,7 +2123,7 @@ struct HomeView: View {
                                         invalidChange = newPassword == ""
                                         if (!invalidChange) {
                                             if(newPassword != "") {
-                                                currentPerson.password = newPassword
+                                                currentPerson.setPassword(newPassword: newPassword)
                                                 try? viewContext.save()
                                             }
                                         }
@@ -2182,7 +2188,7 @@ struct HomeView: View {
                                         invalidChange = !isValidEmail(email: newEmail)
                                         
                                         if(!invalidChange) {
-                                            currentPerson.email = newEmail
+                                            currentPerson.setEmail(newEmail: newEmail)
                                             try? viewContext.save()
                                         }
                                         
@@ -2315,7 +2321,7 @@ struct HomeView: View {
                                         
                                         
                                     }
-                                    .buttonStyle(AccountButton())
+                                    //.buttonStyle(AccountButton())
                                     .popover(isPresented:$proposeDeletion) {
                                         ZStack {
                                             RadialGradient(gradient: Gradient(colors: [Color.lighterGray, .white,Color.lighterGray,.white]), center: .center, startRadius: 140, endRadius: 300)
@@ -2331,21 +2337,15 @@ struct HomeView: View {
                                                             
                                                             for wine in merge.itemsArray {
                                                                 let newWine = Item(context: viewContext)
-                                                                newWine.name = wine.wrappedName
-                                                                newWine.domain = wine.wrappedDomain
-                                                                newWine.creator = wine.wrappedCreator
-                                                                newWine.quantity = wine.quantity
-                                                                newWine.drank = wine.drank
+                                                                newWine.setName(newName: wine.wrappedName)
+                                                                newWine.setDomain(newDomain: wine.wrappedDomain)
+                                                                newWine.setCreator(newCreator: wine.wrappedCreator)
+                                                                newWine.setQuantity(newQuantity: wine.wrappedQuantity)
+                                                                newWine.setDrank(newDrank: wine.wrappedDrank)
                                                                 newWine.edition = wine.wrappedEdition
                                                                 newWine.owner = currentPerson
-                                                                newWine.type = wine.wrappedType
-                                                                if let imageData = wine.image {
-                                                                    newWine.image = imageData
-                                                                }
-                                                                else {
-                                                                    wine.setImage(Simage: wine.wrappedImage)
-                                                                }
-                                                                
+                                                                newWine.setType(newType: wine.wrappedType)
+                                                                newWine.setImageData(newImageData: wine.wrappedImageData)
                                                                 
                                                                 try? viewContext.save()
                                                                 
@@ -2375,25 +2375,22 @@ struct HomeView: View {
                                                             
                                                             for wine in merge.itemsArray {
                                                                 let newWine = Item(context: viewContext)
-                                                                newWine.name = wine.wrappedName
-                                                                newWine.domain = wine.wrappedDomain
-                                                                newWine.creator = wine.wrappedCreator
-                                                                newWine.quantity = wine.quantity
-                                                                newWine.drank = wine.drank
+                                                                newWine.setName(newName: wine.wrappedName)
+                                                                newWine.setDomain(newDomain: wine.wrappedDomain)
+                                                                newWine.setCreator(newCreator: wine.wrappedCreator)
+                                                                newWine.setQuantity(newQuantity: wine.wrappedQuantity)
+                                                                newWine.setDrank(newDrank: wine.wrappedDrank)
                                                                 newWine.edition = wine.wrappedEdition
                                                                 newWine.owner = currentPerson
-                                                                newWine.type = wine.wrappedType
-                                                                if let imageData = wine.image {
-                                                                    newWine.image = imageData
-                                                                }
-                                                                else {
-                                                                    wine.setImage(Simage: wine.wrappedImage)
-                                                                }
-                                                                viewContext.delete(merge)
-                                                                try? viewContext.save()
+                                                                newWine.setType(newType: wine.wrappedType)
+                                                                newWine.setImageData(newImageData: wine.wrappedImageData)
+                                                                
+                                                                
                                                                 
                                                                 
                                                             }
+                                                            viewContext.delete(merge)
+                                                            try? viewContext.save()
                                                             currentPerson.updateCache(viewContext: viewContext)
                                                             searchRequest = "s"
                                                             searchRequest = ""
@@ -2518,19 +2515,19 @@ struct HomeView: View {
     private func addExistingWine(person:Person, typpe: String) {
         let collection = person.itemsArray
         for item in collection {
-            if(item.wrappedName == wineName && item.wrappedDomain == wineDomain && item.wrappedCreator == wineCreator && item.wrappedEdition.isEdition == !isEdition && item.wrappedEdition.number == Int16(editionNumber) ?? 0 && item.wrappedType == typpe) {
+            if(item.wrappedName == wineName && item.wrappedDomain == wineDomain && item.wrappedCreator == wineCreator && item.wrappedEdition.wrappedIsEdition == isEdition && item.wrappedEdition.wrappedNumber == Int16(editionNumber) ?? 0 && item.wrappedType == typpe) {
                 
-                let quant = item.quantity
-                let dran = item.drank
+                let quant = item.wrappedQuantity
+                let dran = item.wrappedDrank
                 deleteWine(wine: item)
                 let newItem = Item(context:viewContext)
-                newItem.name = wineName
+                newItem.setName(newName: wineName)
                 newItem.owner = currentPerson
-                newItem.creator = wineCreator
-                newItem.domain = wineDomain
-                newItem.drank = (Int16(wineDrank) ?? 0) + dran
-                newItem.quantity = (Int16(wineQuantity) ?? 0) + quant
-                newItem.type = typpe
+                newItem.setCreator(newCreator: wineCreator)
+                newItem.setDomain(newDomain: wineDomain)
+                newItem.setDrank(newDrank: (Int16(wineDrank) ?? 0) + dran)
+                newItem.setQuantity(newQuantity: (Int16(wineQuantity) ?? 0) + quant)
+                newItem.setType(newType: typpe)
                 newItem.setImage(Simage: avatarImage ?? Image("Image"))
                 addEditon(wine: newItem)
                 
@@ -2555,7 +2552,7 @@ struct HomeView: View {
         var flag = false
         let collection = person.itemsArray
         for item in collection {
-            if(item.wrappedName == wineName && item.wrappedDomain == wineDomain && item.wrappedCreator == wineCreator && item.wrappedEdition.isEdition == !isEdition && item.wrappedEdition.number == Int16(editionNumber) ?? 0 && item.wrappedType == wineType) {
+            if(item.wrappedName == wineName && item.wrappedDomain == wineDomain && item.wrappedCreator == wineCreator && item.wrappedEdition.wrappedIsEdition == isEdition && item.wrappedEdition.wrappedNumber == Int16(editionNumber) ?? 0 && item.wrappedType == wineType) {
                 flag = true
             }
             
@@ -2576,18 +2573,6 @@ struct HomeView: View {
         viewContext.delete(wine)
         try? viewContext.save()
     }
-    private func addWine(person: Person) {
-        let newItem = Item(context:viewContext)
-        newItem.name = "do"
-        newItem.owner = person
-        newItem.creator = "wineCreator"
-        newItem.domain = "wineOrigin"
-        newItem.drank = 1
-        newItem.quantity = 2
-        newItem.type = "Red Wine"
-        newItem.setImage(Simage: Image("Image"))
-        try? viewContext.save()
-    }
     private func deletePerson(offsets: IndexSet) {
         withAnimation {
             offsets.map { persons[$0] }.forEach(viewContext.delete)
@@ -2603,13 +2588,13 @@ struct HomeView: View {
 
     private func addWineCustom(person: Person,name: String) {
         let newItem = Item(context:viewContext)
-        newItem.name = name
+        newItem.setName(newName: name)
         newItem.owner = person
-        newItem.creator = wineCreator
-        newItem.domain = wineDomain
-        newItem.drank = Int16(wineDrank) ?? 0
-        newItem.quantity = Int16(wineQuantity) ?? 0
-        newItem.type = wineType
+        newItem.setCreator(newCreator: wineCreator)
+        newItem.setDomain(newDomain: wineDomain)
+        newItem.setDrank(newDrank: Int16(wineDrank) ?? 0)
+        newItem.setQuantity(newQuantity:Int16(wineQuantity) ?? 0)
+        newItem.setType(newType: wineType)
         newItem.setImage(Simage: avatarImage ?? Image("Image"))
         addEditon(wine: newItem)
         
@@ -2622,8 +2607,8 @@ struct HomeView: View {
     }
     private func addEditon(wine: Item) {
         let newEdition = Edition(context:viewContext)
-        newEdition.isEdition = isEdition
-        newEdition.number = Int16(editionNumber) ?? 2024
+        newEdition.setIsEdition(newIsEdition: isEdition)
+        newEdition.setNumber(newNumber: Int16(editionNumber) ?? 2024)
         newEdition.wine = wine
         try? viewContext.save()
     
@@ -2645,10 +2630,3 @@ struct HomeView: View {
 #Preview {
     ContentView().environment(\.managedObjectContext,PersistenceController.preview.container.viewContext)
 }
-
-
-
-
-
-
-

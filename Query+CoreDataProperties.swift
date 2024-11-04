@@ -16,11 +16,11 @@ extension Query {
         return NSFetchRequest<Query>(entityName: "Query")
     }
 
-    @NSManaged public var searchRequest: String?
-    @NSManaged public var sortType: String?
-    @NSManaged public var weight: Int16
-    @NSManaged public var wineType: String?
-    @NSManaged public var filterType: String?
+    @NSManaged private var searchRequest: String?
+    @NSManaged private var sortType: String?
+    @NSManaged private var weight: Int16
+    @NSManaged private var wineType: String?
+    @NSManaged private var filterType: String?
     @NSManaged public var collection: NSSet?
     @NSManaged public var owner: Person?
     
@@ -36,6 +36,28 @@ extension Query {
     public var wrappedFilterType: String {
         filterType ?? "_filterType"
     }
+    public var wrappedWeight: Int16 {
+        weight
+    }
+    public func setSortType(newSortType: String) {
+        sortType = newSortType
+    }
+    public func setWineType(newWineType: String) {
+        wineType = newWineType
+    }
+    public func setSearchRequest(newSearchRequest: String) {
+        searchRequest = newSearchRequest
+    }
+    public func setFilterType(newFilterType: String) {
+        filterType = newFilterType
+    }
+    public func setWeight(newWeight: Int16) {
+        weight = newWeight
+    }
+    
+    
+    
+    
     public var itemsArray: [Item] {
         let set = collection as? Set<Item> ?? []
         return Array(set)

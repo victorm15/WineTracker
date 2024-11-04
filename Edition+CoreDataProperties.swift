@@ -16,10 +16,23 @@ extension Edition {
         return NSFetchRequest<Edition>(entityName: "Edition")
     }
 
-    @NSManaged public var isEdition: Bool
-    @NSManaged public var number: Int16
+    @NSManaged private var isEdition: Bool
+    @NSManaged private var number: Int16
     @NSManaged public var wine: Item?
-
+    
+    public var wrappedIsEdition: Bool {
+        isEdition
+    }
+    public var wrappedNumber: Int16 {
+        number
+    }
+    public func setIsEdition(newIsEdition: Bool) {
+        isEdition = newIsEdition
+    }
+    public func setNumber(newNumber: Int16) {
+        number = newNumber
+    }
+    
 }
 
 extension Edition : Identifiable {
