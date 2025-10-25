@@ -1,0 +1,432 @@
+{
+  "source": "/Users/vcmgr/Documents/XCode/coretests/coretests/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Email"
+      },
+      {
+        "comment": "",
+        "key": "Username"
+      },
+      {
+        "comment": "",
+        "key": "Make Account"
+      },
+      {
+        "comment": "",
+        "key": "First Name"
+      },
+      {
+        "comment": "",
+        "key": "Last Name"
+      },
+      {
+        "comment": "",
+        "key": "Please log in"
+      },
+      {
+        "comment": "",
+        "key": "Dismiss"
+      },
+      {
+        "comment": "",
+        "key": "Account succesfully made"
+      },
+      {
+        "comment": "",
+        "key": "credentials have to be at least two characters "
+      },
+      {
+        "comment": "",
+        "key": "and email needs to be valid"
+      },
+      {
+        "comment": "",
+        "key": "Invalid field entries"
+      },
+      {
+        "comment": "",
+        "key": "Please choose another username"
+      },
+      {
+        "comment": "",
+        "key": "Username Taken"
+      },
+      {
+        "comment": "",
+        "key": "Sign Up"
+      },
+      {
+        "comment": "",
+        "key": "Log In"
+      },
+      {
+        "comment": "",
+        "key": "Please check credentials"
+      },
+      {
+        "comment": "",
+        "key": "Log in failure"
+      },
+      {
+        "comment": "",
+        "key": "Search:"
+      },
+      {
+        "comment": "",
+        "key": "Name"
+      },
+      {
+        "comment": "",
+        "key": "Domain"
+      },
+      {
+        "comment": "",
+        "key": "Creator"
+      },
+      {
+        "comment": "",
+        "key": "%@ v"
+      },
+      {
+        "comment": "",
+        "key": "Any"
+      },
+      {
+        "comment": "",
+        "key": "Red Wine"
+      },
+      {
+        "comment": "",
+        "key": "White Wine"
+      },
+      {
+        "comment": "",
+        "key": "Champagne"
+      },
+      {
+        "comment": "",
+        "key": "Sort by Name Descending"
+      },
+      {
+        "comment": "",
+        "key": "Sort by Name Ascending"
+      },
+      {
+        "comment": "",
+        "key": "Sort by Creator Descending"
+      },
+      {
+        "comment": "",
+        "key": "Sort by Creator Ascending"
+      },
+      {
+        "comment": "",
+        "key": "Sort by Domain Descending"
+      },
+      {
+        "comment": "",
+        "key": "Sort by Domain Ascending"
+      },
+      {
+        "comment": "",
+        "key": "Modify Wine"
+      },
+      {
+        "comment": "",
+        "key": "Wine Name"
+      },
+      {
+        "comment": "",
+        "key": "Wine Domain"
+      },
+      {
+        "comment": "",
+        "key": "Wine Creator"
+      },
+      {
+        "comment": "",
+        "key": "Save Changes"
+      },
+      {
+        "comment": "",
+        "key": "Clear"
+      },
+      {
+        "comment": "",
+        "key": "Unopened Bottles"
+      },
+      {
+        "comment": "",
+        "key": "Bottles Drank"
+      },
+      {
+        "comment": "",
+        "key": "^ %@ ^"
+      },
+      {
+        "comment": "",
+        "key": "Vintage Year"
+      },
+      {
+        "comment": "",
+        "key": "Edition Number"
+      },
+      {
+        "comment": "",
+        "key": "Vintage"
+      },
+      {
+        "comment": "",
+        "key": "Image"
+      },
+      {
+        "comment": "",
+        "key": "Wine Already Exists"
+      },
+      {
+        "comment": "",
+        "key": "Add To Recorded Bottles?"
+      },
+      {
+        "comment": "",
+        "key": "No"
+      },
+      {
+        "comment": "",
+        "key": "Yes"
+      },
+      {
+        "comment": "",
+        "key": "Edit"
+      },
+      {
+        "comment": "",
+        "key": "%@"
+      },
+      {
+        "comment": "",
+        "key": "Creator:"
+      },
+      {
+        "comment": "",
+        "key": "Domain:"
+      },
+      {
+        "comment": "",
+        "key": "Vintage:"
+      },
+      {
+        "comment": "",
+        "key": "Edition:"
+      },
+      {
+        "comment": "",
+        "key": "Type:"
+      },
+      {
+        "comment": "",
+        "key": "Unopened Bottles:"
+      },
+      {
+        "comment": "",
+        "key": "Drank:"
+      },
+      {
+        "comment": "",
+        "key": "%@,%@"
+      },
+      {
+        "comment": "",
+        "key": "Collection"
+      },
+      {
+        "comment": "",
+        "key": "Account Statistics"
+      },
+      {
+        "comment": "",
+        "key": "Total recorded bottles:"
+      },
+      {
+        "comment": "",
+        "key": "%d"
+      },
+      {
+        "comment": "",
+        "key": "Total unopened bottles:"
+      },
+      {
+        "comment": "",
+        "key": "Total drank bottles:"
+      },
+      {
+        "comment": "",
+        "key": "Account"
+      },
+      {
+        "comment": "",
+        "key": "Home"
+      },
+      {
+        "comment": "",
+        "key": "Most owned wine"
+      },
+      {
+        "comment": "",
+        "key": "Favorite wine"
+      },
+      {
+        "comment": "",
+        "key": "You may need to buy some"
+      },
+      {
+        "comment": "",
+        "key": "Try something new?"
+      },
+      {
+        "comment": "",
+        "key": "Add Wine"
+      },
+      {
+        "comment": "",
+        "key": "One or more of the fields is empty"
+      },
+      {
+        "comment": "",
+        "key": "Please provide entries to each text field"
+      },
+      {
+        "comment": "",
+        "key": "Ok"
+      },
+      {
+        "comment": "",
+        "key": "Settings"
+      },
+      {
+        "comment": "",
+        "key": "Account Details"
+      },
+      {
+        "comment": "",
+        "key": "Username:"
+      },
+      {
+        "comment": "",
+        "key": "Name:"
+      },
+      {
+        "comment": "",
+        "key": "%@, %@"
+      },
+      {
+        "comment": "",
+        "key": "Email:"
+      },
+      {
+        "comment": "",
+        "key": "Password:"
+      },
+      {
+        "comment": "",
+        "key": "View account details"
+      },
+      {
+        "comment": "",
+        "key": "Change Username"
+      },
+      {
+        "comment": "",
+        "key": "New Username"
+      },
+      {
+        "comment": "",
+        "key": "Please provide a valid credential"
+      },
+      {
+        "comment": "",
+        "key": "Invalid entry"
+      },
+      {
+        "comment": "",
+        "key": "Edit account username"
+      },
+      {
+        "comment": "",
+        "key": "Change Name"
+      },
+      {
+        "comment": "",
+        "key": "New First Name"
+      },
+      {
+        "comment": "",
+        "key": "New Last Name"
+      },
+      {
+        "comment": "",
+        "key": "Edit account name"
+      },
+      {
+        "comment": "",
+        "key": "Change Password"
+      },
+      {
+        "comment": "",
+        "key": "New Password"
+      },
+      {
+        "comment": "",
+        "key": "Change password"
+      },
+      {
+        "comment": "",
+        "key": "Change Email"
+      },
+      {
+        "comment": "",
+        "key": "New Email"
+      },
+      {
+        "comment": "",
+        "key": "Change email"
+      },
+      {
+        "comment": "",
+        "key": "Log Out"
+      },
+      {
+        "comment": "",
+        "key": "Log out of account"
+      },
+      {
+        "comment": "",
+        "key": "Delete"
+      },
+      {
+        "comment": "",
+        "key": "Delete account"
+      },
+      {
+        "comment": "",
+        "key": "Merge Accounts"
+      },
+      {
+        "comment": "",
+        "key": "Merge"
+      },
+      {
+        "comment": "",
+        "key": "Delete other account in process?"
+      },
+      {
+        "comment": "",
+        "key": "Merge accounts"
+      }
+    ]
+  },
+  "version": 1
+}
