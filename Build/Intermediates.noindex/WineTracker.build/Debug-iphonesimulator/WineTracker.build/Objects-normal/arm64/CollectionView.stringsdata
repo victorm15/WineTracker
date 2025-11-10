@@ -1,0 +1,176 @@
+{
+  "source": "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/MainFlow/CollectionView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Search:"
+      },
+      {
+        "comment": "",
+        "key": "Name"
+      },
+      {
+        "comment": "",
+        "key": "Domain"
+      },
+      {
+        "comment": "",
+        "key": "Creator"
+      },
+      {
+        "comment": "",
+        "key": "%@  v"
+      },
+      {
+        "comment": "",
+        "key": "Any"
+      },
+      {
+        "comment": "",
+        "key": "Red Wine"
+      },
+      {
+        "comment": "",
+        "key": "White Wine"
+      },
+      {
+        "comment": "",
+        "key": "Champagne"
+      },
+      {
+        "comment": "",
+        "key": "Sort by Name Descending"
+      },
+      {
+        "comment": "",
+        "key": "Sort by Name Ascending"
+      },
+      {
+        "comment": "",
+        "key": "Sort by Creator Descending"
+      },
+      {
+        "comment": "",
+        "key": "Sort by Creator Ascending"
+      },
+      {
+        "comment": "",
+        "key": "Sort by Domain Descending"
+      },
+      {
+        "comment": "",
+        "key": "Sort by Domain Ascending"
+      },
+      {
+        "comment": "",
+        "key": "Modify Wine"
+      },
+      {
+        "comment": "",
+        "key": "Wine Name"
+      },
+      {
+        "comment": "",
+        "key": "Wine Domain"
+      },
+      {
+        "comment": "",
+        "key": "Wine Creator"
+      },
+      {
+        "comment": "",
+        "key": "Save Changes"
+      },
+      {
+        "comment": "",
+        "key": "Clear"
+      },
+      {
+        "comment": "",
+        "key": "Unopened Bottles"
+      },
+      {
+        "comment": "",
+        "key": "Bottles Drank"
+      },
+      {
+        "comment": "",
+        "key": "^ %@ ^"
+      },
+      {
+        "comment": "",
+        "key": "Vintage Year"
+      },
+      {
+        "comment": "",
+        "key": "Edition Number"
+      },
+      {
+        "comment": "",
+        "key": "Vintage"
+      },
+      {
+        "comment": "",
+        "key": "Image"
+      },
+      {
+        "comment": "",
+        "key": "Wine Already Exists"
+      },
+      {
+        "comment": "",
+        "key": "Add To Recorded Bottles?"
+      },
+      {
+        "comment": "",
+        "key": "No"
+      },
+      {
+        "comment": "",
+        "key": "Yes"
+      },
+      {
+        "comment": "",
+        "key": "Edit"
+      },
+      {
+        "comment": "",
+        "key": "%@"
+      },
+      {
+        "comment": "",
+        "key": "Creator:"
+      },
+      {
+        "comment": "",
+        "key": "Domain:"
+      },
+      {
+        "comment": "",
+        "key": "Vintage:"
+      },
+      {
+        "comment": "",
+        "key": "Edition:"
+      },
+      {
+        "comment": "",
+        "key": "Type:"
+      },
+      {
+        "comment": "",
+        "key": "Unopened Bottles:"
+      },
+      {
+        "comment": "",
+        "key": "Drank:"
+      },
+      {
+        "comment": "",
+        "key": "%@,%@"
+      }
+    ]
+  },
+  "version": 1
+}

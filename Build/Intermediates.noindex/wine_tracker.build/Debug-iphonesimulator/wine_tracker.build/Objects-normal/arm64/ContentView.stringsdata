@@ -4,74 +4,6 @@
     "Localizable": [
       {
         "comment": "",
-        "key": "Email"
-      },
-      {
-        "comment": "",
-        "key": "Username"
-      },
-      {
-        "comment": "",
-        "key": "Make Account"
-      },
-      {
-        "comment": "",
-        "key": "First Name"
-      },
-      {
-        "comment": "",
-        "key": "Last Name"
-      },
-      {
-        "comment": "",
-        "key": "Please log in"
-      },
-      {
-        "comment": "",
-        "key": "Dismiss"
-      },
-      {
-        "comment": "",
-        "key": "Account succesfully made"
-      },
-      {
-        "comment": "",
-        "key": "credentials have to be at least two characters "
-      },
-      {
-        "comment": "",
-        "key": "and email needs to be valid"
-      },
-      {
-        "comment": "",
-        "key": "Invalid field entries"
-      },
-      {
-        "comment": "",
-        "key": "Please choose another username"
-      },
-      {
-        "comment": "",
-        "key": "Username Taken"
-      },
-      {
-        "comment": "",
-        "key": "Sign Up"
-      },
-      {
-        "comment": "",
-        "key": "Log In"
-      },
-      {
-        "comment": "",
-        "key": "Please check credentials"
-      },
-      {
-        "comment": "",
-        "key": "Log in failure"
-      },
-      {
-        "comment": "",
         "key": "Search:"
       },
       {
@@ -344,6 +276,18 @@
       },
       {
         "comment": "",
+        "key": "Please choose another username"
+      },
+      {
+        "comment": "",
+        "key": "Dismiss"
+      },
+      {
+        "comment": "",
+        "key": "Username Taken"
+      },
+      {
+        "comment": "",
         "key": "Please provide a valid credential"
       },
       {
@@ -416,7 +360,19 @@
       },
       {
         "comment": "",
+        "key": "Username"
+      },
+      {
+        "comment": "",
         "key": "Merge"
+      },
+      {
+        "comment": "",
+        "key": "Please check credentials"
+      },
+      {
+        "comment": "",
+        "key": "Log in failure"
       },
       {
         "comment": "",

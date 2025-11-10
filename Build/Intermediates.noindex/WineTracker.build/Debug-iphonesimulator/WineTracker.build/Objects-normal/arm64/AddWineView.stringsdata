@@ -1,0 +1,104 @@
+{
+  "source": "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/MainFlow/AddWineView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": ""
+      },
+      {
+        "comment": "",
+        "key": "Type"
+      },
+      {
+        "comment": "",
+        "key": "Wine Name"
+      },
+      {
+        "comment": "",
+        "key": "Wine Domain"
+      },
+      {
+        "comment": "",
+        "key": "Wine Creator"
+      },
+      {
+        "comment": "",
+        "key": "Add Wine"
+      },
+      {
+        "comment": "",
+        "key": "Clear"
+      },
+      {
+        "comment": "",
+        "key": "Unopened Bottles"
+      },
+      {
+        "comment": "",
+        "key": "Bottles Drank"
+      },
+      {
+        "comment": "",
+        "key": "Red Wine"
+      },
+      {
+        "comment": "",
+        "key": "White Wine"
+      },
+      {
+        "comment": "",
+        "key": "Champagne"
+      },
+      {
+        "comment": "",
+        "key": "^ %@ ^"
+      },
+      {
+        "comment": "",
+        "key": "Vintage Year"
+      },
+      {
+        "comment": "",
+        "key": "Edition Number"
+      },
+      {
+        "comment": "",
+        "key": "Vintage"
+      },
+      {
+        "comment": "",
+        "key": "Image"
+      },
+      {
+        "comment": "",
+        "key": "Wine Already Exists"
+      },
+      {
+        "comment": "",
+        "key": "Add To Recorded Bottles?"
+      },
+      {
+        "comment": "",
+        "key": "No"
+      },
+      {
+        "comment": "",
+        "key": "Yes"
+      },
+      {
+        "comment": "",
+        "key": "One or more of the fields is empty"
+      },
+      {
+        "comment": "",
+        "key": "Please provide entries to each text field"
+      },
+      {
+        "comment": "",
+        "key": "Ok"
+      }
+    ]
+  },
+  "version": 1
+}

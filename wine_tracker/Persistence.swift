@@ -1,10 +1,3 @@
-//
-//  Persistence.swift
-//  coretests
-//
-//  Created by Victor Mauger on 08.07.2024.
-//
-
 import CoreData
 
 struct PersistenceController {

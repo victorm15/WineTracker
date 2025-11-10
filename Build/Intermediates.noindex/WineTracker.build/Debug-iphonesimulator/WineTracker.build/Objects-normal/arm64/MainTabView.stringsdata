@@ -1,0 +1,28 @@
+{
+  "source": "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/MainFlow/MainTabView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Collection"
+      },
+      {
+        "comment": "",
+        "key": "Account"
+      },
+      {
+        "comment": "",
+        "key": "Home"
+      },
+      {
+        "comment": "",
+        "key": "Add Wine"
+      },
+      {
+        "comment": "",
+        "key": "Settings"
+      }
+    ]
+  },
+  "version": 1
+}

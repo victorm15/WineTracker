@@ -1,2 +1,0 @@
-Target dependency graph (1 target)
-Target 'wine_tracker' in project 'wine_tracker' (no dependencies)
