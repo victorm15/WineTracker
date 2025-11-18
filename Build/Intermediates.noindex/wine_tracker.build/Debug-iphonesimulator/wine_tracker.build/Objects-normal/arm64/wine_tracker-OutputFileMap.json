@@ -95,6 +95,66 @@
     "swift-dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/Query+CoreDataProperties.swiftdeps",
     "swiftmodule" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/Query+CoreDataProperties~partial.swiftmodule"
   },
+  "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/App/AppRootView.swift" : {
+    "const-values" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppRootView.swiftconstvalues",
+    "dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppRootView.d",
+    "diagnostics" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppRootView.dia",
+    "index-unit-output-path" : "/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppRootView.o",
+    "llvm-bc" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppRootView.bc",
+    "object" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppRootView.o",
+    "swift-dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppRootView.swiftdeps",
+    "swiftmodule" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppRootView~partial.swiftmodule"
+  },
+  "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/App/AppState.swift" : {
+    "const-values" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppState.swiftconstvalues",
+    "dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppState.d",
+    "diagnostics" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppState.dia",
+    "index-unit-output-path" : "/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppState.o",
+    "llvm-bc" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppState.bc",
+    "object" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppState.o",
+    "swift-dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppState.swiftdeps",
+    "swiftmodule" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AppState~partial.swiftmodule"
+  },
+  "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/App/WineTrackerApp.swift" : {
+    "const-values" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/WineTrackerApp.swiftconstvalues",
+    "dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/WineTrackerApp.d",
+    "diagnostics" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/WineTrackerApp.dia",
+    "index-unit-output-path" : "/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/WineTrackerApp.o",
+    "llvm-bc" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/WineTrackerApp.bc",
+    "object" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/WineTrackerApp.o",
+    "swift-dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/WineTrackerApp.swiftdeps",
+    "swiftmodule" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/WineTrackerApp~partial.swiftmodule"
+  },
+  "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/AuthFlow/AuthTabView.swift" : {
+    "const-values" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AuthTabView.swiftconstvalues",
+    "dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AuthTabView.d",
+    "diagnostics" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AuthTabView.dia",
+    "index-unit-output-path" : "/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AuthTabView.o",
+    "llvm-bc" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AuthTabView.bc",
+    "object" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AuthTabView.o",
+    "swift-dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AuthTabView.swiftdeps",
+    "swiftmodule" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/AuthTabView~partial.swiftmodule"
+  },
+  "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/AuthFlow/LoginView.swift" : {
+    "const-values" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/LoginView.swiftconstvalues",
+    "dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/LoginView.d",
+    "diagnostics" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/LoginView.dia",
+    "index-unit-output-path" : "/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/LoginView.o",
+    "llvm-bc" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/LoginView.bc",
+    "object" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/LoginView.o",
+    "swift-dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/LoginView.swiftdeps",
+    "swiftmodule" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/LoginView~partial.swiftmodule"
+  },
+  "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/AuthFlow/SignUpView.swift" : {
+    "const-values" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/SignUpView.swiftconstvalues",
+    "dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/SignUpView.d",
+    "diagnostics" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/SignUpView.dia",
+    "index-unit-output-path" : "/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/SignUpView.o",
+    "llvm-bc" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/SignUpView.bc",
+    "object" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/SignUpView.o",
+    "swift-dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/SignUpView.swiftdeps",
+    "swiftmodule" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/SignUpView~partial.swiftmodule"
+  },
   "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/ContentView.swift" : {
     "const-values" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/ContentView.swiftconstvalues",
     "dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/ContentView.d",
@@ -104,6 +164,16 @@
     "object" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/ContentView.o",
     "swift-dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/ContentView.swiftdeps",
     "swiftmodule" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  },
+  "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/MainFlow/MainTabView.swift" : {
+    "const-values" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/MainTabView.swiftconstvalues",
+    "dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/MainTabView.d",
+    "diagnostics" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/MainTabView.dia",
+    "index-unit-output-path" : "/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/MainTabView.o",
+    "llvm-bc" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/MainTabView.bc",
+    "object" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/MainTabView.o",
+    "swift-dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/MainTabView.swiftdeps",
+    "swiftmodule" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/MainTabView~partial.swiftmodule"
   },
   "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/Persistence.swift" : {
     "const-values" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/Persistence.swiftconstvalues",
@@ -124,15 +194,5 @@
     "object" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/UsefulElements.o",
     "swift-dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/UsefulElements.swiftdeps",
     "swiftmodule" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/UsefulElements~partial.swiftmodule"
-  },
-  "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/wine_tracker.swift" : {
-    "const-values" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/wine_tracker.swiftconstvalues",
-    "dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/wine_tracker.d",
-    "diagnostics" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/wine_tracker.dia",
-    "index-unit-output-path" : "/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/wine_tracker.o",
-    "llvm-bc" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/wine_tracker.bc",
-    "object" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/wine_tracker.o",
-    "swift-dependencies" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/wine_tracker.swiftdeps",
-    "swiftmodule" : "/Users/vcmgr/Documents/Programming/XCode/coretests/Build/Intermediates.noindex/wine_tracker.build/Debug-iphonesimulator/wine_tracker.build/Objects-normal/arm64/wine_tracker~partial.swiftmodule"
   }
 }

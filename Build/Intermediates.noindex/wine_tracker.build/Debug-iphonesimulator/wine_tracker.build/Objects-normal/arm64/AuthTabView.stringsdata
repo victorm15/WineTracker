@@ -1,0 +1,16 @@
+{
+  "source": "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/AuthFlow/AuthTabView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Sign Up"
+      },
+      {
+        "comment": "",
+        "key": "Log In"
+      }
+    ]
+  },
+  "version": 1
+}

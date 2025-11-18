@@ -1,0 +1,36 @@
+{
+  "source": "/Users/vcmgr/Documents/Programming/XCode/coretests/wine_tracker/AuthFlow/LoginView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Username"
+      },
+      {
+        "comment": "",
+        "key": "Log In"
+      },
+      {
+        "comment": "",
+        "key": "Please log in"
+      },
+      {
+        "comment": "",
+        "key": "Dismiss"
+      },
+      {
+        "comment": "",
+        "key": "Account succesfully made"
+      },
+      {
+        "comment": "",
+        "key": "Please check credentials"
+      },
+      {
+        "comment": "",
+        "key": "Log in failure"
+      }
+    ]
+  },
+  "version": 1
+}
