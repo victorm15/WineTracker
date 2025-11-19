@@ -9,4 +9,4 @@
 * Created account authentication page
 
 ## Application Screenshots
-<img src="Screenshots/Signup.png" alt="Sign Up Page" width="30" height="20">
+<img src="Screenshots/Signup.png" alt="Sign Up Page" width="80" height="174">
