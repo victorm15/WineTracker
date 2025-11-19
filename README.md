@@ -10,14 +10,32 @@
 
 ## Application Screenshots
 
-## Authentication Page
+<table>
+  <tr>
+    <td style="vertical-align: top;">
+      <ul>
+        <li>First point</li>
+        <li>Second point</li>
+        <li>Third point</li>
+      </ul>
+    </td>
+    <td>
+      <img src="Screenshots/Signup.png" width="150">
+    </td>
+  </tr>
+</table>
+
+
+## Authentication Pages
 <p float="left">
   <img src="Screenshots/Signup.png" alt="Sign Up Page" width="150" height="326">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="Screenshots/LogIn.png" alt="Log In Page" width="150" height="326">
 </p>
 
-## Main Page
+Signup
+
+## Main Pages
 <p float="left">
   <img src="Screenshots/CollectionView.png" alt="Collection Page" width="150" height="326">
   <img src="Screenshots/Arrow.png" alt="Arrow" width="60" height="326">
