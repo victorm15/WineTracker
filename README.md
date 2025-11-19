@@ -17,9 +17,9 @@
   <img src="Screenshots/LogIn.png" alt="Log In Page" width="150" height="326">
 </p>
 
-## Collection Page   Log In Page
+## Collection Page   Account Statistics Page
 <p float="left">
   <img src="Screenshots/CollectionView.png" alt="Collection Page" width="150" height="326">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="Screenshots/LogIn.png" alt="Log In Page" width="150" height="326">
+  <img src="Screenshots/AccountView.png" alt="Account Page" width="150" height="326">
 </p>
