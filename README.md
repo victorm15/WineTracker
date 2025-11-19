@@ -3,5 +3,10 @@
 ## Features
 * Designed UI using SwiftUI
 * Provided on-device persistence with CoreData
-* Implemented caching to speed up large queries
-* Leveraged OOP principles to
+* Leveraged caching to speed up large queries
+* Used OOP principles to represent accounts and wines with an aggregate relationship
+* Wrote a quicksort implementation to sort and filter wines based on object attributes
+* Created account authentication page
+
+## Application Screenshots
+![Signup Page](Screenshots/Signup.png)
