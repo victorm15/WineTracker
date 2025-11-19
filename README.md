@@ -49,7 +49,7 @@
 <img src="Screenshots/AddWineView.png" alt="Add Wine Page" width="150" height="326">
 
 * Checks if the wine already exists and proposes to merge the new wine with the existing wine if it does
-
+#### Settings Page
 <img src="Screenshots/SettingsView.png" alt="Settings Page" width="150" height="326">
 
 * Edit account object attributes
