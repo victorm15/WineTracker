@@ -10,21 +10,6 @@
 
 ## Application Screenshots
 
-<table>
-  <tr>
-    <td style="vertical-align: top;">
-      <ul>
-        <li>First point</li>
-        <li>Second point</li>
-        <li>Third point</li>
-      </ul>
-    </td>
-    <td>
-      <img src="Screenshots/Signup.png" width="150">
-    </td>
-  </tr>
-</table>
-
 
 ## Authentication Pages
 <p float="left">
@@ -32,6 +17,10 @@
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="Screenshots/LogIn.png" alt="Log In Page" width="150" height="326">
 </p>
+
+* Create account which persists on-device
+* Checks for valid fields (including email in format "XXXXX@XXX.XXX")
+* Compares with stored accounts to verify unique username
 
 Signup
 
