@@ -17,12 +17,13 @@
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="Screenshots/LogIn.png" alt="Log In Page" width="150" height="326">
 </p>
-
+Signup
 * Create account which persists on-device
 * Checks for valid fields (including email in format `XXXXX@XXX.XXX`)
 * Compares with stored accounts to verify unique username
 
-Signup
+Login
+* Checks entered username and password, displaying message to user in case of invalid credentials
 
 ## Main Pages
 <p float="left">
