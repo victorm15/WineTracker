@@ -9,4 +9,4 @@
 * Created account authentication page
 
 ## Application Screenshots
-![Signup Page](Screenshots/Signup.png)
+<img src="Screenshots/Signup.png" alt="Sign Up Page" width="30" height="20">
