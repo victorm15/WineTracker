@@ -21,6 +21,7 @@
 <p float="left">
   <img src="Screenshots/CollectionView.png" alt="Collection Page" width="150" height="326">
   <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+  <img src="Screenshots/Arrow.png" alt="Arrow" width="60" height="326">
   <img src="Screenshots/AccountView.png" alt="Account Page" width="150" height="326">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="Screenshots/HomeView.png" alt="Home Page" width="150" height="326">
