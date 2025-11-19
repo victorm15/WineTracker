@@ -37,7 +37,7 @@
 
 * View collection of wines based on sorting and filtering criteria
 * Expand individual wines into a detailed view where they can be edited or deleted
-* If a wine is edited into one which already exists, the user is offered to merge the two
+* If a wine is edited into one which already exists, merging the two objects is proposed
 
 
 <img src="Screenshots/AccountView.png" alt="Account Page" width="150" height="326">
