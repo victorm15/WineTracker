@@ -39,11 +39,18 @@
 * Expand individual wines into a detailed view where they can be edited or deleted
 * If a wine is edited into one which already exists, merging the two objects is proposed
 
-
+#### Account Statistics Page
 <img src="Screenshots/AccountView.png" alt="Account Page" width="150" height="326">
 
+#### Home Page
 <img src="Screenshots/HomeView.png" alt="Home Page" width="150" height="326">
 
+#### Add wine Page
 <img src="Screenshots/AddWineView.png" alt="Add Wine Page" width="150" height="326">
 
+* Checks if the wine already exists and proposes to merge the new wine with the existing wine if it does
+
 <img src="Screenshots/SettingsView.png" alt="Settings Page" width="150" height="326">
+
+* Edit account object attributes
+* Can merge another account's collection with the current account's, requiring authentication for the source account
