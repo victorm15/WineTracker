@@ -26,6 +26,7 @@
 
 #### Login
 * Checks entered username and password, displaying message to user in case of invalid credentials
+* Passes authenticated password to app state for use in main pages
 
 ## Main Pages
 <p float="left">
