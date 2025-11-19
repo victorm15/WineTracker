@@ -19,7 +19,7 @@
 </p>
 
 * Create account which persists on-device
-* Checks for valid fields (including email in format `XXXXX@XXX.XXX`)
+* Checks for valid fields (including email in format XXXXX(at)XXX.XXX)
 * Compares with stored accounts to verify unique username
 
 Signup
