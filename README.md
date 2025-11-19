@@ -22,11 +22,15 @@
   <img src="Screenshots/CollectionView.png" alt="Collection Page" width="150" height="326">
   <img src="Screenshots/Arrow.png" alt="Arrow" width="60" height="326">
   <img src="Screenshots/CollectionOpenView.png" alt="Collection Open Page" width="150" height="326">
-  <img src="Screenshots/AccountView.png" alt="Account Page" width="150" height="326">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="Screenshots/HomeView.png" alt="Home Page" width="150" height="326">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="Screenshots/AddWineView.png" alt="Add Wine Page" width="150" height="326">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="Screenshots/SettingsView.png" alt="Settings Page" width="150" height="326">
+  
 </p>
+
+<p float="left">
+    <img src="Screenshots/AccountView.png" alt="Account Page" width="150" height="326">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <img src="Screenshots/HomeView.png" alt="Home Page" width="150" height="326">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <img src="Screenshots/AddWineView.png" alt="Add Wine Page" width="150" height="326">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <img src="Screenshots/SettingsView.png" alt="Settings Page" width="150" height="326">
+  </p>
