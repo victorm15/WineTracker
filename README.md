@@ -21,14 +21,7 @@
 <p float="left">
   <img src="Screenshots/CollectionView.png" alt="Collection Page" width="150" height="326">
   <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-<span style="
-      font-size: 60px;
-      line-height: 326px;
-      vertical-align: middle;
-      margin: 0 20px;
-      color: white;">
-    &#10145;
-  </span>
+  <img src="Screenshots/Arrow.png" alt="Arrow" width="150" height="326">
   <img src="Screenshots/AccountView.png" alt="Account Page" width="150" height="326">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="Screenshots/HomeView.png" alt="Home Page" width="150" height="326">
