@@ -16,3 +16,10 @@
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="Screenshots/LogIn.png" alt="Log In Page" width="150" height="326">
 </p>
+
+## Collection Page   Log In Page
+<p float="left">
+  <img src="Screenshots/Signup.png" alt="Sign Up Page" width="150" height="326">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="Screenshots/LogIn.png" alt="Log In Page" width="150" height="326">
+</p>
