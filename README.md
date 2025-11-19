@@ -6,7 +6,7 @@
 * Leveraged caching to speed up large queries
 * Used OOP principles to represent accounts and wines with an aggregate relationship
 * Wrote a quicksort implementation to sort and filter wines based on object attributes
-* Created account authentication page
+* Built an authentication interface for account access
 
 ## Application Screenshots
 
