@@ -37,7 +37,7 @@
 
 * View collection of wines based on sorting and filtering criteria
 * Expand individual wines into a detailed view where they can be edited or deleted
-* If a wine is edited into one which already exists, merging the two objects is proposed
+* If a wine is edited into one which already exists, the app suggests merging the two objects
 
 #### Account Statistics Page
 <img src="Screenshots/AccountView.png" alt="Account Page" width="150" height="326">
