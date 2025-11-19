@@ -10,13 +10,8 @@
 
 ## Application Screenshots
 
-<table>
-  <tr>
-    <th>Sign Up Page</th>
-    <th>Log In Page</th>
-  </tr>
-  <tr>
-    <td><img src="Screenshots/Signup.png" width="150" height="326"></td>
-    <td><img src="Screenshots/LogIn.png" width="150" height="326"></td>
-  </tr>
-</table>
+Sign Up Page      Log In Page
+<p float="left">
+  <img src="Screenshots/Signup.png" alt="Sign Up Page" width="150" height="326">
+  <img src="Screenshots/LogIn.png" alt="Log In Page" width="150" height="326">
+</p>
