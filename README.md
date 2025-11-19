@@ -10,14 +10,14 @@
 
 ## Application Screenshots
 
-<p float="left">
+<p float="left" align="center">
   <div style="display: inline-block; text-align: center; margin-right: 10px;">
-    <h3>Sign Up Page</h3>
+    <b>Sign Up Page</b><br>
     <img src="Screenshots/Signup.png" alt="Sign Up Page" width="150" height="326">
   </div>
-
+  
   <div style="display: inline-block; text-align: center;">
-    <h3>Log In Page</h3>
+    <b>Log In Page</b><br>
     <img src="Screenshots/LogIn.png" alt="Log In Page" width="150" height="326">
   </div>
 </p>
