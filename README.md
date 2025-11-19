@@ -12,6 +12,6 @@
 
 ## Sign Up Page       Log In Page
 <p float="left">
-  <img src="Screenshots/Signup.png" alt="Sign Up Page" width="150" height="326" style="margin-right:150px;">
+  <img src="Screenshots/Signup.png" alt="Sign Up Page" width="150" height="326" style="margin-right:150;">
   <img src="Screenshots/LogIn.png" alt="Log In Page" width="150" height="326">
 </p>
