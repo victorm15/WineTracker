@@ -12,43 +12,38 @@
 
 
 ## Authentication Pages
-<!-- <p float="left"> -->
+
 #### Signup Page
 <img src="Screenshots/Signup.png" alt="Sign Up Page" width="150" height="326">
 
 * Create account which persists on-device
 * Checks for valid fields (including email in format `XXXXX@XXX.XXX`)
 * Compares with stored accounts to verify unique username
-  <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-  
-<!-- </p> -->
-
-
-
-
 
 #### Login Page
-
 <img src="Screenshots/LogIn.png" alt="Log In Page" width="150" height="326">
 
 * Checks entered username and password, displaying message to user in case of invalid credentials
 * Passes authenticated password to app state for use in main pages
 
 ## Main Pages
+
 #### Collection Page
 <p float="left">
   <img src="Screenshots/CollectionView.png" alt="Collection Page" width="150" height="326">
   <img src="Screenshots/Arrow.png" alt="Arrow" width="60" height="326">
   <img src="Screenshots/CollectionOpenView.png" alt="Collection Open Page" width="150" height="326">
-  
 </p>
 
-<p float="left">
-    <img src="Screenshots/AccountView.png" alt="Account Page" width="150" height="326">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <img src="Screenshots/HomeView.png" alt="Home Page" width="150" height="326">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <img src="Screenshots/AddWineView.png" alt="Add Wine Page" width="150" height="326">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <img src="Screenshots/SettingsView.png" alt="Settings Page" width="150" height="326">
-  </p>
+* View collection of wines based on sorting and filtering criteria
+* Expand individual wines into a detailed view where they can be edited or deleted
+* If a wine is edited into one which already exists, the user is offered to merge the two
+
+
+<img src="Screenshots/AccountView.png" alt="Account Page" width="150" height="326">
+
+<img src="Screenshots/HomeView.png" alt="Home Page" width="150" height="326">
+
+<img src="Screenshots/AddWineView.png" alt="Add Wine Page" width="150" height="326">
+
+<img src="Screenshots/SettingsView.png" alt="Settings Page" width="150" height="326">
