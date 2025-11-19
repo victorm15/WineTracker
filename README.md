@@ -12,23 +12,30 @@
 
 
 ## Authentication Pages
-<p float="left">
-  <img src="Screenshots/Signup.png" alt="Sign Up Page" width="150" height="326">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="Screenshots/LogIn.png" alt="Log In Page" width="150" height="326">
-</p>
-
-#### Signup
+<!-- <p float="left"> -->
+#### Signup Page
+<img src="Screenshots/Signup.png" alt="Sign Up Page" width="150" height="326">
 
 * Create account which persists on-device
 * Checks for valid fields (including email in format `XXXXX@XXX.XXX`)
 * Compares with stored accounts to verify unique username
+  <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+  
+<!-- </p> -->
 
-#### Login
+
+
+
+
+#### Login Page
+
+<img src="Screenshots/LogIn.png" alt="Log In Page" width="150" height="326">
+
 * Checks entered username and password, displaying message to user in case of invalid credentials
 * Passes authenticated password to app state for use in main pages
 
 ## Main Pages
+#### Collection Page
 <p float="left">
   <img src="Screenshots/CollectionView.png" alt="Collection Page" width="150" height="326">
   <img src="Screenshots/Arrow.png" alt="Arrow" width="60" height="326">
