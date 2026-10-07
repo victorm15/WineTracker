@@ -19,7 +19,6 @@ extension Item {
     @NSManaged private var type: String?
     @NSManaged public var edition: Edition?
     @NSManaged public var owner: Person?
-    @NSManaged public var storage: Query?
     
     public var wrappedEdition: Edition {
         if let edition = self.edition {

@@ -12,7 +12,7 @@ struct CollectionView: View {
 	
 	// Sorting and Filtering
 	@State var filterType: String = "Name"
-	@State var sortType: String = "NameD"
+	@State var sortType: String = "NameA"
 	@State var searchRequest: String = ""
 	@State var wineTypeFilter = "Any"
 	@State var isEdition = true
@@ -265,19 +265,19 @@ struct CollectionView: View {
 												
 												Menu {
 													Button {
-														wineType = "Red Wine"
+														newWineType = "Red Wine"
 													} label: {
 														Text("Red Wine")
 															.font(.custom("Cochin", size:20))
 													}
 													Button {
-														wineType = "White Wine"
+														newWineType = "White Wine"
 													} label: {
 														Text("White Wine")
 															.font(.custom("Cochin", size:20))
 													}
 													Button {
-														wineType = "Champagne"
+														newWineType = "Champagne"
 													} label: {
 														Text("Champagne")
 															.font(.custom("Cochin", size:20))
@@ -493,7 +493,11 @@ struct CollectionView: View {
 														newItem.setDrank(newDrank: Int16(wineDrank) ?? 0)
 														newItem.setQuantity(newQuantity: Int16(wineQuantity) ?? 0)
 														newItem.setType(newType: wineType)
-														newItem.setImage(Simage: avatarImage ?? Image("Image"))
+														if let newImage = avatarImage {
+															newItem.setImage(Simage: newImage)
+														} else {
+															newItem.setImageData(newImageData: item.wrappedImageData)
+														}
 														addEdition(wine: newItem)
 														
 														linkGoBack = true
