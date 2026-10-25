@@ -7,6 +7,8 @@ struct LoginView: View {
 	@State private var passwordAttempt = ""
 
 	@State private var alert: AuthAlert?
+	@State private var loginError: String?
+	@State private var failedAttempts = 0
 	@State private var isLoggingIn = false
 	/// Re-read when the view appears, since Face ID can be turned on or off in Settings.
 	@State private var biometricAccount: Person?
@@ -18,63 +20,61 @@ struct LoginView: View {
 		case username, password
 	}
 
-	var body: some View {
-		ScrollView {
-			VStack(spacing: 12) {
-				AuthHeaderImage()
-				TextField("Username", text: $usernameAttempt)
-					.authFieldStyle()
-					.textContentType(.username)
-					.focused($focusedField, equals: .username)
-					.submitLabel(.next)
-					.onSubmit { focusedField = .password }
-				SecureInputView("Password", text: $passwordAttempt)
-					.authFieldStyle()
-					.textContentType(.password)
-					.focused($focusedField, equals: .password)
-					.submitLabel(.go)
-					.onSubmit(logIn)
-				Button(action: logIn) {
-					if isLoggingIn {
-						ProgressView()
-							.tint(.white)
-					} else {
-						Text("Log In")
-					}
-				}
-				.buttonStyle(AccountButton())
-				.font(.headline)
-				.disabled(isLoggingIn)
+	private var canSubmit: Bool {
+		!usernameAttempt.isEmpty && !passwordAttempt.isEmpty && !isLoggingIn
+	}
 
-				if let biometricAccount {
-					Button(action: logInWithBiometrics) {
-						Label("Log in as \(biometricAccount.wrappedUsername) with \(BiometricLogin.biometryName)",
-							  systemImage: BiometricLogin.biometryIcon)
-					}
-					.font(.subheadline)
-					.padding(.top, 8)
-					.disabled(isLoggingIn)
+	var body: some View {
+		VStack(spacing: 14) {
+			AuthTextField(title: "Username", icon: "person", text: $usernameAttempt,
+						  focus: $focusedField, field: .username)
+				.textContentType(.username)
+				.submitLabel(.next)
+				.onSubmit { focusedField = .password }
+			AuthPasswordField(title: "Password", text: $passwordAttempt,
+							  focus: $focusedField, field: .password, error: loginError)
+				.textContentType(.password)
+				.submitLabel(.go)
+				.onSubmit(logIn)
+
+			Button(action: logIn) {
+				if isLoggingIn {
+					ProgressView()
+						.tint(.white)
+				} else {
+					Text("Log In")
 				}
 			}
-			.padding()
+			.buttonStyle(AuthPrimaryButtonStyle())
+			.disabled(!canSubmit)
+			.padding(.top, 8)
+
+			if let biometricAccount {
+				Button(action: logInWithBiometrics) {
+					Label("Log in as \(biometricAccount.wrappedUsername)", systemImage: BiometricLogin.biometryIcon)
+				}
+				.buttonStyle(AuthSecondaryButtonStyle())
+				.disabled(isLoggingIn)
+				.accessibilityHint("Uses \(BiometricLogin.biometryName)")
+			}
 		}
-		.defaultScrollAnchor(.center, for: .alignment)
-		.scrollBounceBehavior(.basedOnSize)
-		.scrollDismissesKeyboard(.interactively)
-		.background { AuthBackground() }
+		.sensoryFeedback(.error, trigger: failedAttempts)
 		.authAlert($alert)
 		.onAppear(perform: refreshBiometricAccount)
 	}
 
 	private func logIn() {
-		guard !isLoggingIn else { return }
+		guard canSubmit else { return }
+		loginError = nil
 		isLoggingIn = true
 		Task {
 			defer { isLoggingIn = false }
 			let person = Person.withUsername(usernameAttempt, in: viewContext)
 			guard await PasswordStore.verify(passwordAttempt, for: person?.accountID), let person else {
 				passwordAttempt = ""
-				alert = AuthAlert(title: "Log in failure", message: "Please check credentials.")
+				loginError = "Incorrect username or password."
+				failedAttempts += 1
+				focusedField = .password
 				return
 			}
 			offerBiometricLogin(thenLogIn: person)
@@ -127,7 +127,7 @@ struct LoginView: View {
 		}
 	}
 
-	// Switching isAuthenticated replaces this view with MainTabView.
+	// Switching isAuthenticated replaces the auth screen with MainTabView.
 	private func complete(_ person: Person) {
 		appState.currentPerson = person
 		appState.isAuthenticated = true
@@ -140,6 +140,7 @@ struct LoginView: View {
 
 #Preview {
 	LoginView()
+		.padding()
 		.environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 		.environmentObject(AppState())
 }

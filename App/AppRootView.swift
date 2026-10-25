@@ -9,7 +9,7 @@ struct AppRootView: View {
 				MainTabView(currentPerson: user)
 		}
 		else {
-			AuthTabView()
+			AuthView()
 		}
     }
 }

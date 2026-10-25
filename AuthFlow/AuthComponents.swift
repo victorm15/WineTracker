@@ -1,21 +1,22 @@
 import SwiftUI
 
-/// Shared styling for the text fields on the log in and sign up screens.
-struct AuthFieldStyle: ViewModifier {
-	var autocapitalization: TextInputAutocapitalization = .never
-
-	func body(content: Content) -> some View {
-		content
-			.textFieldStyle(.roundedBorder)
-			.textInputAutocapitalization(autocapitalization)
-			.autocorrectionDisabled()
-			.font(.title3)
-	}
-}
-
-extension View {
-	func authFieldStyle(autocapitalization: TextInputAutocapitalization = .never) -> some View {
-		modifier(AuthFieldStyle(autocapitalization: autocapitalization))
+/// App icon, name and tagline shown above the log in / sign up form.
+struct AuthHeader: View {
+	var body: some View {
+		VStack(spacing: 10) {
+			Image(systemName: "wineglass.fill")
+				.font(.system(size: 40))
+				.foregroundStyle(.white)
+				.frame(width: 80, height: 80)
+				.background(Color.accentColor, in: RoundedRectangle(cornerRadius: 22))
+				.accessibilityHidden(true)
+			Text("Wine Tracker")
+				.font(.custom("Cochin-Bold", size: 34, relativeTo: .largeTitle))
+				.foregroundStyle(Color.accentColor)
+			Text("Keep track of every bottle.")
+				.font(.subheadline)
+				.foregroundStyle(.secondary)
+		}
 	}
 }
 
@@ -35,13 +36,137 @@ struct AuthBackground: View {
 	}
 }
 
-struct AuthHeaderImage: View {
+/// A text field with a leading icon and an optional message underneath.
+/// A `hint` is shown in gray until there's an `error`, which replaces it in red.
+struct AuthTextField<Field: Hashable>: View {
+	let title: String
+	let icon: String
+	@Binding var text: String
+	var focus: FocusState<Field?>.Binding
+	let field: Field
+	var error: String? = nil
+	var hint: String? = nil
+	var autocapitalization: TextInputAutocapitalization = .never
+
 	var body: some View {
-		Image(systemName: "person.circle.fill")
-			.resizable()
-			.frame(width: 100, height: 100)
+		AuthFieldLayout(icon: icon, error: error, hint: hint) {
+			TextField(title, text: $text)
+				.textInputAutocapitalization(autocapitalization)
+				.focused(focus, equals: field)
+		}
+	}
+}
+
+/// A password field with the show/hide button inside it. Switching keeps the keyboard up.
+struct AuthPasswordField<Field: Hashable>: View {
+	let title: String
+	@Binding var text: String
+	var focus: FocusState<Field?>.Binding
+	let field: Field
+	var error: String? = nil
+	var hint: String? = nil
+
+	@State private var isRevealed = false
+
+	var body: some View {
+		AuthFieldLayout(icon: "lock", error: error, hint: hint) {
+			HStack {
+				// Always the same SecureField: swapping in a TextField to reveal the password
+				// loses focus, and iOS clears a secure field when it's typed into again.
+				// Revealing just hides the dots and draws the text on top.
+				SecureField(title, text: $text)
+					.focused(focus, equals: field)
+					.foregroundStyle(isRevealed ? Color.clear : Color.primary)
+					.tint(isRevealed ? Color.clear : Color.accentColor)
+					.overlay(alignment: .leading) {
+						if isRevealed {
+							Text(text)
+								.lineLimit(1)
+								.truncationMode(.head)
+								.allowsHitTesting(false)
+								.accessibilityHidden(true)
+						}
+					}
+
+				Button {
+					isRevealed.toggle()
+				} label: {
+					Image(systemName: isRevealed ? "eye.slash" : "eye")
+						.foregroundStyle(.secondary)
+						.frame(width: 28, height: 28)
+						.contentShape(Rectangle())
+				}
+				.buttonStyle(.plain)
+				.accessibilityLabel(isRevealed ? "Hide password" : "Show password")
+			}
+		}
+	}
+}
+
+/// Shared look for the auth fields: icon, rounded box, and a message line underneath.
+private struct AuthFieldLayout<Content: View>: View {
+	let icon: String
+	let error: String?
+	let hint: String?
+	@ViewBuilder let content: Content
+
+	var body: some View {
+		VStack(alignment: .leading, spacing: 6) {
+			HStack(spacing: 12) {
+				Image(systemName: icon)
+					.foregroundStyle(.secondary)
+					.frame(width: 22)
+					.accessibilityHidden(true)
+				content
+					.textInputAutocapitalization(.never)
+					.autocorrectionDisabled()
+			}
+			.font(.body)
+			.padding(.horizontal, 14)
+			.frame(minHeight: 52)
+			.background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 12))
+			.overlay {
+				RoundedRectangle(cornerRadius: 12)
+					.strokeBorder(error == nil ? Color(.separator) : Color.red, lineWidth: 1)
+			}
+
+			if let message = error ?? hint {
+				Text(message)
+					.font(.footnote)
+					.foregroundStyle(error == nil ? Color.secondary : Color.red)
+					.padding(.leading, 4)
+			}
+		}
+	}
+}
+
+/// Full-width filled button for the main action on each screen.
+struct AuthPrimaryButtonStyle: ButtonStyle {
+	@Environment(\.isEnabled) private var isEnabled
+
+	func makeBody(configuration: Configuration) -> some View {
+		configuration.label
+			.font(.headline)
+			.foregroundStyle(.white)
+			.frame(maxWidth: .infinity, minHeight: 52)
+			.background(Color.accentColor.opacity(isEnabled ? 1 : 0.4), in: RoundedRectangle(cornerRadius: 14))
+			.opacity(configuration.isPressed ? 0.85 : 1)
+			.scaleEffect(configuration.isPressed ? 0.98 : 1)
+			.animation(.easeOut(duration: 0.15), value: configuration.isPressed)
+	}
+}
+
+/// Full-width tinted button for secondary actions, such as logging in with Face ID.
+struct AuthSecondaryButtonStyle: ButtonStyle {
+	func makeBody(configuration: Configuration) -> some View {
+		configuration.label
+			.font(.headline)
 			.foregroundStyle(Color.accentColor)
-			.padding(30)
+			.frame(maxWidth: .infinity, minHeight: 52)
+			.background(Color.accentColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
+			.opacity(configuration.isPressed ? 0.7 : 1)
+			.scaleEffect(configuration.isPressed ? 0.98 : 1)
+			.animation(.easeOut(duration: 0.15), value: configuration.isPressed)
 	}
 }
 

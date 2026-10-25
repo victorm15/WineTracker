@@ -16,9 +16,14 @@ struct SignUpView: View {
 
 	@State private var alert: AuthAlert?
 	@State private var isCreating = false
+	/// Fields the user has left; their errors show from then on.
+	@State private var touchedFields: Set<Field> = []
+	/// Normalized usernames found to be taken, checked when the username field is left.
+	@State private var takenUsernames: Set<String> = []
+	@State private var failedAttempts = 0
 	@FocusState private var focusedField: Field?
 
-	private enum Field {
+	private enum Field: CaseIterable {
 		case firstName, lastName, email, username, password
 	}
 
@@ -26,80 +31,104 @@ struct SignUpView: View {
 		case passwordNotSaved
 	}
 
-	var body: some View {
-		ScrollView {
-			VStack(spacing: 12) {
-				AuthHeaderImage()
-				HStack {
-					TextField("First Name", text: $firstName)
-						.authFieldStyle(autocapitalization: .words)
-						.textContentType(.givenName)
-						.focused($focusedField, equals: .firstName)
-						.submitLabel(.next)
-						.onSubmit { focusedField = .lastName }
+	private var isFormValid: Bool {
+		Field.allCases.allSatisfy { problem(with: $0) == nil }
+	}
 
-					TextField("Last Name", text: $lastName)
-						.authFieldStyle(autocapitalization: .words)
-						.textContentType(.familyName)
-						.focused($focusedField, equals: .lastName)
-						.submitLabel(.next)
-						.onSubmit { focusedField = .email }
-				}
-				TextField("Email", text: $email)
-					.authFieldStyle()
-					.keyboardType(.emailAddress)
-					.textContentType(.emailAddress)
-					.focused($focusedField, equals: .email)
+	var body: some View {
+		VStack(spacing: 14) {
+			HStack(alignment: .top, spacing: 12) {
+				AuthTextField(title: "First Name", icon: "person", text: $firstName,
+							  focus: $focusedField, field: .firstName,
+							  error: error(for: .firstName), autocapitalization: .words)
+					.textContentType(.givenName)
 					.submitLabel(.next)
-					.onSubmit { focusedField = .username }
-				TextField("Username", text: $username)
-					.authFieldStyle()
-					.textContentType(.username)
-					.focused($focusedField, equals: .username)
+					.onSubmit { focusedField = .lastName }
+				AuthTextField(title: "Last Name", icon: "person", text: $lastName,
+							  focus: $focusedField, field: .lastName,
+							  error: error(for: .lastName), autocapitalization: .words)
+					.textContentType(.familyName)
 					.submitLabel(.next)
-					.onSubmit { focusedField = .password }
-				SecureInputView("Password", text: $password)
-					.authFieldStyle()
-					.textContentType(.newPassword)
-					.focused($focusedField, equals: .password)
-					.submitLabel(.go)
-					.onSubmit(createAccount)
-				Button(action: createAccount) {
-					if isCreating {
-						ProgressView()
-							.tint(.white)
-					} else {
-						Text("Make Account")
-					}
-				}
-				.buttonStyle(AccountButton())
-				.font(.headline)
-				.disabled(isCreating)
+					.onSubmit { focusedField = .email }
 			}
-			.padding()
+			AuthTextField(title: "Email", icon: "envelope", text: $email,
+						  focus: $focusedField, field: .email, error: error(for: .email))
+				.keyboardType(.emailAddress)
+				.textContentType(.emailAddress)
+				.submitLabel(.next)
+				.onSubmit { focusedField = .username }
+			AuthTextField(title: "Username", icon: "at", text: $username,
+						  focus: $focusedField, field: .username, error: error(for: .username))
+				.textContentType(.username)
+				.submitLabel(.next)
+				.onSubmit { focusedField = .password }
+			// .password rather than .newPassword: iOS's automatic strong-password
+			// overlay was dropping typed characters in this field.
+			AuthPasswordField(title: "Password", text: $password,
+							  focus: $focusedField, field: .password,
+							  error: error(for: .password),
+							  hint: "At least \(minimumPasswordLength) characters")
+				.textContentType(.password)
+				.submitLabel(.go)
+				.onSubmit(createAccount)
+
+			Button(action: createAccount) {
+				if isCreating {
+					ProgressView()
+						.tint(.white)
+				} else {
+					Text("Create Account")
+				}
+			}
+			.buttonStyle(AuthPrimaryButtonStyle())
+			.disabled(!isFormValid || isCreating)
+			.padding(.top, 8)
 		}
-		.defaultScrollAnchor(.center, for: .alignment)
-		.scrollBounceBehavior(.basedOnSize)
-		.scrollDismissesKeyboard(.interactively)
-		.background { AuthBackground() }
+		.onChange(of: focusedField) { previous, _ in
+			guard let previous else { return }
+			touchedFields.insert(previous)
+			if previous == .username {
+				checkUsernameAvailability()
+			}
+		}
+		.sensoryFeedback(.error, trigger: failedAttempts)
 		.authAlert($alert)
+	}
+
+	/// The problem with a field, shown only once the user has left it.
+	private func error(for field: Field) -> String? {
+		touchedFields.contains(field) ? problem(with: field) : nil
+	}
+
+	private func problem(with field: Field) -> String? {
+		switch field {
+		case .firstName:
+			return isValidField(text: firstName) ? nil : "At least 2 characters"
+		case .lastName:
+			return isValidField(text: lastName) ? nil : "At least 2 characters"
+		case .email:
+			return isValidEmail(email: email) ? nil : "Enter a valid email"
+		case .username:
+			let normalized = Person.normalizedUsername(username)
+			if !isValidField(text: normalized) { return "At least 2 characters" }
+			return takenUsernames.contains(normalized) ? "This username is taken" : nil
+		case .password:
+			return isValidPassword(password) ? nil : "At least \(minimumPasswordLength) characters"
+		}
+	}
+
+	private func checkUsernameAvailability() {
+		if Person.isUsernameTaken(username, in: viewContext) {
+			takenUsernames.insert(Person.normalizedUsername(username))
+		}
 	}
 
 	private func createAccount() {
 		guard !isCreating else { return }
-		guard isValidField(text: firstName),
-			  isValidField(text: lastName),
-			  isValidField(text: Person.normalizedUsername(username)),
-			  isValidPassword(password),
-			  isValidEmail(email: email) else {
-			alert = AuthAlert(
-				title: "Invalid field entries",
-				message: "Names and username need at least 2 characters, the password at least \(minimumPasswordLength), and the email must be valid."
-			)
-			return
-		}
-		guard !Person.isUsernameTaken(username, in: viewContext) else {
-			alert = AuthAlert(title: "Username Taken", message: "Please choose another username.")
+		checkUsernameAvailability()
+		guard isFormValid else {
+			touchedFields = Set(Field.allCases)
+			failedAttempts += 1
 			return
 		}
 
@@ -128,8 +157,8 @@ struct SignUpView: View {
 			focusedField = nil
 			clearForm()
 			alert = AuthAlert(
-				title: "Account successfully made",
-				message: "Please log in.",
+				title: "Account created",
+				message: "You can now log in.",
 				buttonTitle: "Go to Log In",
 				onDismiss: onAccountCreated
 			)
@@ -142,10 +171,12 @@ struct SignUpView: View {
 		password = ""
 		firstName = ""
 		lastName = ""
+		touchedFields = []
 	}
 }
 
 #Preview {
 	SignUpView()
+		.padding()
 		.environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
