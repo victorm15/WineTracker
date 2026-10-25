@@ -319,8 +319,8 @@ struct AddWineView: View {
 				&& sameText(item.wrappedDomain, wineDomain)
 				&& sameText(item.wrappedCreator, wineCreator)
 				&& item.wrappedType == wineType.rawValue
-				&& item.wrappedEdition.wrappedIsEdition == isVintage
-				&& item.wrappedEdition.wrappedNumber == editionValue
+				&& item.isVintage == isVintage
+				&& item.editionNumber == editionValue
 		}
 	}
 

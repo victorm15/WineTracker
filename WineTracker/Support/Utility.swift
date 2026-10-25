@@ -49,33 +49,46 @@ func isValidEmail(email: String) -> Bool {
     return emailPred.evaluate(with: email)
 
 }
+/// A password field with a show/hide button, for use in forms.
+/// Like `AuthPasswordField`, it never swaps the SecureField out: that would lose focus, and iOS
+/// clears a secure field when it's typed into again. Revealing hides it and draws the text on top.
 struct SecureInputView: View {
-    
     @Binding private var text: String
-    @State private var isSecured: Bool = true
+    @State private var isRevealed = false
+    @FocusState private var isFocused: Bool
     private var title: String
-    
+
     init(_ title: String, text: Binding<String>) {
         self.title = title
         self._text = text
     }
-    
+
     var body: some View {
-        ZStack(alignment: .trailing) {
-            Group {
-                if isSecured {
-                    SecureField(title, text: $text)
-                } else {
-                    TextField(title, text: $text)
+        HStack {
+            SecureField(title, text: $text)
+                .focused($isFocused)
+                .opacity(isRevealed ? 0 : 1)
+                .overlay(alignment: .leading) {
+                    if isRevealed {
+                        Text(text.isEmpty ? title : text)
+                            .foregroundStyle(text.isEmpty ? Color.secondary : Color.primary)
+                            .lineLimit(1)
+                            .truncationMode(.head)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .contentShape(Rectangle())
+                            .onTapGesture { isFocused = true }
+                            .accessibilityHidden(true)
+                    }
                 }
-            }.padding(.trailing, 32)
-            
-            Button(action: {
-                isSecured.toggle()
-            }) {
-                Image(systemName: self.isSecured ? "eye.slash" : "eye")
-                    .foregroundStyle(.gray)
+            Button {
+                isRevealed.toggle()
+            } label: {
+                Image(systemName: isRevealed ? "eye.slash" : "eye")
+                    .foregroundStyle(Color.secondary)
             }
+            .buttonStyle(.borderless)
+            .tint(.secondary)
+            .accessibilityLabel(isRevealed ? "Hide password" : "Show password")
         }
     }
 }

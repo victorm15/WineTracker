@@ -31,10 +31,49 @@ public class Person: NSManagedObject {
         return ((try? context.count(for: request)) ?? 0) > 0
     }
 
-    /// Removes this account's password hash and Face ID login. Call when deleting the account.
-    func deleteCredentials() {
+    /// Removes an account's password hash and Face ID login. Call once its deletion has been saved.
+    static func deleteCredentials(forAccountID accountID: String) {
         PasswordStore.delete(for: accountID)
         BiometricLogin.forget(accountID: accountID)
+    }
+
+    /// Deletes this account and, through the cascade rule, its wines. Its login details are
+    /// removed only after the deletion is saved, so a failed save leaves the account usable.
+    /// Returns false, with nothing changed, if the save fails.
+    func deleteAccount() -> Bool {
+        guard let context = managedObjectContext else { return false }
+        let id = accountID
+        context.delete(self)
+        guard context.saveOrRollback() else { return false }
+        Person.deleteCredentials(forAccountID: id)
+        QueryCache.shared.invalidate()
+        return true
+    }
+
+    /// Moves every wine from `other` into this account, adding bottle counts to wines that are
+    /// already here, then deletes `other`. Returns the number of wines moved or combined,
+    /// or nil, with nothing changed, if the save fails.
+    func absorb(_ other: Person) -> Int? {
+        guard let context = managedObjectContext, other != self else { return nil }
+        let otherID = other.accountID
+        let incoming = other.itemsArray
+        for wine in incoming {
+            if let match = itemsArray.first(where: { $0 !== wine && $0.isSameWine(as: wine) }) {
+                match.setQuantity(newQuantity: min(match.wrappedQuantity + wine.wrappedQuantity, Item.maxBottles))
+                match.setDrank(newDrank: min(match.wrappedDrank + wine.wrappedDrank, Item.maxBottles))
+                if match.storedImageData == nil, let photo = wine.storedImageData {
+                    match.setImageData(newImageData: photo)
+                }
+                context.delete(wine)
+            } else {
+                wine.owner = self
+            }
+        }
+        context.delete(other)
+        guard context.saveOrRollback() else { return nil }
+        Person.deleteCredentials(forAccountID: otherID)
+        QueryCache.shared.invalidate()
+        return incoming.count
     }
 
     /// Case-insensitive match so accounts saved before usernames were lowercased still match.

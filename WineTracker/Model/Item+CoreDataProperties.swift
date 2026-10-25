@@ -9,7 +9,6 @@ extension Item {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Item> {
         return NSFetchRequest<Item>(entityName: "Item")
     }
-
     @NSManaged private var creator: String?
     @NSManaged private var domain: String?
     @NSManaged private var drank: Int16
@@ -20,27 +19,22 @@ extension Item {
     @NSManaged public var edition: Edition?
     @NSManaged public var owner: Person?
     
-    public var wrappedEdition: Edition {
-        if let edition = self.edition {
-            return edition
-        }
-        let fakeEdition = Edition()
-        fakeEdition.setIsEdition(newIsEdition: true)
-        fakeEdition.setNumber(newNumber: 2024)
-        return fakeEdition
+    /// Whether the edition number is a vintage year. Wines without an edition count as vintages.
+    public var isVintage: Bool {
+        edition?.wrappedIsEdition ?? true
+    }
+    /// The vintage year or edition number, 2024 for wines without an edition.
+    public var editionNumber: Int16 {
+        edition?.wrappedNumber ?? 2024
     }
     public func setImageData(newImageData: Data) {
         image = newImageData
     }
+    /// The wine's own photo, nil when it uses the placeholder.
+    public var storedImageData: Data? {
+        image
+    }
     public var wrappedImageData: Data {
-        
-        
-        
-        
-        
-        
-        
-        
         
         image ?? (SimageToUIimage(Image("Image"))?.pngData())!
     }
@@ -82,21 +76,6 @@ extension Item {
     public func setType(newType: String) {
         type = newType
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
     public func SimageToUIimage(_ image: Image) -> UIImage? {
         let controller = UIHostingController(rootView: image)
         let view = controller.view
@@ -122,12 +101,7 @@ extension Item {
             // If data is nil, return a default Image from asset catalog
             return Image("Image")
         }
-    
     }
-
-
 }
 
-extension Item : Identifiable {
-
-}
+extension Item : Identifiable {}

@@ -69,6 +69,37 @@ struct PersistenceController {
 		}
 
 		container.viewContext.automaticallyMergesChangesFromParent = true
+		if !inMemory {
+			removeOrphans()
+		}
+	}
+
+	/// Deletes wines without an owner and editions without a wine. Deleting accounts and wines
+	/// used to leave these behind before the delete rules cascaded.
+	private func removeOrphans() {
+		let context = container.viewContext
+		let orphanWines = NSFetchRequest<Item>(entityName: "Item")
+		orphanWines.predicate = NSPredicate(format: "owner == nil")
+		let orphanEditions = NSFetchRequest<Edition>(entityName: "Edition")
+		orphanEditions.predicate = NSPredicate(format: "wine == nil")
+		let orphans: [NSManagedObject] = ((try? context.fetch(orphanWines)) ?? []) + ((try? context.fetch(orphanEditions)) ?? [])
+		guard !orphans.isEmpty else { return }
+		orphans.forEach(context.delete)
+		_ = context.saveOrRollback()
+	}
+}
+
+extension NSManagedObjectContext {
+	/// Saves, or undoes every unsaved change if saving fails. Returns whether the save succeeded.
+	func saveOrRollback() -> Bool {
+		guard hasChanges else { return true }
+		do {
+			try save()
+			return true
+		} catch {
+			rollback()
+			return false
+		}
 	}
 }
 

@@ -13,7 +13,7 @@
         <attribute name="name" attributeType="String"/>
         <attribute name="quantity" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="type" optional="YES" attributeType="String"/>
-        <relationship name="edition" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Edition" inverseName="wine" inverseEntity="Edition"/>
+        <relationship name="edition" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Edition" inverseName="wine" inverseEntity="Edition"/>
         <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="items" inverseEntity="Person"/>
     </entity>
     <entity name="Person" representedClassName="Person" syncable="YES">
@@ -21,7 +21,7 @@
         <attribute name="firstName" optional="YES" attributeType="String"/>
         <attribute name="lastName" optional="YES" attributeType="String"/>
         <attribute name="username" attributeType="String"/>
-        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="owner" inverseEntity="Item"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Item" inverseName="owner" inverseEntity="Item"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="username"/>

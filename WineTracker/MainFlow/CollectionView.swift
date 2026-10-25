@@ -348,8 +348,8 @@ struct CollectionView: View {
 														wineDrank = String(item.wrappedDrank)
 													}
 													if(editionNumber == "") {
-														isEdition = item.wrappedEdition.wrappedIsEdition
-														editionNumber = String(item.wrappedEdition.wrappedNumber)
+														isEdition = item.isVintage
+														editionNumber = String(item.editionNumber)
 													}
 
 													var flag = false
@@ -358,8 +358,8 @@ struct CollectionView: View {
 														if(item.wrappedName == wine.wrappedName &&
 														   item.wrappedDomain == wine.wrappedDomain &&
 														   item.wrappedCreator == wine.wrappedCreator &&
-														   item.wrappedEdition.wrappedIsEdition == wine.wrappedEdition.wrappedIsEdition &&
-														   item.wrappedEdition.wrappedNumber == wine.wrappedEdition.wrappedNumber &&
+														   item.isVintage == wine.isVintage &&
+														   item.editionNumber == wine.editionNumber &&
 														   item.wrappedType == wine.wrappedType){
 															continue
 														}
@@ -367,8 +367,8 @@ struct CollectionView: View {
 														if(wine.wrappedName == wineName &&
 														   wine.wrappedDomain == wineDomain &&
 														   wine.wrappedCreator == wineCreator &&
-														   wine.wrappedEdition.wrappedIsEdition == isEdition &&
-														   wine.wrappedEdition.wrappedNumber == Int16(editionNumber) ?? 0 &&
+														   wine.isVintage == isEdition &&
+														   wine.editionNumber == Int16(editionNumber) ?? 0 &&
 														   wine.wrappedType == wineType) {
 															flag = true
 														}
@@ -490,7 +490,7 @@ struct CollectionView: View {
 										.font(.custom("Cochin", size: 20))
 								}
 								HStack{
-									if(item.wrappedEdition.wrappedIsEdition) {
+									if(item.isVintage) {
 										Text("Vintage:")
 											.font(.custom("Cochin-Bold",size:20))
 									}
@@ -498,7 +498,7 @@ struct CollectionView: View {
 										Text("Edition:")
 											.font(.custom("Cochin-Bold",size:20))
 									}
-									Text(String(item.wrappedEdition.wrappedNumber))
+									Text(String(item.editionNumber))
 										.font(.custom("Cochin", size: 20))
 								}
 								HStack{
@@ -570,7 +570,7 @@ struct CollectionView: View {
 	private func addExistingWine(person:Person, typpe: String) {
 		let collection = person.itemsArray
 		for item in collection {
-			if(item.wrappedName == wineName && item.wrappedDomain == wineDomain && item.wrappedCreator == wineCreator && item.wrappedEdition.wrappedIsEdition == isEdition && item.wrappedEdition.wrappedNumber == Int16(editionNumber) ?? 0 && item.wrappedType == typpe) {
+			if(item.wrappedName == wineName && item.wrappedDomain == wineDomain && item.wrappedCreator == wineCreator && item.isVintage == isEdition && item.editionNumber == Int16(editionNumber) ?? 0 && item.wrappedType == typpe) {
 				let quant = item.wrappedQuantity
 				let dran = item.wrappedDrank
 				deleteWine(wine: item)

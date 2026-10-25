@@ -215,7 +215,7 @@ private struct WineHighlightCard: View {
 					.lineLimit(1)
 				Text("\(wine.wrappedCreator) · \(wine.wrappedDomain)")
 					.lineLimit(1)
-				Text("\(wine.wrappedType) · \(wine.wrappedEdition.wrappedIsEdition ? "Vintage" : "Edition") \(String(wine.wrappedEdition.wrappedNumber))")
+				Text("\(wine.wrappedType) · \(wine.isVintage ? "Vintage" : "Edition") \(String(wine.editionNumber))")
 					.lineLimit(1)
 				Text("\(wine.wrappedQuantity) unopened · \(wine.wrappedDrank) drank")
 					.lineLimit(1)
