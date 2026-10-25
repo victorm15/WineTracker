@@ -70,17 +70,20 @@ struct AuthPasswordField<Field: Hashable>: View {
 			HStack {
 				// Always the same SecureField: swapping in a TextField to reveal the password
 				// loses focus, and iOS clears a secure field when it's typed into again.
-				// Revealing just hides the dots and draws the text on top.
+				// Revealing makes the field transparent (a clear text colour doesn't hide the
+				// dots) and draws the text on top; tapping that text focuses the hidden field.
 				SecureField(title, text: $text)
 					.focused(focus, equals: field)
-					.foregroundStyle(isRevealed ? Color.clear : Color.primary)
-					.tint(isRevealed ? Color.clear : Color.accentColor)
+					.opacity(isRevealed ? 0 : 1)
 					.overlay(alignment: .leading) {
 						if isRevealed {
-							Text(text)
+							Text(text.isEmpty ? title : text)
+								.foregroundStyle(text.isEmpty ? Color.secondary : Color.primary)
 								.lineLimit(1)
 								.truncationMode(.head)
-								.allowsHitTesting(false)
+								.frame(maxWidth: .infinity, alignment: .leading)
+								.contentShape(Rectangle())
+								.onTapGesture { focus.wrappedValue = field }
 								.accessibilityHidden(true)
 						}
 					}

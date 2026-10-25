@@ -85,7 +85,9 @@ struct SignUpView: View {
 			.padding(.top, 8)
 		}
 		.onChange(of: focusedField) { previous, _ in
-			guard let previous else { return }
+			// Leaving an empty field doesn't count: that's also what happens when the form is
+			// cleared after an account is created. Create Account marks every field instead.
+			guard let previous, !text(of: previous).isEmpty else { return }
 			touchedFields.insert(previous)
 			if previous == .username {
 				checkUsernameAvailability()
@@ -93,6 +95,16 @@ struct SignUpView: View {
 		}
 		.sensoryFeedback(.error, trigger: failedAttempts)
 		.authAlert($alert)
+	}
+
+	private func text(of field: Field) -> String {
+		switch field {
+		case .firstName: firstName
+		case .lastName: lastName
+		case .email: email
+		case .username: username
+		case .password: password
+		}
 	}
 
 	/// The problem with a field, shown only once the user has left it.
