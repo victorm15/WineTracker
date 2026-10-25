@@ -31,6 +31,7 @@ struct SettingsView: View {
 	@State var logInSuccess = false
 	
 	@State var mergingAccount: Person?
+	@State private var biometricLoginOn = false
 	
 	@State var searchRequest: String = ""
 	
@@ -79,15 +80,6 @@ struct SettingsView: View {
 										Text("Email:")
 											.font(.custom("Cochin-Bold",size:20))
 										Text(currentPerson.wrappedEmail)
-											.font(.custom("Cochin",size:20))
-										
-										
-									}
-									.padding(.top,5)
-									HStack{
-										Text("Password:")
-											.font(.custom("Cochin-Bold",size:20))
-										Text(currentPerson.wrappedPassword)
 											.font(.custom("Cochin",size:20))
 										
 										
@@ -175,12 +167,8 @@ struct SettingsView: View {
 									.font(.custom("Cochin", size:20))
 									.offset(y:-50)
 								Button("Change Username") {
-									invalidChange = newUsername == ""
-									for person in persons {
-										if person.wrappedUsername == newUsername {
-											newUsernameTaken = true
-										}
-									}
+									invalidChange = Person.normalizedUsername(newUsername) == ""
+									newUsernameTaken = Person.isUsernameTaken(newUsername, in: viewContext)
 									
 									if(!invalidChange && !newUsernameTaken) {
 										currentPerson.setUsername(newUsername: newUsername)
@@ -323,24 +311,22 @@ struct SettingsView: View {
 										}
 									}
 								
-								TextField("New Password",text:$newPassword)
+								SecureInputView("New Password",text:$newPassword)
 									.textFieldStyle(.roundedBorder)
 									.autocapitalization(.none)
 									.disableAutocorrection(true)
+									.textContentType(.newPassword)
 									.font(.custom("Cochin", size:20))
 									.offset(y:-50)
 								Button("Change Password") {
-									invalidChange = newPassword == ""
+									invalidChange = !isValidPassword(newPassword)
 									if (!invalidChange) {
-										if(newPassword != "") {
-											currentPerson.setPassword(newPassword: newPassword)
-											try? viewContext.save()
-											newPassword = ""
+										let password = newPassword
+										newPassword = ""
+										Task {
+											invalidChange = !(await PasswordStore.save(password, for: currentPerson.accountID))
 										}
 									}
-									
-									
-									
 								}
 								.buttonStyle(AccountButton())
 							}
@@ -413,6 +399,18 @@ struct SettingsView: View {
 					} label: {
 						Text("Change email")
 							.font(.custom("Cochin",size:20))
+					}
+					
+					if BiometricLogin.isAvailable {
+						Toggle("Log in with \(BiometricLogin.biometryName)", isOn: $biometricLoginOn)
+							.font(.custom("Cochin",size:20))
+							.onChange(of: biometricLoginOn) { _, isOn in
+								if isOn {
+									biometricLoginOn = BiometricLogin.enable(for: currentPerson)
+								} else {
+									BiometricLogin.forget(accountID: currentPerson.accountID)
+								}
+							}
 					}
 					
 					NavigationLink{
@@ -499,31 +497,16 @@ struct SettingsView: View {
 								
 								
 								Button ("Merge")  {
-									if (persons.count != 0) {
-										for person in persons {
-											if (person != currentPerson) {
-												if (person.wrappedPassword == passwordAttempt && person.wrappedUsername == usernameAttempt) {
-													
-													mergingAccount = person
-													proposeDeletion = true
-													
-													
-												}
-												
-											}
+									let other = Person.withUsername(usernameAttempt, in: viewContext).flatMap { $0 == currentPerson ? nil : $0 }
+									let password = passwordAttempt
+									Task {
+										if await PasswordStore.verify(password, for: other?.accountID), let other {
+											mergingAccount = other
+											proposeDeletion = true
+										} else {
+											logInFailure = true
 										}
-										
-										
 									}
-									if (!proposeDeletion) {
-										logInFailure = true
-									}
-									
-									
-									
-									
-									
-									
 								}
 								.buttonStyle(AccountButton())
 								.popover(isPresented:$proposeDeletion) {
@@ -593,6 +576,7 @@ struct SettingsView: View {
 															
 															
 														}
+														merge.deleteCredentials()
 														viewContext.delete(merge)
 														try? viewContext.save()
 														currentPerson.updateCache(viewContext: viewContext)
@@ -649,6 +633,7 @@ struct SettingsView: View {
 				
 			}
 			.navigationTitle("")
+			.onAppear { biometricLoginOn = BiometricLogin.isEnabled(for: currentPerson) }
 			.toolbar {
 				ToolbarItem(placement: .principal) {
 					Text("Settings")
@@ -662,6 +647,7 @@ struct SettingsView: View {
     }
 	
 	private func deleteAccount(person: Person) {
+		person.deleteCredentials()
 		viewContext.delete(person)
 		try? viewContext.save()
 	}

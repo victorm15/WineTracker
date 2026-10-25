@@ -11,8 +11,6 @@ struct AppRootView: View {
 		else {
 			AuthTabView()
 		}
-		
-		
     }
 }
 

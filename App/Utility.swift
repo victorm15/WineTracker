@@ -74,18 +74,20 @@ struct SecureInputView: View {
                 isSecured.toggle()
             }) {
                 Image(systemName: self.isSecured ? "eye.slash" : "eye")
-                    .accentColor(.gray)
+                    .foregroundStyle(.gray)
             }
         }
     }
 }
 
 func isValidField(text:String) -> Bool {
-    var validity = true
-    if (text.count<=1) {
-        validity = false
-    }
-    return validity
+    text.count >= 2
+}
+
+let minimumPasswordLength = 8
+
+func isValidPassword(_ password: String) -> Bool {
+    password.count >= minimumPasswordLength
 }
 
 
