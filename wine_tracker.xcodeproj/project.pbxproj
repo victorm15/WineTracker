@@ -11,9 +11,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		775AE2072ECD1A9E00EDB4E8 /* wine_tracker */ = {
+		775AE2072ECD1A9E00EDB4E8 /* WineTracker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = wine_tracker;
+			path = WineTracker;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		775AE1FC2ECD1A9E00EDB4E8 = {
 			isa = PBXGroup;
 			children = (
-				775AE2072ECD1A9E00EDB4E8 /* wine_tracker */,
+				775AE2072ECD1A9E00EDB4E8 /* WineTracker */,
 				775AE2062ECD1A9E00EDB4E8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,7 +61,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				775AE2072ECD1A9E00EDB4E8 /* wine_tracker */,
+				775AE2072ECD1A9E00EDB4E8 /* WineTracker */,
 			);
 			name = wine_tracker;
 			packageProductDependencies = (
