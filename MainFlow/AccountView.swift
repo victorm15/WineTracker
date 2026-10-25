@@ -1,27 +1,17 @@
 import SwiftUI
 
-
-
-
-
 struct AccountView: View {
 	@ObservedObject var currentPerson: Person
-	
+
 	var body: some View {
-		
-		
 		List {
-					
 			HStack{
-				
 				Text("Total recorded bottles:")
 					.font(.custom("Cochin",size:20))
-				
+
 				Text("\(currentPerson.getTotalWineCount()+currentPerson.getTotalDrank())")
 					.font(.custom("Cochin",size:50))
 					.foregroundColor(Color.accentColor)
-				
-				
 			}
 			HStack{
 				Text("Total unopened bottles:")
@@ -29,8 +19,6 @@ struct AccountView: View {
 				Text("\(currentPerson.getTotalWineCount())")
 					.font(.custom("Cochin",size:50))
 					.foregroundColor(Color.accentColor)
-				
-				
 			}
 			HStack{
 				Text("Total drank bottles:")
@@ -38,10 +26,7 @@ struct AccountView: View {
 				Text("\(currentPerson.getTotalDrank())")
 					.font(.custom("Cochin",size:50))
 					.foregroundColor(Color.accentColor)
-				
-				
 			}
-			
 		}
 		.navigationTitle("")
 		.toolbar {

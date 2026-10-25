@@ -6,28 +6,26 @@ import CoreData
 struct AddWineView: View {
 	@ObservedObject var currentPerson: Person
 	@Environment(\.managedObjectContext) private var viewContext
-	
+
 	@State var wineName: String = ""
 	@State var wineDomain: String = ""
 	@State var wineCreator: String = ""
 	@State var wineType: String = "Red Wine"
 	@State var wineQuantity: String = ""
 	@State var wineDrank: String = ""
-	
+
 	@State var isEdition = true
 	@State var editionNumber = ""
-	
+
 	@State private var avatarItem: PhotosPickerItem?
 	@State private var avatarImage: Image?
-	
+
 	@State var wineExists = false
 	@State var invalidEntries = false
-	
+
 //	var onSaved: () -> Void
-	
+
     var body: some View {
-        
-		
 		ZStack{
 			LinearGradient(colors: [ Color(UIColor(rgb: 0xf2f2f7)), .white], startPoint: .topLeading, endPoint: .bottomTrailing)
 				.ignoresSafeArea()
@@ -47,8 +45,7 @@ struct AddWineView: View {
 					.autocapitalization(.none)
 					.disableAutocorrection(true)
 					.font(.custom("Cochin", size:20))
-				
-				
+
 				HStack {
 					TextField("Unopened Bottles", text:$wineQuantity)
 						.textFieldStyle(.roundedBorder)
@@ -74,11 +71,8 @@ struct AddWineView: View {
 								self.wineDrank = filtered
 							}
 						}
-					
-					
 				}
-				
-				
+
 				Text("Type")
 					.font(.custom("Cochin", size:20))
 					.foregroundStyle(.gray)
@@ -110,24 +104,17 @@ struct AddWineView: View {
 							.foregroundColor(Color.lighterGray)
 							.font(.custom("Cochin", size:20))
 					}
-					
 				}
-				
+
 				HStack{
-					
 					VStack{
 						Text("Vintage")
 							.font(.custom("Cochin", size:20))
 							.foregroundColor(Color.accentColor)
 						Toggle(isOn: $isEdition) {}
 							.offset(x:-25)
-						
 					}
-					
-					
-					
-					
-					
+
 					if (isEdition) {
 						TextField("Vintage Year", text:$editionNumber)
 							.textFieldStyle(.roundedBorder)
@@ -159,23 +146,13 @@ struct AddWineView: View {
 							}
 							.frame(width:280)
 							.offset(y:15)
-						
 					}
-					
-					
-					
-					
-					
-					
-					
-					
-					
 				}
 				VStack {
 					Text("Image")
 						.font(.custom("Cochin", size:20))
 						.foregroundColor(Color.accentColor)
-					
+
 					VStack{
 						PhotosPicker(selection: $avatarItem, matching: .images,label: {
 							if let image = avatarImage {
@@ -188,7 +165,6 @@ struct AddWineView: View {
 									.resizable()
 									.frame(width:100,height:100)
 									.foregroundColor(Color.accentColor)
-								
 							}
 						})
 					}
@@ -201,15 +177,8 @@ struct AddWineView: View {
 							}
 						}
 					}
-					
 				}
-				
-				
-				
-				
-				
-				
-				
+
 				Button("Add Wine") {
 					if(Int32(wineQuantity) ?? 0>999) {
 						wineQuantity = String(999)
@@ -217,7 +186,7 @@ struct AddWineView: View {
 					if(Int32(wineDrank) ?? 0>999) {
 						wineDrank = String(999)
 					}
-					
+
 					invalidEntries = (wineName == "" || wineDomain == "" || wineCreator == "" || wineQuantity == "" || wineDrank == "" || editionNumber == "")
 					wineExists = wineExists(person: currentPerson)
 					if(!wineExists && !invalidEntries) {
@@ -231,9 +200,7 @@ struct AddWineView: View {
 						newItem.setType(newType: wineType)
 						newItem.setImage(Simage: avatarImage ?? Image("Image"))
 						addEditon(wine: newItem)
-						
-						
-						
+
 						try? viewContext.save()
 						wineName = ""
 						wineType = "Red Wine"
@@ -245,58 +212,28 @@ struct AddWineView: View {
 						editionNumber = ""
 						avatarImage = nil
 						avatarItem = nil
-						
+
 //						onSaved()
 //						dismiss()
-						
-						
 					}
 					currentPerson.updateCache(viewContext: viewContext)
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
 				}
 				.popover(isPresented:$wineExists) {
 					ZStack {
 						RadialGradient(gradient: Gradient(colors: [Color.lighterGray, .white,Color.lighterGray,.white]), center: .center, startRadius: 140, endRadius: 300)
-						
+
 						VStack{
 							Text("Wine Already Exists")
 							Text("Add To Recorded Bottles?")
 							HStack{
 								Button("No") {
 									wineExists = false
-									
 								}
 								.buttonStyle(AccountButton())
 								Button("Yes") {
 									addExistingWine(person: currentPerson,typpe:wineType)
 									currentPerson.updateCache(viewContext: viewContext)
-									
+
 									wineExists = false
 									wineName = ""
 									wineType = "Red Wine"
@@ -306,7 +243,6 @@ struct AddWineView: View {
 									wineDrank = ""
 									isEdition = true
 									editionNumber = ""
-									
 								}
 							}
 						}
@@ -315,25 +251,19 @@ struct AddWineView: View {
 				.popover(isPresented:$invalidEntries) {
 					ZStack {
 						RadialGradient(gradient: Gradient(colors: [Color.lighterGray, .white,Color.lighterGray,.white]), center: .center, startRadius: 140, endRadius: 300)
-						
+
 						VStack{
 							Text("One or more of the fields is empty")
 							Text("Please provide entries to each text field")
 							HStack{
 								Button("Ok") {
 									invalidEntries = false
-									
 								}
 								.buttonStyle(AccountButton())
 							}
 						}
 					}
 				}
-				
-				
-				
-				
-				
 				.buttonStyle(AccountButton())
 				.font(.custom("Cochin", size:20))
 				Button("Clear") {
@@ -349,8 +279,6 @@ struct AddWineView: View {
 					avatarItem = nil
 				}
 				.offset(x:90,y:-45)
-				
-				
 			}
 			.navigationTitle("")
 			.toolbar {
@@ -361,20 +289,12 @@ struct AddWineView: View {
 				}
 			}
 		}
-			
-			
-		
-		
-		
-		
-		
     }
-	
+
 	private func addExistingWine(person:Person, typpe: String) {
 		let collection = person.itemsArray
 		for item in collection {
 			if(item.wrappedName == wineName && item.wrappedDomain == wineDomain && item.wrappedCreator == wineCreator && item.wrappedEdition.wrappedIsEdition == isEdition && item.wrappedEdition.wrappedNumber == Int16(editionNumber) ?? 0 && item.wrappedType == typpe) {
-				
 				let quant = item.wrappedQuantity
 				let dran = item.wrappedDrank
 				deleteWine(wine: item)
@@ -388,25 +308,12 @@ struct AddWineView: View {
 				newItem.setType(newType: typpe)
 				newItem.setImage(Simage: avatarImage ?? Image("Image"))
 				addEditon(wine: newItem)
-				
+
 				try? viewContext.save()
-				
-				
-				
-				
-				
-				
 			}
-			
-			
-			
-			
 		}
-		
-		
-		
 	}
-	
+
 	private func wineExists(person: Person)->Bool {
 		var flag = false
 		let collection = person.itemsArray
@@ -414,22 +321,15 @@ struct AddWineView: View {
 			if(item.wrappedName == wineName && item.wrappedDomain == wineDomain && item.wrappedCreator == wineCreator && item.wrappedEdition.wrappedIsEdition == isEdition && item.wrappedEdition.wrappedNumber == Int16(editionNumber) ?? 0 && item.wrappedType == wineType) {
 				flag = true
 			}
-			
-			
-			
 		}
 		return flag
-		
-		
-		
-		
 	}
-	
+
 	private func deleteWine(wine: Item) {
 		viewContext.delete(wine)
 		try? viewContext.save()
 	}
-	
+
 	private func addWineCustom(person: Person,name: String) {
 		let newItem = Item(context:viewContext)
 		newItem.setName(newName: name)
@@ -441,24 +341,15 @@ struct AddWineView: View {
 		newItem.setType(newType: wineType)
 		newItem.setImage(Simage: avatarImage ?? Image("Image"))
 		addEditon(wine: newItem)
-		
+
 		try? viewContext.save()
-		
-		
-		
-		
-		
 	}
-	
+
 	private func addEditon(wine: Item) {
 		let newEdition = Edition(context:viewContext)
 		newEdition.setIsEdition(newIsEdition: isEdition)
 		newEdition.setNumber(newNumber: Int16(editionNumber) ?? 2024)
 		newEdition.wine = wine
 		try? viewContext.save()
-		
-		
 	}
-	
-	
 }

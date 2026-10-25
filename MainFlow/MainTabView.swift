@@ -1,20 +1,13 @@
 import SwiftUI
 
-
-
-
-
 struct MainTabView: View {
-	
-	
 	var currentPerson: Person
 	@State private var selection: MainTab = .collection
-	
+
 	enum MainTab: Hashable {
 		case collection, account, home, addWine, settings
 	}
-	
-	
+
     var body: some View {
 		TabView{
 			NavigationStack { CollectionView(currentPerson: currentPerson) }
@@ -32,8 +25,6 @@ struct MainTabView: View {
 			NavigationStack { SettingsView(currentPerson: currentPerson) }
 				.tag(MainTab.settings)
 				.tabItem{ Label("Settings", systemImage: "gear")}
-			
 		}
     }
-	
 }

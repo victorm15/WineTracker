@@ -3,13 +3,11 @@ import Combine
 import PhotosUI
 import CoreData
 
-
-
 struct CollectionView: View {
 	@ObservedObject var currentPerson: Person
 	@Environment(\.managedObjectContext) private var viewContext
 	@FetchRequest(sortDescriptors: []) var persons: FetchedResults<Person>
-	
+
 	// Sorting and Filtering
 	@State var filterType: String = "Name"
 	@State var sortType: String = "NameA"
@@ -17,9 +15,9 @@ struct CollectionView: View {
 	@State var wineTypeFilter = "Any"
 	@State var isEdition = true
 	@State var editionNumber = ""
-	
+
 	@State var linkGoBack = false
-	
+
 	// Adding new wines
 	@State var wineName: String = ""
 	@State var wineDomain: String = ""
@@ -29,58 +27,46 @@ struct CollectionView: View {
 	@State var wineDrank: String = ""
 	@State private var avatarItem: PhotosPickerItem?
 	@State private var avatarImage: Image?
-	
+
 	// Editing wines
 	@State var newWineType = ""
 	@State private var newAvatarItem: PhotosPickerItem?
 	@State private var newAvatarImage: Image?
 	@State var wineEditExists = false
-	
+
 	@State var wines: [Item] = []
-	
-	
+
     var body: some View {
-        
 		ZStack {
 			LinearGradient(colors: [.white,Color.veryLightGray,.white], startPoint: .topLeading, endPoint: .topTrailing)
 				.ignoresSafeArea()
-			
+
 			VStack {
-				
-				
 				HStack {
 					Menu {
-						
 						Button {
 							filterType = "Name"
 						} label: {
 							Text("Name")
 								.font(.custom("Cochin", size:20))
-							
 						}
 						Button {
 							filterType = "Domain"
 						} label: {
 							Text("Domain")
 								.font(.custom("Cochin", size:20))
-							
 						}
 						Button {
 							filterType = "Creator"
 						} label:{
 							Text("Creator")
 								.font(.custom("Cochin", size:20))
-							
 						}
 					}label: {
 						ZStack {
 							Text("\(filterType)  v")
 								.font(.custom("Cochin", size:20))
-							
-							
 						}
-						
-						
 					}
 					TextField("Search:",text:$searchRequest)
 						.textFieldStyle(.roundedBorder)
@@ -113,82 +99,60 @@ struct CollectionView: View {
 							Text("Champagne")
 								.font(.custom("Cochin", size:20))
 						}
-						
-						
-						
 					}label : {
 						Image(systemName:"cone.fill")
 							.resizable()
 							.frame(width:30,height:30)
 							.rotationEffect(.degrees(180))
 					}
-					
+
 					Menu {
-						
 						Button {
 							sortType = "NameD"
 						} label: {
 							Text("Sort by Name Descending")
 								.font(.custom("Cochin", size:20))
-							
 						}
 						Button {
 							sortType = "NameA"
 						} label: {
 							Text("Sort by Name Ascending")
 								.font(.custom("Cochin", size:20))
-							
 						}
 						Button {
 							sortType = "CreatorD"
 						} label: {
 							Text("Sort by Creator Descending")
 								.font(.custom("Cochin", size:20))
-							
 						}
 						Button {
 							sortType = "CreatorA"
 						} label: {
 							Text("Sort by Creator Ascending")
 								.font(.custom("Cochin", size:20))
-							
 						}
 						Button {
 							sortType = "DomainD"
 						} label: {
 							Text("Sort by Domain Descending")
 								.font(.custom("Cochin", size:20))
-							
 						}
 						Button {
 							sortType = "DomainA"
 						} label: {
 							Text("Sort by Domain Ascending")
 								.font(.custom("Cochin", size:20))
-							
 						}
 					} label : {
 						Image(systemName:"arrow.up.and.down.circle.fill")
 							.resizable()
 							.frame(width:30,height:30)
 					}
-					
-					
-					
-					
 				}
-				
-				
-				
-				
-				List {
-					
-					
-					
-					
 
+				List {
 					ForEach(wines) { item in
-						
+
 						NavigationLink(){
 							GeometryReader { geometry in
 								HStack{
@@ -204,10 +168,8 @@ struct CollectionView: View {
 											.navigationBarBackButtonHidden()
 											.toolbar(.hidden,for: .tabBar)
 									}
-									
+
 									NavigationLink {
-										
-										
 										ZStack{
 											LinearGradient(colors: [ Color.lighterGray, .white], startPoint: .topLeading, endPoint: .bottomTrailing)
 												.ignoresSafeArea()
@@ -230,8 +192,7 @@ struct CollectionView: View {
 													.autocapitalization(.none)
 													.disableAutocorrection(true)
 													.font(.custom("Cochin", size:20))
-												
-												
+
 												HStack {
 													TextField("Unopened Bottles", text:$wineQuantity)
 														.textFieldStyle(.roundedBorder)
@@ -257,12 +218,8 @@ struct CollectionView: View {
 																self.wineDrank = filtered
 															}
 														}
-													
-													
 												}
-												
-												
-												
+
 												Menu {
 													Button {
 														newWineType = "Red Wine"
@@ -291,11 +248,9 @@ struct CollectionView: View {
 															.foregroundColor(Color.lighterGray)
 															.font(.custom("Cochin", size:20))
 													}
-													
 												}
-												
+
 												HStack{
-													
 													VStack{
 														Text("Vintage")
 															.font(.custom("Cochin", size:20))
@@ -303,13 +258,8 @@ struct CollectionView: View {
 														Toggle(isOn: $isEdition) {}
 															.offset(x:-25)
 															.foregroundColor(Color.accentColor)
-														
 													}
-													
-													
-													
-													
-													
+
 													if (isEdition) {
 														TextField("Vintage Year", text:$editionNumber)
 															.textFieldStyle(.roundedBorder)
@@ -341,23 +291,13 @@ struct CollectionView: View {
 															}
 															.frame(width:280)
 															.offset(y:15)
-														
 													}
-													
-													
-													
-													
-													
-													
-													
-													
-													
 												}
 												VStack {
 													Text("Image")
 														.font(.custom("Cochin", size:20))
 														.foregroundColor(Color.accentColor)
-													
+
 													VStack{
 														PhotosPicker(selection: $avatarItem, matching: .images,label: {
 															if let image = avatarImage {
@@ -370,7 +310,6 @@ struct CollectionView: View {
 																	.resizable()
 																	.frame(width:100,height:100)
 																	.foregroundColor(Color.accentColor)
-																
 															}
 														})
 													}
@@ -383,23 +322,9 @@ struct CollectionView: View {
 															}
 														}
 													}
-													
 												}
-												
-												
-												
-												
-												
-												
-												
-												
+
 												Button("Save Changes") {
-													
-													
-													
-													
-													
-													
 													if(wineName == "") {
 														wineName = item.wrappedName
 													}
@@ -426,14 +351,10 @@ struct CollectionView: View {
 														isEdition = item.wrappedEdition.wrappedIsEdition
 														editionNumber = String(item.wrappedEdition.wrappedNumber)
 													}
-													
-													
-													
-													
+
 													var flag = false
 													let collection = currentPerson.itemsArray
 													for wine in collection {
-														
 														if(item.wrappedName == wine.wrappedName &&
 														   item.wrappedDomain == wine.wrappedDomain &&
 														   item.wrappedCreator == wine.wrappedCreator &&
@@ -442,48 +363,19 @@ struct CollectionView: View {
 														   item.wrappedType == wine.wrappedType){
 															continue
 														}
-														
-														
+
 														if(wine.wrappedName == wineName &&
 														   wine.wrappedDomain == wineDomain &&
 														   wine.wrappedCreator == wineCreator &&
 														   wine.wrappedEdition.wrappedIsEdition == isEdition &&
 														   wine.wrappedEdition.wrappedNumber == Int16(editionNumber) ?? 0 &&
 														   wine.wrappedType == wineType) {
-															
-															
-															
-															
-															
-															
 															flag = true
-															
-															
-															
-															
 														}
-														
-														
-														
 													}
-													
-													
-													
-													
+
 													wineEditExists = flag
-													
-													
-													
-													
-													
-													
-													
-													
-													
-													
-													
-													
-													
+
 													if(!wineEditExists) {
 														let newItem = Item(context: viewContext)
 														newItem.setName(newName: wineName)
@@ -499,7 +391,7 @@ struct CollectionView: View {
 															newItem.setImageData(newImageData: item.wrappedImageData)
 														}
 														addEdition(wine: newItem)
-														
+
 														linkGoBack = true
 														viewContext.delete(item)
 														try? viewContext.save()
@@ -511,55 +403,31 @@ struct CollectionView: View {
 														wineDrank = ""
 														isEdition = true
 														editionNumber = ""
-														
 													}
 													currentPerson.updateCache(viewContext: viewContext)
-													
-													
-													
-													
-													
-													
-													
-													
-													
-													
-													
-													
 												}
 												.navigationDestination(isPresented: $linkGoBack) {
 													HomeView(currentPerson: currentPerson)
 														.navigationBarBackButtonHidden()
 														.toolbar(.hidden,for:.tabBar)
-													
-													
-													
 												}
 												.popover(isPresented:$wineEditExists) {
 													ZStack {
 														RadialGradient(gradient: Gradient(colors: [Color.lighterGray, .white,Color.lighterGray,.white]), center: .center, startRadius: 140, endRadius: 300)
-														
+
 														VStack{
 															Text("Wine Already Exists")
 															Text("Add To Recorded Bottles?")
 															HStack{
 																Button("No") {
 																	wineEditExists = false
-																	
 																}
 																.buttonStyle(AccountButton())
 																Button("Yes") {
 																	linkGoBack = true
-																	
-																	
-																	
+
 																	addExistingWine(person: currentPerson,typpe:wineType)
-																	
-																	
-																	
-																	
-																	
-																	
+
 																	viewContext.delete(item)
 																	try? viewContext.save()
 																	currentPerson.updateCache(viewContext: viewContext)
@@ -572,13 +440,11 @@ struct CollectionView: View {
 																	wineDrank = ""
 																	isEdition = true
 																	editionNumber = ""
-																	
 																}
 															}
 														}
 													}
 												}
-												
 												.buttonStyle(AccountButton())
 												.font(.custom("Cochin", size:20))
 												Button("Clear") {
@@ -592,52 +458,21 @@ struct CollectionView: View {
 													editionNumber = ""
 												}
 												.offset(x:90,y:-45)
-												
 											}
-											
-											
-											
 										}
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
-										
 									} label : {
 										Text("Edit")
 											.font(.custom("Cochin",size:20))
 									}
-									
 								}
-								
-								
-								
-								
-								
 								.position(x: geometry.size.width-80, y: 0)
-								
 							}
-							
-							
-							
-							
-							
-							
-							
+
 							VStack{
 								HStack {
 									Text("\(item.wrappedName)")
 										.font(.custom("Cochin-Bold",size:20))
-									
-									
+
 									item.wrappedImage
 										.resizable()
 										.frame(width:150,height:150)
@@ -647,14 +482,12 @@ struct CollectionView: View {
 										.font(.custom("Cochin-Bold",size:20))
 									Text(item.wrappedCreator)
 										.font(.custom("Cochin", size: 20))
-									
 								}
 								HStack{
 									Text("Domain:")
 										.font(.custom("Cochin-Bold",size:20))
 									Text(item.wrappedDomain)
 										.font(.custom("Cochin", size: 20))
-									
 								}
 								HStack{
 									if(item.wrappedEdition.wrappedIsEdition) {
@@ -664,69 +497,49 @@ struct CollectionView: View {
 									else {
 										Text("Edition:")
 											.font(.custom("Cochin-Bold",size:20))
-										
 									}
 									Text(String(item.wrappedEdition.wrappedNumber))
 										.font(.custom("Cochin", size: 20))
-									
 								}
 								HStack{
 									Text("Type:")
 										.font(.custom("Cochin-Bold",size:20))
 									Text(item.wrappedType)
 										.font(.custom("Cochin", size: 20))
-									
 								}
 								HStack{
 									Text("Unopened Bottles:")
 										.font(.custom("Cochin-Bold",size:20))
 									Text(String(item.wrappedQuantity))
 										.font(.custom("Cochin", size: 20))
-									
 								}
 								HStack{
 									Text("Drank:")
 										.font(.custom("Cochin-Bold",size:20))
 									Text(String(item.wrappedDrank))
 										.font(.custom("Cochin", size: 20))
-									
 								}
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
-								
 							}
 							.offset(y:-350)
 						} label:{
-							
 							ZStack {
 								RoundedRectangle(cornerRadius: 25)
 									.fill(Color.white)
 									.shadow(radius: 3)
-								
+
 								HStack(spacing: 16) {
 									VStack(alignment: .leading, spacing: 4) {
 										Text(item.wrappedName)
 											.font(.custom("Cochin-Bold", size: 20))
 											.lineLimit(1)
-										
+
 										Text("\(item.wrappedCreator), \(item.wrappedDomain)")
 											.font(.custom("Cochin", size: 16))
 											.lineLimit(2)
 									}
-									
+
 									Spacer(minLength: 8)
-									
+
 									item.wrappedImage
 										.resizable()
 										.scaledToFit()
@@ -742,15 +555,7 @@ struct CollectionView: View {
 					}
 					.listStyle(.plain)
 					.scrollContentBackground(.hidden)
-					
-					
-					
-					
-					
-					
 				}
-				
-				
 			}
 		}
 		.onAppear {
@@ -760,15 +565,12 @@ struct CollectionView: View {
 		.onChange(of: sortType) { reloadWines() }
 		.onChange(of: searchRequest) { reloadWines() }
 		.onChange(of: wineTypeFilter) { reloadWines() }
-		
     }
-	
-	
+
 	private func addExistingWine(person:Person, typpe: String) {
 		let collection = person.itemsArray
 		for item in collection {
 			if(item.wrappedName == wineName && item.wrappedDomain == wineDomain && item.wrappedCreator == wineCreator && item.wrappedEdition.wrappedIsEdition == isEdition && item.wrappedEdition.wrappedNumber == Int16(editionNumber) ?? 0 && item.wrappedType == typpe) {
-				
 				let quant = item.wrappedQuantity
 				let dran = item.wrappedDrank
 				deleteWine(wine: item)
@@ -782,38 +584,23 @@ struct CollectionView: View {
 				newItem.setType(newType: typpe)
 				newItem.setImage(Simage: avatarImage ?? Image("Image"))
 				addEdition(wine: newItem)
-				
+
 				try? viewContext.save()
-				
-				
-				
-				
-				
-				
 			}
-			
-			
-			
-			
 		}
-		
-		
-		
 	}
 
 	private func deleteWine(wine: Item) {
 		viewContext.delete(wine)
 		try? viewContext.save()
 	}
-	
+
 	private func addEdition(wine: Item) {
 		let newEdition = Edition(context:viewContext)
 		newEdition.setIsEdition(newIsEdition: isEdition)
 		newEdition.setNumber(newNumber: Int16(editionNumber) ?? 2024)
 		newEdition.wine = wine
 		try? viewContext.save()
-		
-		
 	}
 	private func reloadWines() {
 		wines = currentPerson.getWines(
@@ -824,8 +611,4 @@ struct CollectionView: View {
 			viewContext: viewContext
 		)
 	}
-	
-	
 }
-
-
