@@ -1,22 +1,23 @@
 import SwiftUI
 
-/// App icon, name and tagline shown above the log in / sign up form.
+/// Left-aligned title and subtitle for the current auth mode.
 struct AuthHeader: View {
+	let title: String
+	let subtitle: String
+
 	var body: some View {
-		VStack(spacing: 10) {
-			Image(systemName: "wineglass.fill")
-				.font(.system(size: 40))
-				.foregroundStyle(.white)
-				.frame(width: 80, height: 80)
-				.background(Color.accentColor, in: RoundedRectangle(cornerRadius: 22))
-				.accessibilityHidden(true)
-			Text("Wine Tracker")
-				.font(.custom("Cochin-Bold", size: 34, relativeTo: .largeTitle))
-				.foregroundStyle(Color.accentColor)
-			Text("Keep track of every bottle.")
-				.font(.subheadline)
+		VStack(alignment: .leading, spacing: 6) {
+			Text(title)
+				.font(.largeTitle.bold())
+				.contentTransition(.opacity)
+			Text(subtitle)
+				.font(.body)
 				.foregroundStyle(.secondary)
+				.contentTransition(.opacity)
 		}
+		.frame(maxWidth: .infinity, alignment: .leading)
+		.accessibilityElement(children: .combine)
+		.accessibilityAddTraits(.isHeader)
 	}
 }
 

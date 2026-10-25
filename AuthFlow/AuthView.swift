@@ -6,6 +6,20 @@ struct AuthView: View {
 	private enum Mode: String, CaseIterable {
 		case logIn = "Log In"
 		case signUp = "Sign Up"
+
+		var title: String {
+			switch self {
+			case .logIn: "Welcome back"
+			case .signUp: "Create an account"
+			}
+		}
+
+		var subtitle: String {
+			switch self {
+			case .logIn: "Log in to see your wines."
+			case .signUp: "It only takes a minute."
+			}
+		}
 	}
 
 	@State private var mode = Mode.logIn
@@ -13,7 +27,8 @@ struct AuthView: View {
 	var body: some View {
 		ScrollView {
 			VStack(spacing: 28) {
-				AuthHeader()
+				AuthHeader(title: mode.title, subtitle: mode.subtitle)
+					.padding(.top, 24)
 
 				Picker("Mode", selection: $mode.animation(.easeInOut(duration: 0.2))) {
 					ForEach(Mode.allCases, id: \.self) { mode in
