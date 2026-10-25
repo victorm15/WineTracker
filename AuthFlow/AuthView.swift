@@ -13,13 +13,6 @@ struct AuthView: View {
 			case .signUp: "Create an account"
 			}
 		}
-
-		var subtitle: String {
-			switch self {
-			case .logIn: "Log in to see your wines."
-			case .signUp: "It only takes a minute."
-			}
-		}
 	}
 
 	@State private var mode = Mode.logIn
@@ -27,7 +20,7 @@ struct AuthView: View {
 	var body: some View {
 		ScrollView {
 			VStack(spacing: 28) {
-				AuthHeader(title: mode.title, subtitle: mode.subtitle)
+				AuthHeader(title: mode.title)
 					.padding(.top, 24)
 
 				Picker("Mode", selection: $mode.animation(.easeInOut(duration: 0.2))) {

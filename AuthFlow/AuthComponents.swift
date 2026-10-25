@@ -1,20 +1,16 @@
 import SwiftUI
 
-/// Left-aligned title and subtitle for the current auth mode.
+/// Left-aligned title for the current auth mode.
 struct AuthHeader: View {
 	let title: String
-	let subtitle: String
 
 	var body: some View {
 		VStack(alignment: .leading, spacing: 6) {
 			Text(title)
 				.font(.largeTitle.bold())
 				.contentTransition(.opacity)
-			Text(subtitle)
-				.font(.body)
-				.foregroundStyle(.secondary)
-				.contentTransition(.opacity)
 		}
+		.foregroundStyle(Color.accentColor)
 		.frame(maxWidth: .infinity, alignment: .leading)
 		.accessibilityElement(children: .combine)
 		.accessibilityAddTraits(.isHeader)
