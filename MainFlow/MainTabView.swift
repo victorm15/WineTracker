@@ -2,29 +2,33 @@ import SwiftUI
 
 struct MainTabView: View {
 	var currentPerson: Person
-	@State private var selection: MainTab = .collection
+	@State private var selection: MainTab = .home
 
 	enum MainTab: Hashable {
-		case collection, account, home, addWine, settings
+		case collection, home, addWine, settings
 	}
 
-    var body: some View {
-		TabView{
-			NavigationStack { CollectionView(currentPerson: currentPerson) }
-				.tag(MainTab.collection)
-				.tabItem { Label("Collection", systemImage: "list.bullet") }
-			NavigationStack { AccountView(currentPerson: currentPerson) }
-				.tag(MainTab.account)
-				.tabItem { Label("Account", systemImage: "person.fill") }
-			NavigationStack { HomeView(currentPerson: currentPerson) }
-				.tag(MainTab.home)
-				.tabItem { Label("Home", systemImage: "house.fill")}
-			NavigationStack { AddWineView(currentPerson: currentPerson) }
-				.tag(MainTab.addWine)
-				.tabItem{ Label("Add Wine", systemImage: "plus.circle.fill")}
-			NavigationStack { SettingsView(currentPerson: currentPerson) }
-				.tag(MainTab.settings)
-				.tabItem{ Label("Settings", systemImage: "gear")}
+	var body: some View {
+		TabView(selection: $selection) {
+			Tab("Home", systemImage: "house.fill", value: .home) {
+				NavigationStack {
+					HomeView(currentPerson: currentPerson, onAddWine: { selection = .addWine })
+				}
+			}
+			Tab("Collection", systemImage: "list.bullet", value: .collection) {
+				NavigationStack { CollectionView(currentPerson: currentPerson) }
+			}
+			Tab("Add Wine", systemImage: "plus.circle.fill", value: .addWine) {
+				NavigationStack { AddWineView(currentPerson: currentPerson) }
+			}
+			Tab("Settings", systemImage: "gear", value: .settings) {
+				NavigationStack { SettingsView(currentPerson: currentPerson) }
+			}
 		}
-    }
+	}
+}
+
+#Preview {
+	MainTabView(currentPerson: PersistenceController.previewPerson)
+		.previewEnvironment()
 }

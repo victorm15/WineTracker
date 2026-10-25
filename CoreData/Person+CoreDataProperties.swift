@@ -1,7 +1,6 @@
 import Foundation
 import CoreData
 
-
 extension Person {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Person> {
@@ -13,8 +12,7 @@ extension Person {
     @NSManaged private var lastName: String?
     @NSManaged private var username: String?
     @NSManaged public var items: NSSet?
-    
-    
+
     public var wrappedUsername: String {
         username ?? "_username_"
     }
@@ -50,30 +48,7 @@ extension Person {
     public func setLastName(newLastName: String) {
         lastName = newLastName
     }
-    
-    
-    public func getTotalWineCount()-> Int16{
-        var sum: Int16 = 0
-        let collection = itemsArray
-        if (collection.count == 0) {
-            return 0
-        }
-        for i in 0...collection.count-1 {
-            sum = sum + (collection[i].wrappedQuantity)
-        }
-        return sum;
-    }
-    public func getTotalDrank()-> Int16{
-        var sum: Int16 = 0
-        let collection = itemsArray
-        if (collection.count == 0) {
-            return 0
-        }
-        for i in 0...collection.count-1 {
-            sum = sum + collection[i].wrappedDrank
-        }
-        return sum;
-    }
+
     /// Returns the filtered and sorted wines, served from the in-memory query cache when possible.
     public func getWines(FilterType: String, FilterString: String, SortType: String, WineType: String, viewContext: NSManagedObjectContext) -> [Item] {
         let key = QueryKey(owner: objectID, filterType: FilterType, search: FilterString, sortType: SortType, wineType: WineType)
@@ -121,63 +96,6 @@ extension Person {
     func updateCache(viewContext: NSManagedObjectContext) {
         QueryCache.shared.invalidate()
     }
-
-    func collectionLength()-> Bool {
-        return itemsArray.count > 0
-    }
-    func getMostOwned()->Item{
-        var max = itemsArray[0]
-        for item in itemsArray {
-            if(item.wrappedQuantity + item.wrappedDrank > max.wrappedQuantity + max.wrappedDrank) {
-                max = item
-            }
-        }
-        return max
-        
-        
-            
-    }
-    func getFavoriteOwned()->Item{
-        var max = itemsArray[0]
-        for item in itemsArray {
-            if(item.wrappedDrank > max.wrappedDrank) {
-                max = item
-            }
-        }
-        return max
-        
-    }
-    func getBuyOwned()->Item{
-        var max = itemsArray[0]
-        for item in itemsArray {
-            if (item.wrappedQuantity == 0) {
-                return item
-            }
-            if(item.wrappedDrank/item.wrappedQuantity > max.wrappedDrank/max.wrappedQuantity) {
-                max = item
-            }
-        }
-        return max
-
-    }
-    func getTryOwned()->Item{
-        var max = itemsArray[0]
-        for item in itemsArray {
-            if (item.wrappedDrank == 0) {
-                return item
-            }
-            if(item.wrappedQuantity/item.wrappedDrank > max.wrappedQuantity/max.wrappedDrank) {
-                max = item
-            }
-        }
-        return max
-
-    }
-
-            
-        
-    
-
 
 }
 

@@ -612,3 +612,10 @@ struct CollectionView: View {
 		)
 	}
 }
+
+#Preview {
+	NavigationStack {
+		CollectionView(currentPerson: PersistenceController.previewPerson)
+	}
+	.previewEnvironment()
+}

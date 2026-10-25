@@ -127,10 +127,9 @@ struct LoginView: View {
 		}
 	}
 
-	// Switching isAuthenticated replaces the auth screen with MainTabView.
+	// Setting currentPerson replaces the auth screen with MainTabView.
 	private func complete(_ person: Person) {
 		appState.currentPerson = person
-		appState.isAuthenticated = true
 	}
 
 	private func refreshBiometricAccount() {

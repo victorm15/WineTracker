@@ -359,7 +359,6 @@ struct SettingsView: View {
 
 							Button("Log Out") {
 								appState.currentPerson = nil
-								appState.isAuthenticated = false
 							}
 							.font(.custom("Cochin",size:20))
 							.buttonStyle(AccountButton())
@@ -372,7 +371,6 @@ struct SettingsView: View {
 					NavigationLink {
 						Button {
 							appState.currentPerson = nil
-							appState.isAuthenticated = false
 							deleteAccount(person: currentPerson)
 						} label :{Text("Delete")}.buttonStyle(AccountButton())
 					} label : {
@@ -526,4 +524,11 @@ struct SettingsView: View {
 		viewContext.delete(person)
 		try? viewContext.save()
 	}
+}
+
+#Preview {
+	NavigationStack {
+		SettingsView(currentPerson: PersistenceController.previewPerson)
+	}
+	.previewEnvironment()
 }
