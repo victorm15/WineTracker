@@ -11,10 +11,10 @@ struct AddWineView: View {
 	@State private var wineDomain = ""
 	@State private var wineCreator = ""
 	@State private var wineType = WineType.red
-	@State private var wineQuantity = ""
-	@State private var wineDrank = ""
+	@State private var wineQuantity = "1"
+	@State private var wineDrank = "0"
 
-	/// On: `editionNumber` is a vintage year. Off: it's an edition number.
+	/// Vintage: `editionNumber` is a vintage year. Edition: it's an edition number.
 	@State private var isVintage = true
 	@State private var editionNumber = ""
 
@@ -22,12 +22,21 @@ struct AddWineView: View {
 	/// The picked photo, already shrunk for storage.
 	@State private var photoData: Data?
 	@State private var photoPreview: Image?
+	@State private var isLoadingPhoto = false
 
+	/// Set after a failed Add, so missing or invalid fields show their messages.
+	@State private var showErrors = false
+	@State private var failedAttempts = 0
 	/// Set when the entered wine is already in the collection; asks whether to add the bottles to it.
 	@State private var duplicateWine: Item?
-	/// Why the form can't be saved, shown in a popover.
-	@State private var formProblem: String?
 	@State private var saveFailed = false
+	/// Shown briefly at the top after a wine is saved.
+	@State private var savedMessage: String?
+	@FocusState private var focusedField: Field?
+
+	private enum Field: Hashable {
+		case name, domain, creator, edition, quantity, drank
+	}
 
 	/// Bottle counts are capped at three digits, and so are the totals when adding to an existing wine.
 	private let maxBottles: Int16 = 999
@@ -45,133 +54,142 @@ struct AddWineView: View {
 		return number > 0 ? number : nil
 	}
 
+	private var isFormEmpty: Bool {
+		[wineName, wineDomain, wineCreator, editionNumber].allSatisfy { trimmed($0).isEmpty }
+			&& photoData == nil
+	}
+
 	var body: some View {
-		ZStack{
-			LinearGradient(colors: [ Color(UIColor(rgb: 0xf2f2f7)), .white], startPoint: .topLeading, endPoint: .bottomTrailing)
-				.ignoresSafeArea()
-			VStack{
-				WineTextField(title: "Wine Name", text: $wineName)
-				WineTextField(title: "Wine Domain", text: $wineDomain)
-				WineTextField(title: "Wine Creator", text: $wineCreator)
-
-				HStack {
-					DigitsField(title: "Unopened Bottles", text: $wineQuantity, maxLength: 3)
-					DigitsField(title: "Bottles Drank", text: $wineDrank, maxLength: 3)
-				}
-
-				Text("Type")
-					.font(.custom("Cochin", size:20))
-					.foregroundStyle(.gray)
-				Menu {
-					ForEach(WineType.allCases) { type in
-						Button {
-							wineType = type
-						} label: {
-							Text(type.rawValue)
-								.font(.custom("Cochin", size:20))
-						}
-					}
-				} label: {
-					ZStack{
-						Rectangle()
-							.fill(.white)
-							.frame(height:30)
-						Text("^ \(wineType.rawValue) ^")
-							.foregroundColor(Color.lighterGray)
-							.font(.custom("Cochin", size:20))
+		ScrollViewReader { proxy in
+			Form {
+				Section {
+					TextField("Name", text: $wineName)
+						.focused($focusedField, equals: .name)
+						.id(Field.name)
+						.submitLabel(.next)
+						.onSubmit { focusedField = .domain }
+					TextField("Domain", text: $wineDomain)
+						.focused($focusedField, equals: .domain)
+						.id(Field.domain)
+						.submitLabel(.next)
+						.onSubmit { focusedField = .creator }
+					TextField("Creator", text: $wineCreator)
+						.focused($focusedField, equals: .creator)
+						.id(Field.creator)
+						.submitLabel(.next)
+						.onSubmit { focusedField = .edition }
+				} header: {
+					Text("Wine")
+				} footer: {
+					if let message = detailsError {
+						ErrorText(message)
 					}
 				}
+				.textInputAutocapitalization(.words)
+				.autocorrectionDisabled()
 
-				HStack{
-					VStack{
-						Text("Vintage")
-							.font(.custom("Cochin", size:20))
-							.foregroundColor(Color.accentColor)
-						Toggle(isOn: $isVintage) {}
-							.offset(x:-25)
+				Section("Type") {
+					Picker("Type", selection: $wineType) {
+						ForEach(WineType.allCases) { type in
+							Text(type.shortName).tag(type)
+						}
 					}
-					DigitsField(title: isVintage ? "Vintage Year" : "Edition Number", text: $editionNumber, maxLength: 4)
-						.frame(width: 280)
-						.offset(y:15)
+					.pickerStyle(.segmented)
+					.labelsHidden()
+					.listRowBackground(Color.clear)
+					.listRowInsets(EdgeInsets())
 				}
-				VStack {
-					Text("Image")
-						.font(.custom("Cochin", size:20))
-						.foregroundColor(Color.accentColor)
 
-					PhotosPicker(selection: $photoItem, matching: .images) {
-						if let photoPreview {
-							photoPreview
-								.resizable()
-								.scaledToFill()
-								.frame(width:100,height:100)
-								.clipped()
-						}
-						else{
-							Image(systemName:"plus.square.dashed")
-								.resizable()
-								.frame(width:100,height:100)
-								.foregroundColor(Color.accentColor)
-						}
+				Section {
+					Picker("Dated by", selection: $isVintage) {
+						Text("Vintage").tag(true)
+						Text("Edition").tag(false)
 					}
-					.onChange(of: photoItem) {
-						loadPhoto()
+					.pickerStyle(.segmented)
+					.labelsHidden()
+					TextField(isVintage ? "Vintage year, e.g. 2015" : "Edition number", text: $editionNumber)
+						.keyboardType(.numberPad)
+						.digitsOnly($editionNumber, maxLength: 4)
+						.focused($focusedField, equals: .edition)
+						.id(Field.edition)
+				} header: {
+					Text("Vintage or Edition")
+				} footer: {
+					if let message = editionError {
+						ErrorText(message)
 					}
 				}
 
-				Button("Add Wine", action: addWine)
-					.popover(item: $duplicateWine) { existing in
-						ZStack {
-							RadialGradient(gradient: Gradient(colors: [Color.lighterGray, .white,Color.lighterGray,.white]), center: .center, startRadius: 140, endRadius: 300)
+				Section("Bottles") {
+					BottleCountRow(title: "Unopened", text: $wineQuantity, maximum: Int(maxBottles))
+						.focused($focusedField, equals: .quantity)
+					BottleCountRow(title: "Drank", text: $wineDrank, maximum: Int(maxBottles))
+						.focused($focusedField, equals: .drank)
+				}
 
-							VStack{
-								Text("Wine Already Exists")
-								Text("Add To Recorded Bottles?")
-								HStack{
-									Button("No") {
-										duplicateWine = nil
-									}
-									.buttonStyle(AccountButton())
-									Button("Yes") {
-										duplicateWine = nil
-										addBottles(to: existing)
-									}
-								}
-							}
-						}
-					}
-					.popover(isPresented: Binding(
-						get: { formProblem != nil },
-						set: { if !$0 { formProblem = nil } }
-					)) {
-						ZStack {
-							RadialGradient(gradient: Gradient(colors: [Color.lighterGray, .white,Color.lighterGray,.white]), center: .center, startRadius: 140, endRadius: 300)
+				Section("Photo") {
+					photoRow
+				}
 
-							VStack{
-								Text("Can't Add This Wine")
-								Text(formProblem ?? "")
-								HStack{
-									Button("Ok") {
-										formProblem = nil
-									}
-									.buttonStyle(AccountButton())
-								}
-							}
-						}
+				Section {
+					Button(action: addWine) {
+						Text("Add Wine")
 					}
-					.buttonStyle(AccountButton())
-					.font(.custom("Cochin", size:20))
+					.buttonStyle(AuthPrimaryButtonStyle())
+					.disabled(isLoadingPhoto)
+					.listRowBackground(Color.clear)
+					.listRowInsets(EdgeInsets())
+				}
+			}
+			.onChange(of: failedAttempts) {
+				guard let field = firstInvalidField else { return }
+				withAnimation { proxy.scrollTo(field, anchor: .center) }
+			}
+		}
+		.scrollDismissesKeyboard(.interactively)
+		.navigationTitle("")
+		.toolbar {
+			ToolbarItem(placement: .principal) {
+				Text("Add Wine")
+					.font(.custom("Cochin", size: 34))
+					.foregroundColor(.accentColor)
+			}
+			ToolbarItem(placement: .topBarTrailing) {
 				Button("Clear", action: resetForm)
-					.offset(x:90,y:-45)
+					.disabled(isFormEmpty)
 			}
-			.navigationTitle("")
-			.toolbar {
-				ToolbarItem(placement: .principal) {
-					Text("Add Wine")
-						.font(.custom("Cochin", size: 34))
-						.foregroundColor(.accentColor)
-				}
+			ToolbarItemGroup(placement: .keyboard) {
+				Spacer()
+				Button("Done") { focusedField = nil }
 			}
+		}
+		.overlay(alignment: .top) {
+			if let savedMessage {
+				Label(savedMessage, systemImage: "checkmark.circle.fill")
+					.font(.subheadline.weight(.semibold))
+					.foregroundStyle(.white)
+					.padding(.horizontal, 16)
+					.padding(.vertical, 10)
+					.background(Color.green.gradient, in: Capsule())
+					.padding(.top, 8)
+					.transition(.move(edge: .top).combined(with: .opacity))
+			}
+		}
+		.task(id: savedMessage) {
+			guard savedMessage != nil else { return }
+			try? await Task.sleep(for: .seconds(2))
+			withAnimation { savedMessage = nil }
+		}
+		.sensoryFeedback(.error, trigger: failedAttempts)
+		.sensoryFeedback(.success, trigger: savedMessage) { _, new in new != nil }
+		.alert("Already in Your Collection", isPresented: Binding(
+			get: { duplicateWine != nil },
+			set: { if !$0 { duplicateWine = nil } }
+		), presenting: duplicateWine) { existing in
+			Button("Add Bottles") { addBottles(to: existing) }
+			Button("Cancel", role: .cancel) {}
+		} message: { existing in
+			Text("Add \(bottles(wineQuantity)) unopened and \(bottles(wineDrank)) drank to \(existing.wrappedName)?")
 		}
 		.alert("Couldn't Save Wine", isPresented: $saveFailed) {
 			Button("OK", role: .cancel) {}
@@ -180,12 +198,71 @@ struct AddWineView: View {
 		}
 	}
 
+	private var photoRow: some View {
+		HStack(spacing: 14) {
+			ZStack {
+				RoundedRectangle(cornerRadius: 10)
+					.fill(Color(.tertiarySystemFill))
+				if isLoadingPhoto {
+					ProgressView()
+				} else if let photoPreview {
+					photoPreview
+						.resizable()
+						.scaledToFill()
+				} else {
+					Image(systemName: "photo")
+						.font(.title2)
+						.foregroundStyle(.secondary)
+				}
+			}
+			.frame(width: 64, height: 64)
+			.clipShape(RoundedRectangle(cornerRadius: 10))
+
+			PhotosPicker(selection: $photoItem, matching: .images) {
+				Text(photoData == nil ? "Choose Photo" : "Change Photo")
+			}
+			.buttonStyle(.borderless)
+
+			Spacer()
+
+			if photoData != nil {
+				Button("Remove", role: .destructive) {
+					photoItem = nil
+				}
+				.buttonStyle(.borderless)
+			}
+		}
+		.onChange(of: photoItem) {
+			loadPhoto()
+		}
+	}
+
+	private var detailsError: String? {
+		guard showErrors else { return nil }
+		let missing = [("name", wineName), ("domain", wineDomain), ("creator", wineCreator)]
+			.filter { trimmed($0.1).isEmpty }
+			.map(\.0)
+		guard !missing.isEmpty else { return nil }
+		return "Enter a \(ListFormatter.localizedString(byJoining: missing))."
+	}
+
+	private var editionError: String? {
+		guard showErrors, editionValue == nil else { return nil }
+		return isVintage
+			? "Enter a year between \(vintageRange.lowerBound) and \(vintageRange.upperBound)."
+			: "Enter an edition number above 0."
+	}
+
 	/// Checks the form, then either saves a new wine or asks to add the bottles to the matching one.
 	private func addWine() {
-		if let problem = problemWithForm() {
-			formProblem = problem
+		if let field = firstInvalidField {
+			showErrors = true
+			failedAttempts += 1
+			// Focusing the field also scrolls it, and its message, into view.
+			focusedField = field
 			return
 		}
+		focusedField = nil
 		if let existing = existingWine() {
 			duplicateWine = existing
 			return
@@ -208,7 +285,7 @@ struct AddWineView: View {
 		newEdition.wine = newItem
 
 		if save() {
-			resetForm()
+			showSaved("\(newItem.wrappedName) added")
 		}
 	}
 
@@ -222,20 +299,16 @@ struct AddWineView: View {
 		if save() {
 			// CollectionView observes the person, which doesn't change when one of its wines does.
 			currentPerson.objectWillChange.send()
-			resetForm()
+			showSaved("Bottles added to \(existing.wrappedName)")
 		}
 	}
 
-	private func problemWithForm() -> String? {
-		let required = [wineName, wineDomain, wineCreator, wineQuantity, wineDrank, editionNumber]
-		if required.contains(where: { trimmed($0).isEmpty }) {
-			return "Please provide entries to each text field"
-		}
-		if editionValue == nil {
-			return isVintage
-				? "Vintage year must be between \(vintageRange.lowerBound) and \(vintageRange.upperBound)"
-				: "Edition number must be above 0"
-		}
+	/// The first field, top to bottom, that stops the wine being saved.
+	private var firstInvalidField: Field? {
+		if trimmed(wineName).isEmpty { return .name }
+		if trimmed(wineDomain).isEmpty { return .domain }
+		if trimmed(wineCreator).isEmpty { return .creator }
+		if editionValue == nil { return .edition }
 		return nil
 	}
 
@@ -264,13 +337,20 @@ struct AddWineView: View {
 		}
 	}
 
+	private func showSaved(_ message: String) {
+		resetForm()
+		withAnimation { savedMessage = message }
+	}
+
 	private func loadPhoto() {
 		guard let photoItem else {
 			photoData = nil
 			photoPreview = nil
 			return
 		}
+		isLoadingPhoto = true
 		Task {
+			defer { isLoadingPhoto = false }
 			guard let original = try? await photoItem.loadTransferable(type: Data.self),
 				  let data = await Task.detached(operation: { compressedPhotoData(original) }).value,
 				  let image = UIImage(data: data) else {
@@ -286,13 +366,15 @@ struct AddWineView: View {
 		wineDomain = ""
 		wineCreator = ""
 		wineType = .red
-		wineQuantity = ""
-		wineDrank = ""
+		wineQuantity = "1"
+		wineDrank = "0"
 		isVintage = true
 		editionNumber = ""
 		photoItem = nil
 		photoData = nil
 		photoPreview = nil
+		showErrors = false
+		focusedField = nil
 	}
 
 	private func trimmed(_ text: String) -> String {
@@ -308,35 +390,65 @@ struct AddWineView: View {
 	}
 }
 
-/// The rounded text field used throughout the add wine form.
-private struct WineTextField: View {
-	let title: String
-	@Binding var text: String
-
-	var body: some View {
-		TextField(title, text: $text)
-			.textFieldStyle(.roundedBorder)
-			.textInputAutocapitalization(.never)
-			.autocorrectionDisabled()
-			.font(.custom("Cochin", size:20))
+private extension WineType {
+	/// Fits a segmented control.
+	var shortName: String {
+		switch self {
+		case .red: "Red"
+		case .white: "White"
+		case .champagne: "Champagne"
+		}
 	}
 }
 
-/// A number pad field that only keeps up to `maxLength` digits, including pasted text.
-private struct DigitsField: View {
+/// A labelled bottle count that can be typed or changed with a stepper.
+private struct BottleCountRow: View {
 	let title: String
 	@Binding var text: String
-	let maxLength: Int
+	let maximum: Int
 
 	var body: some View {
-		WineTextField(title: title, text: $text)
-			.keyboardType(.numberPad)
-			.onChange(of: text) { _, newValue in
-				let digits = String(newValue.filter { $0.isASCII && $0.isNumber }.prefix(maxLength))
-				if digits != newValue {
-					text = digits
-				}
+		HStack {
+			Text(title)
+			Spacer()
+			TextField("0", text: $text)
+				.keyboardType(.numberPad)
+				.multilineTextAlignment(.trailing)
+				.monospacedDigit()
+				.frame(width: 48)
+				.digitsOnly($text, maxLength: 3)
+			Stepper(title, value: Binding(
+				get: { Int(text) ?? 0 },
+				set: { text = String($0) }
+			), in: 0...maximum)
+			.labelsHidden()
+		}
+	}
+}
+
+/// A red validation message shown under a form section.
+private struct ErrorText: View {
+	let message: String
+
+	init(_ message: String) {
+		self.message = message
+	}
+
+	var body: some View {
+		Text(message)
+			.foregroundStyle(.red)
+	}
+}
+
+private extension View {
+	/// Keeps only ASCII digits in `text`, up to `maxLength` of them, including pasted text.
+	func digitsOnly(_ text: Binding<String>, maxLength: Int) -> some View {
+		onChange(of: text.wrappedValue) { _, newValue in
+			let digits = String(newValue.filter { $0.isASCII && $0.isNumber }.prefix(maxLength))
+			if digits != newValue {
+				text.wrappedValue = digits
 			}
+		}
 	}
 }
 
