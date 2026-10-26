@@ -8,16 +8,22 @@ public class Item: NSManagedObject {
 
 	/// Whether both describe the same wine, ignoring case and surrounding spaces.
 	func isSameWine(as other: Item) -> Bool {
+		matches(name: other.wrappedName, domain: other.wrappedDomain, creator: other.wrappedCreator,
+				type: other.wrappedType, isVintage: other.isVintage, editionNumber: other.editionNumber)
+	}
+
+	/// Whether this wine has these details, ignoring case and surrounding spaces in the text.
+	func matches(name: String, domain: String, creator: String, type: String, isVintage: Bool, editionNumber: Int16) -> Bool {
 		func same(_ a: String, _ b: String) -> Bool {
 			a.trimmingCharacters(in: .whitespacesAndNewlines)
 				.caseInsensitiveCompare(b.trimmingCharacters(in: .whitespacesAndNewlines)) == .orderedSame
 		}
-		return same(wrappedName, other.wrappedName)
-			&& same(wrappedDomain, other.wrappedDomain)
-			&& same(wrappedCreator, other.wrappedCreator)
-			&& wrappedType == other.wrappedType
-			&& isVintage == other.isVintage
-			&& editionNumber == other.editionNumber
+		return same(wrappedName, name)
+			&& same(wrappedDomain, domain)
+			&& same(wrappedCreator, creator)
+			&& wrappedType == type
+			&& self.isVintage == isVintage
+			&& self.editionNumber == editionNumber
 	}
 }
 
