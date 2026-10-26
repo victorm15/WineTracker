@@ -5,35 +5,20 @@ import CoreData
 struct CollectionView: View {
 	@ObservedObject var currentPerson: Person
 	@Environment(\.managedObjectContext) private var viewContext
+	@Environment(QueryCache.self) private var queryCache
 
 	@State private var searchText = ""
-	@State private var searchField = SearchField.name
+	@State private var searchField = WineQuery.Field.name
 	@State private var typeFilter: WineType?
-	@State private var sortField = SortField.name
+	@State private var sortField = WineQuery.Field.name
 	@State private var sortAscending = true
 	@State private var wines: [Item] = []
 	@State private var wineToDelete: Item?
-	/// Bumped on every save so the header totals redraw even when the list of wines is unchanged.
-	@State private var revision = 0
 
-	enum SearchField: String, CaseIterable, Identifiable {
-		case name = "Name", domain = "Domain", creator = "Creator"
-		var id: Self { self }
-	}
-
-	enum SortField: String, CaseIterable, Identifiable {
-		case name = "Name", domain = "Domain", creator = "Creator"
-		var id: Self { self }
-	}
-
-	/// The `getWines` query for the current settings; also the key its results are cached under.
-	private var query: (filter: String, search: String, sort: String, type: String) {
-		(searchField.rawValue, searchText.trimmingCharacters(in: .whitespaces),
-		 sortField.rawValue + (sortAscending ? "A" : "D"), typeFilter?.rawValue ?? "Any")
-	}
-
-	private var isFiltering: Bool {
-		!query.search.isEmpty || typeFilter != nil
+	/// The query for the current settings; also the key its results are cached under.
+	private var query: WineQuery {
+		WineQuery(searchField: searchField, search: searchText.trimmingCharacters(in: .whitespaces),
+				  type: typeFilter, sortField: sortField, ascending: sortAscending)
 	}
 
 	var body: some View {
@@ -64,8 +49,9 @@ struct CollectionView: View {
 						}
 					}
 				} header: {
+					// The revision changes on every save, so the totals redraw even when the list is unchanged.
 					Text(summary)
-						.id(revision)
+						.id(queryCache.revision)
 				}
 			}
 		}
@@ -77,7 +63,7 @@ struct CollectionView: View {
 		}
 		.searchable(text: $searchText, prompt: "Search by \(searchField.rawValue.lowercased())")
 		.searchScopes($searchField) {
-			ForEach(SearchField.allCases) { field in
+			ForEach(WineQuery.Field.allCases) { field in
 				Text(field.rawValue).tag(field)
 			}
 		}
@@ -95,16 +81,9 @@ struct CollectionView: View {
 			}
 		}
 		.onAppear(perform: reloadWines)
-		.onChange(of: query.filter) { reloadWines() }
-		.onChange(of: query.search) { reloadWines() }
-		.onChange(of: query.sort) { reloadWines() }
-		.onChange(of: query.type) { reloadWines() }
-		// Edits made elsewhere (detail page, Add Wine, merges) change what the list should show.
-		.onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave, object: viewContext)) { _ in
-			currentPerson.updateCache(viewContext: viewContext)
-			reloadWines()
-			revision += 1
-		}
+		.onChange(of: query) { reloadWines() }
+		// The cache has applied a save (made here, on the detail page, in Add Wine or by a merge).
+		.onChange(of: queryCache.revision) { wines = queryCache.peek(query) }
 		.confirmationDialog(
 			"Delete \(wineToDelete?.wrappedName ?? "wine")?",
 			isPresented: Binding(get: { wineToDelete != nil }, set: { if !$0 { wineToDelete = nil } }),
@@ -125,12 +104,12 @@ struct CollectionView: View {
 			Picker("Type", selection: $typeFilter) {
 				Text("All Types").tag(WineType?.none)
 				ForEach(WineType.allCases) { type in
-					Text(type.rawValue).tag(Optional(type))
+					Text(type.name).tag(Optional(type))
 				}
 			}
 			Section("Sort By") {
 				Picker("Sort By", selection: $sortField) {
-					ForEach(SortField.allCases) { field in
+					ForEach(WineQuery.Field.allCases) { field in
 						Text(field.rawValue).tag(field)
 					}
 				}
@@ -150,7 +129,7 @@ struct CollectionView: View {
 		let bottles = wines.reduce(0) { $0 + Int($1.wrappedQuantity) }
 		let wineText = "\(wines.count) \(wines.count == 1 ? "wine" : "wines")"
 		let bottleText = "\(bottles) unopened \(bottles == 1 ? "bottle" : "bottles")"
-		let typeText = typeFilter.map { " · \($0.rawValue)" } ?? ""
+		let typeText = typeFilter.map { " · \($0.name)" } ?? ""
 		return "\(wineText) · \(bottleText)\(typeText)"
 	}
 
@@ -160,7 +139,7 @@ struct CollectionView: View {
 			ContentUnavailableView.search(text: query.search)
 		} else if let typeFilter {
 			ContentUnavailableView {
-				Label("No \(typeFilter.rawValue)", systemImage: "wineglass")
+				Label("No \(typeFilter.name)", systemImage: "wineglass")
 			} description: {
 				Text("Nothing in your collection matches this type.")
 			} actions: {
@@ -183,13 +162,7 @@ struct CollectionView: View {
 	}
 
 	private func reloadWines() {
-		wines = currentPerson.getWines(
-			FilterType: query.filter,
-			FilterString: query.search,
-			SortType: query.sort,
-			WineType: query.type,
-			viewContext: viewContext
-		)
+		wines = queryCache.wines(matching: query)
 	}
 }
 
@@ -210,7 +183,7 @@ private struct WineRow: View {
 					.foregroundStyle(.secondary)
 					.lineLimit(1)
 				HStack(spacing: 6) {
-					WineTypeBadge(type: wine.wrappedType)
+					WineTypeBadge(type: wine.wineType)
 					Text(wine.editionLabel)
 						.font(.caption)
 						.foregroundStyle(.secondary)

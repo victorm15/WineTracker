@@ -12,7 +12,7 @@ struct ChangePasswordView: View {
 	@State private var alert: AuthAlert?
 
 	private var canSubmit: Bool {
-		!currentPassword.isEmpty && isValidPassword(newPassword) && !isSaving
+		!currentPassword.isEmpty && Validation.passwordProblem(newPassword) == nil && !isSaving
 	}
 
 	var body: some View {
@@ -29,8 +29,8 @@ struct ChangePasswordView: View {
 			Section {
 				SecureInputView("New Password", text: $newPassword)
 			} footer: {
-				Text("At least \(minimumPasswordLength) characters")
-					.foregroundStyle(!newPassword.isEmpty && !isValidPassword(newPassword) ? Color.red : Color.secondary)
+				Text(Validation.passwordRule)
+					.foregroundStyle(!newPassword.isEmpty && Validation.passwordProblem(newPassword) != nil ? Color.red : Color.secondary)
 			}
 
 			Section {

@@ -3,6 +3,13 @@ import SwiftUI
 struct MainTabView: View {
 	var currentPerson: Person
 	@State private var selection: MainTab = .home
+	/// Lives as long as this account is logged in.
+	@State private var queryCache: QueryCache
+
+	init(currentPerson: Person) {
+		self.currentPerson = currentPerson
+		_queryCache = State(initialValue: QueryCache(person: currentPerson))
+	}
 
 	enum MainTab: Hashable {
 		case collection, home, addWine, settings
@@ -25,6 +32,7 @@ struct MainTabView: View {
 				NavigationStack { SettingsView(currentPerson: currentPerson) }
 			}
 		}
+		.environment(queryCache)
 	}
 }
 

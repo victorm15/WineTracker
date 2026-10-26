@@ -5,7 +5,7 @@ struct PersistenceController {
 	static let shared = PersistenceController()
 
 	/// In-memory store with one account and a few wines, for SwiftUI previews.
-	static var preview: PersistenceController = {
+	static let preview: PersistenceController = {
 		let result = PersistenceController(inMemory: true)
 		let viewContext = result.container.viewContext
 
@@ -25,14 +25,11 @@ struct PersistenceController {
 			item.setName(newName: wine.name)
 			item.setDomain(newDomain: wine.domain)
 			item.setCreator(newCreator: wine.creator)
-			item.setType(newType: wine.type.rawValue)
+			item.setType(wine.type)
 			item.setQuantity(newQuantity: wine.quantity)
 			item.setDrank(newDrank: wine.drank)
 			item.owner = person
-			let edition = Edition(context: viewContext)
-			edition.setIsEdition(newIsEdition: true)
-			edition.setNumber(newNumber: wine.vintage)
-			edition.wine = item
+			item.setEdition(isVintage: true, number: wine.vintage)
 		}
 
 		do {
@@ -69,23 +66,6 @@ struct PersistenceController {
 		}
 
 		container.viewContext.automaticallyMergesChangesFromParent = true
-		if !inMemory {
-			removeOrphans()
-		}
-	}
-
-	/// Deletes wines without an owner and editions without a wine. Deleting accounts and wines
-	/// used to leave these behind before the delete rules cascaded.
-	private func removeOrphans() {
-		let context = container.viewContext
-		let orphanWines = NSFetchRequest<Item>(entityName: "Item")
-		orphanWines.predicate = NSPredicate(format: "owner == nil")
-		let orphanEditions = NSFetchRequest<Edition>(entityName: "Edition")
-		orphanEditions.predicate = NSPredicate(format: "wine == nil")
-		let orphans: [NSManagedObject] = ((try? context.fetch(orphanWines)) ?? []) + ((try? context.fetch(orphanEditions)) ?? [])
-		guard !orphans.isEmpty else { return }
-		orphans.forEach(context.delete)
-		_ = context.saveOrRollback()
 	}
 }
 
@@ -111,5 +91,6 @@ extension View {
 		return self
 			.environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 			.environmentObject(appState)
+			.environment(QueryCache(person: PersistenceController.previewPerson))
 	}
 }

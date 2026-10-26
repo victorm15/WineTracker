@@ -10,64 +10,36 @@ struct EditWineView: View {
 	@Environment(\.managedObjectContext) private var viewContext
 	@Environment(\.dismiss) private var dismiss
 
-	@State private var name = ""
-	@State private var domain = ""
-	@State private var creator = ""
-	@State private var type = WineType.red
-	@State private var isVintage = true
-	@State private var editionNumber = ""
-	@State private var quantity = ""
-	@State private var drank = ""
-
-	@State private var photoItem: PhotosPickerItem?
-	@State private var newPhotoData: Data?
-	@State private var newPhotoPreview: Image?
-	@State private var isLoadingPhoto = false
+	@State private var draft = WineDraft()
+	/// The wine's details when the page opened, to tell whether anything has changed.
+	@State private var original = WineDraft()
+	@State private var photo = PickedPhoto()
 
 	@State private var hasLoaded = false
 	@State private var showErrors = false
 	@State private var matchingWine: Item?
 	@State private var saveFailed = false
 
-	private var vintageRange: ClosedRange<Int16> {
-		1800...Int16(Calendar.current.component(.year, from: .now) + 1)
-	}
-
-	private var editionValue: Int16? {
-		guard let number = Int16(editionNumber) else { return nil }
-		return isVintage ? (vintageRange.contains(number) ? number : nil) : (number > 0 ? number : nil)
-	}
-
-	private var detailsError: String? {
-		let missing = [("name", name), ("domain", domain), ("creator", creator)]
-			.filter { trimmed($0.1).isEmpty }
-			.map(\.0)
-		return missing.isEmpty ? nil : "Enter a \(ListFormatter.localizedString(byJoining: missing))."
-	}
-
-	private var editionError: String? {
-		guard editionValue == nil else { return nil }
-		return isVintage
-			? "Enter a year between \(vintageRange.lowerBound) and \(vintageRange.upperBound)."
-			: "Enter an edition number above 0."
+	private var hasChanges: Bool {
+		draft != original || photo.data != nil
 	}
 
 	var body: some View {
 		Form {
 			Section {
-				TextField("Name", text: $name)
-				TextField("Domain", text: $domain)
-				TextField("Creator", text: $creator)
+				TextField("Name", text: $draft.name)
+				TextField("Domain", text: $draft.domain)
+				TextField("Creator", text: $draft.creator)
 			} header: {
 				Text("Wine")
 			} footer: {
-				if showErrors, let detailsError { ErrorText(detailsError) }
+				if showErrors, let error = draft.detailsError { ErrorText(error) }
 			}
 			.textInputAutocapitalization(.words)
 			.autocorrectionDisabled()
 
 			Section("Type") {
-				Picker("Type", selection: $type) {
+				Picker("Type", selection: $draft.type) {
 					ForEach(WineType.allCases) { type in
 						Text(type.shortName).tag(type)
 					}
@@ -79,33 +51,33 @@ struct EditWineView: View {
 			}
 
 			Section {
-				Picker("Dated by", selection: $isVintage) {
+				Picker("Dated by", selection: $draft.isVintage) {
 					Text("Vintage").tag(true)
 					Text("Edition").tag(false)
 				}
 				.pickerStyle(.segmented)
 				.labelsHidden()
-				TextField(isVintage ? "Vintage year" : "Edition number", text: $editionNumber)
+				TextField(draft.isVintage ? "Vintage year" : "Edition number", text: $draft.editionNumber)
 					.keyboardType(.numberPad)
-					.digitsOnly($editionNumber, maxLength: 4)
+					.digitsOnly($draft.editionNumber, maxLength: 4)
 			} header: {
 				Text("Vintage or Edition")
 			} footer: {
-				if showErrors, let editionError { ErrorText(editionError) }
+				if showErrors, let error = draft.editionError { ErrorText(error) }
 			}
 
 			Section("Bottles") {
-				BottleCountRow(title: "Unopened", text: $quantity, maximum: Int(Item.maxBottles))
-				BottleCountRow(title: "Drank", text: $drank, maximum: Int(Item.maxBottles))
+				BottleCountRow(title: "Unopened", text: $draft.quantity, maximum: Int(Item.maxBottles))
+				BottleCountRow(title: "Drank", text: $draft.drank, maximum: Int(Item.maxBottles))
 			}
 
 			Section("Photo") {
 				HStack(spacing: 14) {
 					Group {
-						if isLoadingPhoto {
+						if photo.isLoading {
 							ProgressView()
-						} else if let newPhotoPreview {
-							newPhotoPreview.resizable().scaledToFill()
+						} else if let preview = photo.preview {
+							preview.resizable().scaledToFill()
 						} else {
 							wine.wrappedImage.resizable().scaledToFill()
 						}
@@ -114,10 +86,9 @@ struct EditWineView: View {
 					.background(Color(.tertiarySystemFill))
 					.clipShape(RoundedRectangle(cornerRadius: 10))
 
-					PhotosPicker("Change Photo", selection: $photoItem, matching: .images)
+					PhotosPicker("Change Photo", selection: $photo.item, matching: .images)
 						.buttonStyle(.borderless)
 				}
-				.onChange(of: photoItem) { loadPhoto() }
 			}
 		}
 		.navigationTitle("Edit Wine")
@@ -128,7 +99,7 @@ struct EditWineView: View {
 			}
 			ToolbarItem(placement: .confirmationAction) {
 				Button("Save", action: save)
-					.disabled(isLoadingPhoto)
+					.disabled(!hasChanges || photo.isLoading)
 			}
 		}
 		.onAppear(perform: load)
@@ -152,52 +123,32 @@ struct EditWineView: View {
 	private func load() {
 		guard !hasLoaded else { return }
 		hasLoaded = true
-		name = wine.wrappedName
-		domain = wine.wrappedDomain
-		creator = wine.wrappedCreator
-		type = WineType(rawValue: wine.wrappedType) ?? .red
-		isVintage = wine.isVintage
-		editionNumber = String(wine.editionNumber)
-		quantity = String(wine.wrappedQuantity)
-		drank = String(wine.wrappedDrank)
+		draft = WineDraft(wine)
+		original = draft
 	}
 
 	private func save() {
-		guard detailsError == nil, let editionValue else {
+		guard draft.firstProblem == nil else {
 			showErrors = true
 			return
 		}
-		let match = owner.itemsArray.first {
-			$0 != wine && $0.matches(name: name, domain: domain, creator: creator,
-									  type: type.rawValue, isVintage: isVintage, editionNumber: editionValue)
-		}
-		if let match {
+		if let match = owner.wines.first(where: { $0 != wine && draft.matches($0) }) {
 			matchingWine = match
 			return
 		}
-
-		wine.setName(newName: trimmed(name))
-		wine.setDomain(newDomain: trimmed(domain))
-		wine.setCreator(newCreator: trimmed(creator))
-		wine.setType(newType: type.rawValue)
-		wine.setQuantity(newQuantity: bottles(quantity))
-		wine.setDrank(newDrank: bottles(drank))
-		if let newPhotoData {
-			wine.setImageData(newImageData: newPhotoData)
+		draft.apply(to: wine)
+		if let data = photo.data {
+			wine.setImageData(newImageData: data)
 		}
-		let edition = wine.edition ?? Edition(context: viewContext)
-		edition.setIsEdition(newIsEdition: isVintage)
-		edition.setNumber(newNumber: editionValue)
-		edition.wine = wine
 		finishSaving()
 	}
 
 	/// Adds this wine's bottles (and photo, if the other has none) to `other`, then deletes this wine.
 	private func combine(into other: Item) {
-		other.setQuantity(newQuantity: min(other.wrappedQuantity + bottles(quantity), Item.maxBottles))
-		other.setDrank(newDrank: min(other.wrappedDrank + bottles(drank), Item.maxBottles))
-		if let photo = newPhotoData ?? wine.storedImageData, other.storedImageData == nil || newPhotoData != nil {
-			other.setImageData(newImageData: photo)
+		other.setQuantity(newQuantity: min(other.wrappedQuantity + draft.quantityValue, Item.maxBottles))
+		other.setDrank(newDrank: min(other.wrappedDrank + draft.drankValue, Item.maxBottles))
+		if let newPhoto = photo.data ?? wine.storedImageData, other.storedImageData == nil || photo.data != nil {
+			other.setImageData(newImageData: newPhoto)
 		}
 		viewContext.delete(wine)
 		finishSaving()
@@ -210,34 +161,11 @@ struct EditWineView: View {
 			saveFailed = true
 		}
 	}
-
-	private func loadPhoto() {
-		guard let photoItem else { return }
-		isLoadingPhoto = true
-		Task {
-			defer { isLoadingPhoto = false }
-			guard let original = try? await photoItem.loadTransferable(type: Data.self),
-				  let data = await Task.detached(operation: { compressedPhotoData(original) }).value,
-				  let image = UIImage(data: data) else {
-				return
-			}
-			newPhotoData = data
-			newPhotoPreview = Image(uiImage: image)
-		}
-	}
-
-	private func trimmed(_ text: String) -> String {
-		text.trimmingCharacters(in: .whitespacesAndNewlines)
-	}
-
-	private func bottles(_ text: String) -> Int16 {
-		min(Int16(text) ?? 0, Item.maxBottles)
-	}
 }
 
 #Preview {
 	NavigationStack {
-		EditWineView(wine: PersistenceController.previewPerson.itemsArray[0], owner: PersistenceController.previewPerson)
+		EditWineView(wine: PersistenceController.previewPerson.wines(matching: WineQuery())[0], owner: PersistenceController.previewPerson)
 	}
 	.previewEnvironment()
 }

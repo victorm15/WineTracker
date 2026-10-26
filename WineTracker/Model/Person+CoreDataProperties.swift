@@ -25,11 +25,9 @@ extension Person {
     public var wrappedEmail: String {
         email ?? "_email_"
     }
-    public var itemsArray: [Item] {
-        let set = items as? Set<Item> ?? []
-        return set.sorted {
-            $0.wrappedName < $1.wrappedName
-        }
+    /// The account's wines, in no particular order. `wines(matching:)` filters and sorts them.
+    var wines: Set<Item> {
+        items as? Set<Item> ?? []
     }
     /// Usernames are stored trimmed and lowercased so "Bob" and "bob " are the same account.
     public func setUsername(newUsername: String) {
@@ -49,54 +47,10 @@ extension Person {
         lastName = newLastName
     }
 
-    /// Returns the filtered and sorted wines, served from the in-memory query cache when possible.
-    public func getWines(FilterType: String, FilterString: String, SortType: String, WineType: String, viewContext: NSManagedObjectContext) -> [Item] {
-        let key = QueryKey(owner: objectID, filterType: FilterType, search: FilterString, sortType: SortType, wineType: WineType)
-        return QueryCache.shared.get(key) {
-            getArray(FilterType: FilterType, FilterString: FilterString, SortType: SortType, WineType: WineType)
-        }
+    /// The wines the query includes, in its order. Views go through `QueryCache`, which calls this on a miss.
+    func wines(matching query: WineQuery) -> [Item] {
+        wines.filter(query.includes).sorted(by: query.areInIncreasingOrder)
     }
-
-    /// Filters by wine type and a case-insensitive prefix search, then sorts.
-    /// Sort types ending in "A" are ascending (A-Z), ending in "D" descending (Z-A).
-    public func getArray(FilterType: String, FilterString: String, SortType: String, WineType: String) -> [Item] {
-        let search = FilterString.lowercased()
-
-        let filtered = itemsArray.filter { item in
-            guard WineType == "Any" || item.wrappedType == WineType else { return false }
-            if search.isEmpty { return true }
-            let field: String
-            switch FilterType {
-            case "Domain": field = item.wrappedDomain
-            case "Creator": field = item.wrappedCreator
-            default: field = item.wrappedName
-            }
-            return field.lowercased().hasPrefix(search)
-        }
-
-        let sortKey: (Item) -> String
-        switch SortType {
-        case "CreatorA", "CreatorD": sortKey = { $0.wrappedCreator }
-        case "DomainA", "DomainD": sortKey = { $0.wrappedDomain }
-        default: sortKey = { $0.wrappedName }
-        }
-        let ascending = SortType.hasSuffix("A")
-
-        return filtered.sorted { a, b in
-            var result = sortKey(a).localizedStandardCompare(sortKey(b))
-            if result == .orderedSame {
-                // Tie-break on name so the order is deterministic
-                result = a.wrappedName.localizedStandardCompare(b.wrappedName)
-            }
-            return ascending ? result == .orderedAscending : result == .orderedDescending
-        }
-    }
-
-    /// Call after any change to this account's wines.
-    func updateCache(viewContext: NSManagedObjectContext) {
-        QueryCache.shared.invalidate()
-    }
-
 }
 
 // MARK: Generated accessors for items

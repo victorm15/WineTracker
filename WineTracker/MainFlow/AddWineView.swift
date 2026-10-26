@@ -1,28 +1,13 @@
 import SwiftUI
 import PhotosUI
-import Combine
 import CoreData
 
 struct AddWineView: View {
 	@ObservedObject var currentPerson: Person
 	@Environment(\.managedObjectContext) private var viewContext
 
-	@State private var wineName = ""
-	@State private var wineDomain = ""
-	@State private var wineCreator = ""
-	@State private var wineType = WineType.red
-	@State private var wineQuantity = "1"
-	@State private var wineDrank = "0"
-
-	/// Vintage: `editionNumber` is a vintage year. Edition: it's an edition number.
-	@State private var isVintage = true
-	@State private var editionNumber = ""
-
-	@State private var photoItem: PhotosPickerItem?
-	/// The picked photo, already shrunk for storage.
-	@State private var photoData: Data?
-	@State private var photoPreview: Image?
-	@State private var isLoadingPhoto = false
+	@State private var draft = WineDraft()
+	@State private var photo = PickedPhoto()
 
 	/// Set after a failed Add, so missing or invalid fields show their messages.
 	@State private var showErrors = false
@@ -34,46 +19,31 @@ struct AddWineView: View {
 	@State private var savedMessage: String?
 	@FocusState private var focusedField: Field?
 
-	private enum Field: Hashable {
+	/// Raw values match `WineDraft.missingDetails`.
+	private enum Field: String, Hashable {
 		case name, domain, creator, edition, quantity, drank
 	}
 
-	/// Bottle counts are capped at three digits, and so are the totals when adding to an existing wine.
-	private let maxBottles: Int16 = 999
-
-	private var vintageRange: ClosedRange<Int16> {
-		1800...Int16(Calendar.current.component(.year, from: .now) + 1)
-	}
-
-	/// The vintage year or edition number, or nil if it's out of range.
-	private var editionValue: Int16? {
-		guard let number = Int16(editionNumber) else { return nil }
-		if isVintage {
-			return vintageRange.contains(number) ? number : nil
-		}
-		return number > 0 ? number : nil
-	}
-
 	private var isFormEmpty: Bool {
-		[wineName, wineDomain, wineCreator, editionNumber].allSatisfy { trimmed($0).isEmpty }
-			&& photoData == nil
+		[draft.name, draft.domain, draft.creator, draft.editionNumber].allSatisfy { Validation.trimmed($0).isEmpty }
+			&& photo.data == nil
 	}
 
 	var body: some View {
 		ScrollViewReader { proxy in
 			Form {
 				Section {
-					TextField("Name", text: $wineName)
+					TextField("Name", text: $draft.name)
 						.focused($focusedField, equals: .name)
 						.id(Field.name)
 						.submitLabel(.next)
 						.onSubmit { focusedField = .domain }
-					TextField("Domain", text: $wineDomain)
+					TextField("Domain", text: $draft.domain)
 						.focused($focusedField, equals: .domain)
 						.id(Field.domain)
 						.submitLabel(.next)
 						.onSubmit { focusedField = .creator }
-					TextField("Creator", text: $wineCreator)
+					TextField("Creator", text: $draft.creator)
 						.focused($focusedField, equals: .creator)
 						.id(Field.creator)
 						.submitLabel(.next)
@@ -89,7 +59,7 @@ struct AddWineView: View {
 				.autocorrectionDisabled()
 
 				Section("Type") {
-					Picker("Type", selection: $wineType) {
+					Picker("Type", selection: $draft.type) {
 						ForEach(WineType.allCases) { type in
 							Text(type.shortName).tag(type)
 						}
@@ -101,15 +71,15 @@ struct AddWineView: View {
 				}
 
 				Section {
-					Picker("Dated by", selection: $isVintage) {
+					Picker("Dated by", selection: $draft.isVintage) {
 						Text("Vintage").tag(true)
 						Text("Edition").tag(false)
 					}
 					.pickerStyle(.segmented)
 					.labelsHidden()
-					TextField(isVintage ? "Vintage year, e.g. 2015" : "Edition number", text: $editionNumber)
+					TextField(draft.isVintage ? "Vintage year, e.g. 2015" : "Edition number", text: $draft.editionNumber)
 						.keyboardType(.numberPad)
-						.digitsOnly($editionNumber, maxLength: 4)
+						.digitsOnly($draft.editionNumber, maxLength: 4)
 						.focused($focusedField, equals: .edition)
 						.id(Field.edition)
 				} header: {
@@ -121,9 +91,9 @@ struct AddWineView: View {
 				}
 
 				Section("Bottles") {
-					BottleCountRow(title: "Unopened", text: $wineQuantity, maximum: Int(maxBottles))
+					BottleCountRow(title: "Unopened", text: $draft.quantity, maximum: Int(Item.maxBottles))
 						.focused($focusedField, equals: .quantity)
-					BottleCountRow(title: "Drank", text: $wineDrank, maximum: Int(maxBottles))
+					BottleCountRow(title: "Drank", text: $draft.drank, maximum: Int(Item.maxBottles))
 						.focused($focusedField, equals: .drank)
 				}
 
@@ -136,7 +106,7 @@ struct AddWineView: View {
 						Text("Add Wine")
 					}
 					.buttonStyle(AuthPrimaryButtonStyle())
-					.disabled(isLoadingPhoto)
+					.disabled(photo.isLoading)
 					.listRowBackground(Color.clear)
 					.listRowInsets(EdgeInsets())
 				}
@@ -189,7 +159,7 @@ struct AddWineView: View {
 			Button("Add Bottles") { addBottles(to: existing) }
 			Button("Cancel", role: .cancel) {}
 		} message: { existing in
-			Text("Add \(bottles(wineQuantity)) unopened and \(bottles(wineDrank)) drank to \(existing.wrappedName)?")
+			Text("Add \(draft.quantityValue) unopened and \(draft.drankValue) drank to \(existing.wrappedName)?")
 		}
 		.alert("Couldn't Save Wine", isPresented: $saveFailed) {
 			Button("OK", role: .cancel) {}
@@ -203,10 +173,10 @@ struct AddWineView: View {
 			ZStack {
 				RoundedRectangle(cornerRadius: 10)
 					.fill(Color(.tertiarySystemFill))
-				if isLoadingPhoto {
+				if photo.isLoading {
 					ProgressView()
-				} else if let photoPreview {
-					photoPreview
+				} else if let preview = photo.preview {
+					preview
 						.resizable()
 						.scaledToFill()
 				} else {
@@ -218,39 +188,28 @@ struct AddWineView: View {
 			.frame(width: 64, height: 64)
 			.clipShape(RoundedRectangle(cornerRadius: 10))
 
-			PhotosPicker(selection: $photoItem, matching: .images) {
-				Text(photoData == nil ? "Choose Photo" : "Change Photo")
+			PhotosPicker(selection: $photo.item, matching: .images) {
+				Text(photo.data == nil ? "Choose Photo" : "Change Photo")
 			}
 			.buttonStyle(.borderless)
 
 			Spacer()
 
-			if photoData != nil {
+			if photo.data != nil {
 				Button("Remove", role: .destructive) {
-					photoItem = nil
+					photo.item = nil
 				}
 				.buttonStyle(.borderless)
 			}
 		}
-		.onChange(of: photoItem) {
-			loadPhoto()
-		}
 	}
 
 	private var detailsError: String? {
-		guard showErrors else { return nil }
-		let missing = [("name", wineName), ("domain", wineDomain), ("creator", wineCreator)]
-			.filter { trimmed($0.1).isEmpty }
-			.map(\.0)
-		guard !missing.isEmpty else { return nil }
-		return "Enter a \(ListFormatter.localizedString(byJoining: missing))."
+		showErrors ? draft.detailsError : nil
 	}
 
 	private var editionError: String? {
-		guard showErrors, editionValue == nil else { return nil }
-		return isVintage
-			? "Enter a year between \(vintageRange.lowerBound) and \(vintageRange.upperBound)."
-			: "Enter an edition number above 0."
+		showErrors ? draft.editionError : nil
 	}
 
 	/// Checks the form, then either saves a new wine or asks to add the bottles to the matching one.
@@ -263,27 +222,17 @@ struct AddWineView: View {
 			return
 		}
 		focusedField = nil
-		if let existing = existingWine() {
+		if let existing = currentPerson.wines.first(where: draft.matches) {
 			duplicateWine = existing
 			return
 		}
 
 		let newItem = Item(context: viewContext)
 		newItem.owner = currentPerson
-		newItem.setName(newName: trimmed(wineName))
-		newItem.setDomain(newDomain: trimmed(wineDomain))
-		newItem.setCreator(newCreator: trimmed(wineCreator))
-		newItem.setType(newType: wineType.rawValue)
-		newItem.setQuantity(newQuantity: bottles(wineQuantity))
-		newItem.setDrank(newDrank: bottles(wineDrank))
-		if let photoData {
-			newItem.setImageData(newImageData: photoData)
+		draft.apply(to: newItem)
+		if let data = photo.data {
+			newItem.setImageData(newImageData: data)
 		}
-		let newEdition = Edition(context: viewContext)
-		newEdition.setIsEdition(newIsEdition: isVintage)
-		newEdition.setNumber(newNumber: editionValue ?? 0)
-		newEdition.wine = newItem
-
 		if save() {
 			showSaved("\(newItem.wrappedName) added")
 		}
@@ -291,50 +240,32 @@ struct AddWineView: View {
 
 	/// Adds the entered bottles to a wine already in the collection, keeping its photo unless a new one was picked.
 	private func addBottles(to existing: Item) {
-		existing.setQuantity(newQuantity: min(existing.wrappedQuantity + bottles(wineQuantity), maxBottles))
-		existing.setDrank(newDrank: min(existing.wrappedDrank + bottles(wineDrank), maxBottles))
-		if let photoData {
-			existing.setImageData(newImageData: photoData)
+		existing.setQuantity(newQuantity: min(existing.wrappedQuantity + draft.quantityValue, Item.maxBottles))
+		existing.setDrank(newDrank: min(existing.wrappedDrank + draft.drankValue, Item.maxBottles))
+		if let data = photo.data {
+			existing.setImageData(newImageData: data)
 		}
 		if save() {
-			// CollectionView observes the person, which doesn't change when one of its wines does.
-			currentPerson.objectWillChange.send()
 			showSaved("Bottles added to \(existing.wrappedName)")
 		}
 	}
 
 	/// The first field, top to bottom, that stops the wine being saved.
 	private var firstInvalidField: Field? {
-		if trimmed(wineName).isEmpty { return .name }
-		if trimmed(wineDomain).isEmpty { return .domain }
-		if trimmed(wineCreator).isEmpty { return .creator }
-		if editionValue == nil { return .edition }
-		return nil
-	}
-
-	/// The wine in the collection with the same details, ignoring case and surrounding spaces.
-	private func existingWine() -> Item? {
-		currentPerson.itemsArray.first { item in
-			sameText(item.wrappedName, wineName)
-				&& sameText(item.wrappedDomain, wineDomain)
-				&& sameText(item.wrappedCreator, wineCreator)
-				&& item.wrappedType == wineType.rawValue
-				&& item.isVintage == isVintage
-				&& item.editionNumber == editionValue
+		switch draft.firstProblem {
+		case .details: draft.missingDetails.first.flatMap(Field.init(rawValue:))
+		case .edition: .edition
+		case nil: nil
 		}
 	}
 
-	/// Saves the context, or undoes the unsaved changes and shows an error.
+	/// Saves, or undoes the unsaved changes and shows an error.
 	private func save() -> Bool {
-		do {
-			try viewContext.save()
-			currentPerson.updateCache(viewContext: viewContext)
-			return true
-		} catch {
-			viewContext.rollback()
+		guard viewContext.saveOrRollback() else {
 			saveFailed = true
 			return false
 		}
+		return true
 	}
 
 	private func showSaved(_ message: String) {
@@ -342,51 +273,11 @@ struct AddWineView: View {
 		withAnimation { savedMessage = message }
 	}
 
-	private func loadPhoto() {
-		guard let photoItem else {
-			photoData = nil
-			photoPreview = nil
-			return
-		}
-		isLoadingPhoto = true
-		Task {
-			defer { isLoadingPhoto = false }
-			guard let original = try? await photoItem.loadTransferable(type: Data.self),
-				  let data = await Task.detached(operation: { compressedPhotoData(original) }).value,
-				  let image = UIImage(data: data) else {
-				return
-			}
-			photoData = data
-			photoPreview = Image(uiImage: image)
-		}
-	}
-
 	private func resetForm() {
-		wineName = ""
-		wineDomain = ""
-		wineCreator = ""
-		wineType = .red
-		wineQuantity = "1"
-		wineDrank = "0"
-		isVintage = true
-		editionNumber = ""
-		photoItem = nil
-		photoData = nil
-		photoPreview = nil
+		draft = WineDraft()
+		photo.item = nil
 		showErrors = false
 		focusedField = nil
-	}
-
-	private func trimmed(_ text: String) -> String {
-		text.trimmingCharacters(in: .whitespacesAndNewlines)
-	}
-
-	private func sameText(_ stored: String, _ entered: String) -> Bool {
-		trimmed(stored).caseInsensitiveCompare(trimmed(entered)) == .orderedSame
-	}
-
-	private func bottles(_ text: String) -> Int16 {
-		min(Int16(text) ?? 0, maxBottles)
 	}
 }
 

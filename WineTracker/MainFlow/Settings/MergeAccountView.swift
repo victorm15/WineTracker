@@ -63,7 +63,7 @@ struct MergeAccountView: View {
 				merge(other)
 			}
 		} message: { other in
-			Text("\(other.itemsArray.count) \(other.itemsArray.count == 1 ? "wine" : "wines") will move to your collection and the @\(other.wrappedUsername) account will be deleted. This can't be undone.")
+			Text("\(other.wines.count) \(other.wines.count == 1 ? "wine" : "wines") will move to your collection and the @\(other.wrappedUsername) account will be deleted. This can't be undone.")
 		}
 		.authAlert($alert)
 	}

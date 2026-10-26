@@ -46,7 +46,6 @@ public class Person: NSManagedObject {
         context.delete(self)
         guard context.saveOrRollback() else { return false }
         Person.deleteCredentials(forAccountID: id)
-        QueryCache.shared.invalidate()
         return true
     }
 
@@ -56,9 +55,11 @@ public class Person: NSManagedObject {
     func absorb(_ other: Person) -> Int? {
         guard let context = managedObjectContext, other != self else { return nil }
         let otherID = other.accountID
-        let incoming = other.itemsArray
+        let incoming = other.wines
+        // Moved wines are added so later ones still combine with them, as when saving one by one.
+        var existing = Array(wines)
         for wine in incoming {
-            if let match = itemsArray.first(where: { $0 !== wine && $0.isSameWine(as: wine) }) {
+            if let match = existing.first(where: { $0.isSameWine(as: wine) }) {
                 match.setQuantity(newQuantity: min(match.wrappedQuantity + wine.wrappedQuantity, Item.maxBottles))
                 match.setDrank(newDrank: min(match.wrappedDrank + wine.wrappedDrank, Item.maxBottles))
                 if match.storedImageData == nil, let photo = wine.storedImageData {
@@ -67,12 +68,12 @@ public class Person: NSManagedObject {
                 context.delete(wine)
             } else {
                 wine.owner = self
+                existing.append(wine)
             }
         }
         context.delete(other)
         guard context.saveOrRollback() else { return nil }
         Person.deleteCredentials(forAccountID: otherID)
-        QueryCache.shared.invalidate()
         return incoming.count
     }
 

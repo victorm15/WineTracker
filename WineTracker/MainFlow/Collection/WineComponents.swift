@@ -13,7 +13,7 @@ struct WineThumbnail: View {
 	let size: CGFloat
 
 	var body: some View {
-		wine.wrappedImage
+		wine.thumbnail
 			.resizable()
 			.scaledToFill()
 			.frame(width: size, height: size)
@@ -25,10 +25,10 @@ struct WineThumbnail: View {
 
 /// A small coloured label for the wine type.
 struct WineTypeBadge: View {
-	let type: String
+	let type: WineType?
 
 	private var color: Color {
-		switch WineType(rawValue: type) {
+		switch type {
 		case .red: Color(red: 0.55, green: 0.05, blue: 0.15)
 		case .white: Color(red: 0.75, green: 0.6, blue: 0.15)
 		case .champagne: Color(red: 0.6, green: 0.5, blue: 0.3)
@@ -37,7 +37,7 @@ struct WineTypeBadge: View {
 	}
 
 	var body: some View {
-		Text(WineType(rawValue: type)?.shortName ?? type)
+		Text(type?.shortName ?? "Unknown")
 			.font(.caption2.weight(.semibold))
 			.foregroundStyle(color)
 			.padding(.horizontal, 6)

@@ -13,6 +13,8 @@ struct EditAccountView: View {
 	@State private var email = ""
 	@State private var hasLoaded = false
 	@State private var saveFailed = false
+	/// Whether the entered username belongs to another account, checked once typing pauses.
+	@State private var usernameTaken = false
 
 	var body: some View {
 		Form {
@@ -65,6 +67,12 @@ struct EditAccountView: View {
 			}
 		}
 		.onAppear(perform: load)
+		.task(id: normalizedUsername) {
+			usernameTaken = false
+			// Looking the username up on every redraw would query the database several times a keystroke.
+			guard (try? await Task.sleep(for: .milliseconds(300))) != nil else { return }
+			usernameTaken = isTaken(normalizedUsername)
+		}
 		.alert("Couldn't Save Changes", isPresented: $saveFailed) {
 			Button("OK", role: .cancel) {}
 		} message: {
@@ -77,24 +85,23 @@ struct EditAccountView: View {
 	}
 
 	private var usernameError: String? {
-		if !isValidField(text: normalizedUsername) {
-			return "At least 2 characters"
-		}
-		// Your own username, in any capitalisation, isn't "taken".
-		if let owner = Person.withUsername(normalizedUsername, in: viewContext), owner != person {
-			return "This username is taken"
-		}
-		return nil
+		Validation.usernameProblem(username) ?? (usernameTaken ? "This username is taken" : nil)
 	}
 
 	private var nameError: String? {
-		isValidField(text: trimmed(firstName)) && isValidField(text: trimmed(lastName))
+		Validation.nameProblem(firstName) == nil && Validation.nameProblem(lastName) == nil
 			? nil
 			: "First and last name need at least 2 characters each"
 	}
 
 	private var emailError: String? {
-		isValidEmail(email: trimmed(email)) ? nil : "Enter a valid email"
+		Validation.emailProblem(email)
+	}
+
+	/// Your own username, in any capitalisation, isn't "taken".
+	private func isTaken(_ username: String) -> Bool {
+		guard let owner = Person.withUsername(username, in: viewContext) else { return false }
+		return owner != person
 	}
 
 	private var isValid: Bool {
@@ -118,6 +125,11 @@ struct EditAccountView: View {
 	}
 
 	private func save() {
+		// The check while typing may not have run yet.
+		if isTaken(normalizedUsername) {
+			usernameTaken = true
+			return
+		}
 		person.setUsername(newUsername: username)
 		person.setFirstName(newFirstName: trimmed(firstName))
 		person.setLastName(newLastName: trimmed(lastName))
@@ -130,7 +142,7 @@ struct EditAccountView: View {
 	}
 
 	private func trimmed(_ text: String) -> String {
-		text.trimmingCharacters(in: .whitespacesAndNewlines)
+		Validation.trimmed(text)
 	}
 }
 

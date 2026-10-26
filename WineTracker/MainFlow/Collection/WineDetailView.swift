@@ -38,7 +38,7 @@ struct WineDetailView: View {
 							.foregroundStyle(.secondary)
 							.multilineTextAlignment(.center)
 						HStack(spacing: 6) {
-							WineTypeBadge(type: wine.wrappedType)
+							WineTypeBadge(type: wine.wineType)
 							Text(wine.editionLabel)
 								.font(.subheadline)
 								.foregroundStyle(.secondary)
@@ -124,7 +124,7 @@ struct WineDetailView: View {
 
 #Preview {
 	NavigationStack {
-		WineDetailView(wine: PersistenceController.previewPerson.itemsArray[0], owner: PersistenceController.previewPerson)
+		WineDetailView(wine: PersistenceController.previewPerson.wines(matching: WineQuery())[0], owner: PersistenceController.previewPerson)
 	}
 	.previewEnvironment()
 }

@@ -12,7 +12,7 @@ struct DeleteAccountView: View {
 	@State private var deleteFailed = false
 
 	private var wineCount: String {
-		let count = person.itemsArray.count
+		let count = person.wines.count
 		return "\(count) \(count == 1 ? "wine" : "wines")"
 	}
 

@@ -1,26 +1,17 @@
 import SwiftUI
-import CoreData
 
 /// The account's bottle totals and a few highlights picked from the collection.
 struct HomeView: View {
 	@ObservedObject var currentPerson: Person
 	/// Opens the Add Wine tab from the empty-collection message.
-	var onAddWine: () -> Void
-
-	/// The account's wines, sorted by name. Updates whenever one of them is saved.
-	@FetchRequest private var wines: FetchedResults<Item>
-
-	init(currentPerson: Person, onAddWine: @escaping () -> Void = {}) {
-		self.currentPerson = currentPerson
-		self.onAddWine = onAddWine
-		_wines = FetchRequest(
-			sortDescriptors: [NSSortDescriptor(key: "name", ascending: true)],
-			predicate: NSPredicate(format: "owner == %@", currentPerson)
-		)
-	}
+	var onAddWine: () -> Void = {}
+	@Environment(QueryCache.self) private var queryCache
 
 	var body: some View {
-		let summary = CollectionSummary(wines)
+		// Reading the revision redraws Home after every save, including bottle count changes.
+		let _ = queryCache.revision
+		// The whole collection sorted by name: the same list Collection shows by default.
+		let summary = CollectionSummary(queryCache.peek(WineQuery()))
 		ScrollView {
 			VStack(alignment: .leading, spacing: 28) {
 				greeting
@@ -198,7 +189,7 @@ private struct WineHighlightCard: View {
 
 	var body: some View {
 		HStack(spacing: 14) {
-			wine.wrappedImage
+			wine.thumbnail
 				.resizable()
 				.scaledToFill()
 				.frame(width: 84, height: 84)
@@ -215,7 +206,7 @@ private struct WineHighlightCard: View {
 					.lineLimit(1)
 				Text("\(wine.wrappedCreator) · \(wine.wrappedDomain)")
 					.lineLimit(1)
-				Text("\(wine.wrappedType) · \(wine.isVintage ? "Vintage" : "Edition") \(String(wine.editionNumber))")
+				Text("\(wine.wineType?.name ?? "Unknown") · \(wine.editionLabel)")
 					.lineLimit(1)
 				Text("\(wine.wrappedQuantity) unopened · \(wine.wrappedDrank) drank")
 					.lineLimit(1)

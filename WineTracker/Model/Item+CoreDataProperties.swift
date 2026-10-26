@@ -3,7 +3,6 @@ import CoreData
 import SwiftUI
 import UIKit
 
-
 extension Item {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Item> {
@@ -16,16 +15,15 @@ extension Item {
     @NSManaged private var name: String?
     @NSManaged private var quantity: Int16
     @NSManaged private var type: String?
-    @NSManaged public var edition: Edition?
     @NSManaged public var owner: Person?
-    
-    /// Whether the edition number is a vintage year. Wines without an edition count as vintages.
-    public var isVintage: Bool {
-        edition?.wrappedIsEdition ?? true
-    }
-    /// The vintage year or edition number, 2024 for wines without an edition.
-    public var editionNumber: Int16 {
-        edition?.wrappedNumber ?? 2024
+    /// Whether `editionNumber` is a vintage year rather than an edition number.
+    @NSManaged public private(set) var isVintage: Bool
+    /// The vintage year or edition number.
+    @NSManaged public private(set) var editionNumber: Int16
+
+    public func setEdition(isVintage newIsVintage: Bool, number: Int16) {
+        isVintage = newIsVintage
+        editionNumber = number
     }
     public func setImageData(newImageData: Data) {
         image = newImageData
@@ -33,10 +31,6 @@ extension Item {
     /// The wine's own photo, nil when it uses the placeholder.
     public var storedImageData: Data? {
         image
-    }
-    public var wrappedImageData: Data {
-        
-        image ?? (SimageToUIimage(Image("Image"))?.pngData())!
     }
     public var wrappedName: String {
         name ?? "_name_"
@@ -49,8 +43,9 @@ extension Item {
         creator ?? "_creator_"
     }
     
-    public var wrappedType: String {
-        type ?? "_type_"
+    /// nil only if the stored key isn't one `WineType` knows.
+    var wineType: WineType? {
+        type.flatMap(WineType.init(rawValue:))
     }
     public var wrappedQuantity: Int16 {
         quantity
@@ -73,25 +68,8 @@ extension Item {
     public func setDrank(newDrank: Int16) {
         drank = newDrank
     }
-    public func setType(newType: String) {
-        type = newType
-    }
-    public func SimageToUIimage(_ image: Image) -> UIImage? {
-        let controller = UIHostingController(rootView: image)
-        let view = controller.view
-        
-        let targetSize = CGSize(width: 1160, height: 1160)
-        view?.bounds = CGRect(origin: .zero, size: targetSize)
-        view?.backgroundColor = .clear
-        
-        let renderer = UIGraphicsImageRenderer(size: targetSize)
-        return renderer.image { _ in
-            view?.drawHierarchy(in: view!.bounds, afterScreenUpdates: true)
-        }
-    }
-    public func setImage(Simage: Image) {
-        let uiimage = SimageToUIimage(Simage)
-        image = uiimage?.pngData()
+    func setType(_ newType: WineType) {
+        type = newType.rawValue
     }
     public var wrappedImage: Image {
         if let data = image, let uiImage = UIImage(data: data) {

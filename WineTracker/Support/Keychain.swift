@@ -6,21 +6,29 @@ import Security
 nonisolated enum Keychain {
 
 	/// Adds or replaces an item. Without `accessControl` it's readable whenever the device is unlocked.
+	/// Returns false if nothing was saved; an item it was replacing is then left as it was.
 	@discardableResult
 	static func set(_ data: Data, service: String, account: String, accessControl: SecAccessControl? = nil) -> Bool {
-		delete(service: service, account: account)
-		var query: [String: Any] = [
+		let match: [String: Any] = [
 			kSecClass as String: kSecClassGenericPassword,
 			kSecAttrService as String: service,
 			kSecAttrAccount as String: account,
-			kSecValueData as String: data,
 		]
+		var item = match
+		item[kSecValueData as String] = data
 		if let accessControl {
-			query[kSecAttrAccessControl as String] = accessControl
-		} else {
-			query[kSecAttrAccessible as String] = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+			// An item's access control can't be updated in place, so it's replaced. Only biometric
+			// login uses this, and losing its item just turns that off.
+			item[kSecAttrAccessControl as String] = accessControl
+			delete(service: service, account: account)
+			return SecItemAdd(item as CFDictionary, nil) == errSecSuccess
 		}
-		return SecItemAdd(query as CFDictionary, nil) == errSecSuccess
+		// Updating in place keeps the old data if the write fails, so a failed password change
+		// leaves the current password working.
+		let status = SecItemUpdate(match as CFDictionary, [kSecValueData as String: data] as CFDictionary)
+		guard status == errSecItemNotFound else { return status == errSecSuccess }
+		item[kSecAttrAccessible as String] = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+		return SecItemAdd(item as CFDictionary, nil) == errSecSuccess
 	}
 
 	/// Reading an item protected by biometrics shows the Face ID prompt and blocks until it's answered,

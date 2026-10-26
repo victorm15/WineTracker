@@ -67,7 +67,7 @@ struct SignUpView: View {
 			AuthPasswordField(title: "Password", text: $password,
 							  focus: $focusedField, field: .password,
 							  error: error(for: .password),
-							  hint: "At least \(minimumPasswordLength) characters")
+							  hint: Validation.passwordRule)
 				.textContentType(.password)
 				.submitLabel(.go)
 				.onSubmit(createAccount)
@@ -115,17 +115,16 @@ struct SignUpView: View {
 	private func problem(with field: Field) -> String? {
 		switch field {
 		case .firstName:
-			return isValidField(text: firstName) ? nil : "At least 2 characters"
+			return Validation.nameProblem(firstName)
 		case .lastName:
-			return isValidField(text: lastName) ? nil : "At least 2 characters"
+			return Validation.nameProblem(lastName)
 		case .email:
-			return isValidEmail(email: email) ? nil : "Enter a valid email"
+			return Validation.emailProblem(email)
 		case .username:
-			let normalized = Person.normalizedUsername(username)
-			if !isValidField(text: normalized) { return "At least 2 characters" }
-			return takenUsernames.contains(normalized) ? "This username is taken" : nil
+			if let problem = Validation.usernameProblem(username) { return problem }
+			return takenUsernames.contains(Person.normalizedUsername(username)) ? "This username is taken" : nil
 		case .password:
-			return isValidPassword(password) ? nil : "At least \(minimumPasswordLength) characters"
+			return Validation.passwordProblem(password)
 		}
 	}
 
@@ -149,9 +148,9 @@ struct SignUpView: View {
 			defer { isCreating = false }
 			let newAccount = Person(context: viewContext)
 			newAccount.setUsername(newUsername: username)
-			newAccount.setFirstName(newFirstName: firstName)
-			newAccount.setLastName(newLastName: lastName)
-			newAccount.setEmail(newEmail: email)
+			newAccount.setFirstName(newFirstName: Validation.trimmed(firstName))
+			newAccount.setLastName(newLastName: Validation.trimmed(lastName))
+			newAccount.setEmail(newEmail: Validation.trimmed(email))
 			do {
 				// The password hash is keyed by the account ID, so it has to be permanent first.
 				try viewContext.obtainPermanentIDs(for: [newAccount])
